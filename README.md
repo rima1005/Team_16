@@ -8,14 +8,14 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 | Role              | Name                | 
 | :---              | :----:              |
 | **Product Owner** | Michael Hebesberger |
-| **Scrum Master**  | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
-| **Developer**     | ----                |
+| **Scrum Master**  | Florian Pötz        |
+| **Developer**     | Sebastian Gürtl     |
+| **Developer**     | Marcel Lirzer       |
+| **Developer**     | Jakob Meinhart      |
+| **Developer**     | Oliver Pöckelhofer  |
+| **Developer**     | Markus Ritzer       |
+| **Developer**     | Flakon Selimi       |
+| **Developer**     | Florian Winkler     |
+| **Developer**     | Mattia Zoggia       |
 
 ### Implemented Features
