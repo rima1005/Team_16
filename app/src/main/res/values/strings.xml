@@ -3,4 +3,7 @@
     <string name="btnRegister">Register</string>
     <string name="btnLogin">Login</string>
     <string name="tfName">Name</string>
+    <string name="lbUsername">Username: </string>
+    <string name="lbPassword">Password: </string>
+    <string name="btnLoginOk">Login</string>
 </resources>
