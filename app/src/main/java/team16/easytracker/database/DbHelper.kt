@@ -1,15 +1,16 @@
 package team16.easytracker.database
 
 import android.content.Context
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import team16.easytracker.database.Contracts.Company
 import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
 import team16.easytracker.database.Contracts.CompanyWorker
 import team16.easytracker.database.Contracts.Tracking
-import java.io.BufferedReader
-import java.io.InputStream
+import java.io.*
 
 
 private const val SQL_CREATE_COMPANY =
@@ -56,6 +57,9 @@ private const val SQL_CREATE_WORKERS =
 
 class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    val ctx = context;
+    val tag = DbHelper::class.java.name;
+
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_COMPANY)
         db.execSQL(SQL_CREATE_ADDRESS)
@@ -64,25 +68,43 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.execSQL(SQL_CREATE_WORKERS)
         //db.execSQL(SQL_CREATE_WORKERS)
     }
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // This database is only a cache for online data, so its upgr   ade policy is
-        // to simply to discard the data and start over
-        //db.execSQL(SQL_DELETE_ENTRIES)
-        onCreate(db)
+        Log.d(tag, "Updating DB version from $oldVersion ")
+        try {
+            for (i in oldVersion until newVersion) {
+                val fileName = "${i}-${i + 1}.sql"
+                val file = ctx.assets.open(fileName)
+                executeSQLFile(db, file)
+                file.close()
+            }
+        } catch (e : IOException) {
+            Log.e(tag, "Failed to open DB version file", e)
+        } catch (e: SQLException) {
+            Log.e(tag, "Failed to update DB version", e)
+        }
     }
+
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onUpgrade(db, oldVersion, newVersion)
     }
+
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_VERSION = 1
         const val DATABASE_NAME = "EasyTracker.db"
     }
 
-    fun executeSQLFile(db: SQLiteDatabase, inputStream: InputStream)
-    {
-
+    @Throws(SQLException::class)
+    fun executeSQLFile(db: SQLiteDatabase, inputStream: InputStream) {
+        val reader = inputStream.bufferedReader()
+        var line = reader.readLine()
+        while (line != null) {
+            if (!line.endsWith(";")) {
+                throw SQLException("Invalid .sql file!")
+            }
+            db.execSQL(line)
+            line = reader.readLine()
+        }
     }
-
-
 }

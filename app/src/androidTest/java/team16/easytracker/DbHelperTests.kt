@@ -1,18 +1,20 @@
 package team16.easytracker
 
 import android.content.ContentValues
-import android.content.res.AssetManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import team16.easytracker.database.Contracts.Company
-import team16.easytracker.database.Contracts.Worker
+import team16.easytracker.database.Contracts.Company as CompanyContract
+import team16.easytracker.database.Contracts.Worker as WorkerContract
 import team16.easytracker.database.DbHelper
-import java.time.Instant
-import java.time.format.DateTimeFormatter
+import team16.easytracker.model.Address
+import team16.easytracker.model.Company
+import team16.easytracker.model.Tracking
+import team16.easytracker.model.Worker
+
 
 @RunWith(AndroidJUnit4::class)
 class DbHelperTests {
@@ -38,31 +40,30 @@ class DbHelperTests {
         writableDb.endTransaction()
     }
 
-    private fun insertDummyCompany() : Long {
+    private fun insertDummyCompany(): Long {
         val values = ContentValues().apply {
-            put(Company.COL_NAME, COMPANY_DUMMY_NAME)
-            put(Company.COL_ADDRESS_ID, 1)
+            put(CompanyContract.COL_NAME, COMPANY_DUMMY_NAME)
+            put(CompanyContract.COL_ADDRESS_ID, 1)
         }
 
-
-        return writableDb.insert(Company.TABLE_NAME, null, values)
+        return writableDb.insert(CompanyContract.TABLE_NAME, null, values)
     }
 
-    private fun insertDummyWorker() : Long {
+    private fun insertDummyWorker(): Long {
 
         val values = ContentValues().apply {
-            put(Worker.COL_FIRST_NAME, WORKER_DUMMY_FIRST_NAME)
-            put(Worker.COL_LAST_NAME, WORKER_DUMMY_LAST_NAME)
+            put(WorkerContract.COL_FIRST_NAME, WORKER_DUMMY_FIRST_NAME)
+            put(WorkerContract.COL_LAST_NAME, WORKER_DUMMY_LAST_NAME)
             //put(Worker.COL_DATE_OF_BIRTH, "1998-05-10")
-            put(Worker.COL_TITLE, "")
-            put(Worker.COL_EMAIL, "max.mustermann@gmail.com")
-            put(Worker.COL_PASSWORD, "1235165465")
-            put(Worker.COL_PHONE_NUMBER, "+43 9509579554")
+            put(WorkerContract.COL_TITLE, "")
+            put(WorkerContract.COL_EMAIL, "max.mustermann@gmail.com")
+            put(WorkerContract.COL_PASSWORD, "1235165465")
+            put(WorkerContract.COL_PHONE_NUMBER, "+43 9509579554")
             //put(Worker.COL_CREATED_AT, DateTimeFormatter.ISO_INSTANT.format(Instant.now()))
-            put(Worker.COL_ADDRESS_ID, 1)
+            put(WorkerContract.COL_ADDRESS_ID, 1)
         }
 
-        return writableDb.insert(Worker.TABLE_NAME, null, values)
+        return writableDb.insert(WorkerContract.TABLE_NAME, null, values)
     }
 
     @Test
@@ -77,26 +78,25 @@ class DbHelperTests {
         assert(newRowId > 0)
     }
 
-
     @Test
     fun testReadCompany() {
         val newRowId = insertDummyCompany()
-        val query = "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_ID} = ?"
+        val query = "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
         val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
         result.moveToFirst()
-        val companyName = result.getString(result.getColumnIndexOrThrow(Company.COL_NAME))
+        val companyName = result.getString(result.getColumnIndexOrThrow(CompanyContract.COL_NAME))
         assert(companyName == COMPANY_DUMMY_NAME)
     }
 
     @Test
     fun testReadWorker() {
         val newRowId = insertDummyWorker()
-        val query = "SELECT * FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_ID} = ?"
+        val query = "SELECT * FROM ${WorkerContract.TABLE_NAME} WHERE ${WorkerContract.COL_ID} = ?"
         val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
         result.moveToFirst()
-        val workerFirstName = result.getString(result.getColumnIndexOrThrow(Worker.COL_FIRST_NAME))
+        val workerFirstName = result.getString(result.getColumnIndexOrThrow(WorkerContract.COL_FIRST_NAME))
         assert(workerFirstName == WORKER_DUMMY_FIRST_NAME)
-        val workerLastName = result.getString(result.getColumnIndexOrThrow(Worker.COL_LAST_NAME))
+        val workerLastName = result.getString(result.getColumnIndexOrThrow(WorkerContract.COL_LAST_NAME))
         assert(workerLastName == WORKER_DUMMY_LAST_NAME)
     }
 
@@ -106,10 +106,42 @@ class DbHelperTests {
         val inputStream = assetManager.open("dbtest1.sql")
         dbHelper.executeSQLFile(writableDb, inputStream)
         val newRowId = insertDummyCompany()
-        val query = "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_ID} = ?"
+        val query = "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
         val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
         result.moveToFirst()
         val columnIndex = result.getColumnIndex("test1")
         assert(columnIndex != -1)
+    }
+
+    @Test
+    fun testCompanyModel() {
+        val dummyAddressId = 69;
+        val id = Company.save(COMPANY_DUMMY_NAME, dummyAddressId)
+        val company = Company.load(id)
+        assert(company.name == COMPANY_DUMMY_NAME)
+        assert(company.addressId == dummyAddressId)
+    }
+
+    @Test
+    fun testWorkerModel() {
+        val id = Worker.save(WORKER_DUMMY_FIRST_NAME)
+        val worker = Worker.load(id)
+        assert(worker.firstName == WORKER_DUMMY_FIRST_NAME)
+    }
+
+    @Test
+    fun testAddressModel() {
+        val dummyStreet = "TEST"
+        val id = Address.save(dummyStreet)
+        val address = Address.load(id)
+        assert(address.street == dummyStreet)
+    }
+
+    @Test
+    fun testTrackingModel() {
+        val dummyName = "TEST"
+        val id = Tracking.save(dummyName)
+        val tracking = Tracking.load(id)
+        assert(tracking.name == dummyName)
     }
 }
