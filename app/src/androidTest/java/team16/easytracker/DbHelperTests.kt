@@ -132,9 +132,14 @@ class DbHelperTests {
     @Test
     fun testAddressModel() {
         val dummyStreet = "TEST"
-        val id = Address.save(dummyStreet)
-        val address = Address.load(id)
-        assert(address.street == dummyStreet)
+        val dummyZipCode = "1234"
+        val dummyCity = "Graz"
+        val id = Address.save(dummyStreet, dummyZipCode, dummyCity, dbHelper)
+        val address = Address.load(id, dbHelper)
+        assert(address != null)
+        assert(address?.street == dummyStreet)
+        assert(address?.zipCode == dummyZipCode)
+        assert(address?.city == dummyCity)
     }
 
     @Test

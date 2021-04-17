@@ -1,5 +1,6 @@
 package team16.easytracker.database
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
@@ -10,6 +11,8 @@ import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
 import team16.easytracker.database.Contracts.CompanyWorker
 import team16.easytracker.database.Contracts.Tracking
+
+import team16.easytracker.model.Address as AddressModel
 import java.io.*
 
 
@@ -106,5 +109,25 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
             db.execSQL(line)
             line = reader.readLine()
         }
+    }
+
+    fun loadAddress(id: Int): AddressModel? {
+        val result = readableDatabase.rawQuery("SELECT * FROM ${Address.TABLE_NAME} WHERE ${Address.COL_ID} = ?", arrayOf(id.toString()))
+        if (!result.moveToFirst())
+            return null
+        val street = result.getString(result.getColumnIndex(Address.COL_STREET))
+        val zipCode = result.getString(result.getColumnIndex(Address.COL_ZIP_CODE))
+        val city = result.getString(result.getColumnIndex(Address.COL_CITY))
+        result.close();
+        return AddressModel(id, street, zipCode, city)
+    }
+
+    fun saveAddress(street: String, zipCode: String, city: String) : Int {
+        val values = ContentValues().apply {
+            put(Address.COL_STREET, street)
+            put(Address.COL_ZIP_CODE, zipCode)
+            put(Address.COL_CITY, city)
+        }
+        return writableDatabase.insert(Address.TABLE_NAME, null, values).toInt()
     }
 }
