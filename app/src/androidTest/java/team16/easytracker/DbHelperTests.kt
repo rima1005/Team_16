@@ -1,6 +1,7 @@
 package team16.easytracker
 
 import android.content.ContentValues
+import android.content.res.AssetManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.After
@@ -42,6 +43,7 @@ class DbHelperTests {
             put(Company.COL_NAME, COMPANY_DUMMY_NAME)
             put(Company.COL_ADDRESS_ID, 1)
         }
+
 
         return writableDb.insert(Company.TABLE_NAME, null, values)
     }
@@ -96,5 +98,18 @@ class DbHelperTests {
         assert(workerFirstName == WORKER_DUMMY_FIRST_NAME)
         val workerLastName = result.getString(result.getColumnIndexOrThrow(Worker.COL_LAST_NAME))
         assert(workerLastName == WORKER_DUMMY_LAST_NAME)
+    }
+
+    @Test
+    fun testExecuteSQLScript() {
+        val assetManager = appContext.assets
+        val inputStream = assetManager.open("dbtest1.sql")
+        dbHelper.executeSQLFile(writableDb, inputStream)
+        val newRowId = insertDummyCompany()
+        val query = "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_ID} = ?"
+        val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
+        result.moveToFirst()
+        val columnIndex = result.getColumnIndex("test1")
+        assert(columnIndex != -1)
     }
 }
