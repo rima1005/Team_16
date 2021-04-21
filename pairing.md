@@ -1,20 +1,20 @@
 ### Pairing Matrix
-Dev 1: Name
-Dev 2: Name
-Dev 3: Name
-Dev 4: Name
-Dev 5: Name
-Dev 6: Name
-Dev 7: Name
-Dev 8: Name
+Dev 1: Sebastian
+Dev 2: Marcel
+Dev 3: Jakob
+Dev 4: Oliver
+Dev 5: Markus
+Dev 6: Flakon
+Dev 7: Florian
+Dev 8: Mattia
 
-| Syntax      | Dev 1   	  | Dev 2   	  | Dev 3   	  | Dev 4   	  | Dev 5   	  | Dev 6   	  | Dev 7   	  | Dev 8   	  |
+| Syntax      | Sebastian   	  | Marcel   	  | Jakob   	  | Oliver   	  | Markus   	  | Flakon   	  | Florian   	  | Mattia   	  |
 | :---        |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |
-| Dev 1       | X           | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       |
-| Dev 2       | HH:MM       | X           | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       |
-| Dev 3       | HH:MM       | HH:MM       | X           | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       |
-| Dev 4       | HH:MM       | HH:MM       | HH:MM       | X           | HH:MM       | HH:MM       | HH:MM       | HH:MM       |
-| Dev 5       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | X           | HH:MM       | HH:MM       | HH:MM       |
-| Dev 6       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | X           | HH:MM       | HH:MM       |
-| Dev 7       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | X           | HH:MM       |
-| Dev 8       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | X           |
+| Sebastian       | X           | 07:00       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       |
+| Marcel       | 07:00       | X           | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       |
+| Jakob       | HH:MM       | HH:MM       | X           | HH:MM       | HH:MM       | HH:MM       | HH:MM       | 07:00       |
+| Oliver       | HH:MM       | HH:MM       | HH:MM       | X           | 07:00       | HH:MM       | HH:MM       | HH:MM       |
+| Markus       | HH:MM       | HH:MM       | HH:MM       | 07:00       | X           | HH:MM       | HH:MM       | HH:MM       |
+| Flakon       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | X           | 07:00       | HH:MM       |
+| Florian       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | 07:00       | X           | HH:MM       |
+| Mattia       | HH:MM       | HH:MM       | 07:00       | HH:MM       | HH:MM       | HH:MM       | HH:MM       | X           |
