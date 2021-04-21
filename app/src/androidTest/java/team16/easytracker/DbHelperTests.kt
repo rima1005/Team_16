@@ -14,6 +14,8 @@ import team16.easytracker.model.Address
 import team16.easytracker.model.Company
 import team16.easytracker.model.Tracking
 import team16.easytracker.model.Worker
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 @RunWith(AndroidJUnit4::class)
@@ -29,6 +31,8 @@ class DbHelperTests {
     val COMPANY_DUMMY_NAME = "company 1"
     val WORKER_DUMMY_FIRST_NAME = "Max"
     val WORKER_DUMMY_LAST_NAME = "Mustermann"
+    val DUMMY_EMAIL = "test.test@test.at"
+    val DUMMY_PASSWORD = "securePassword"
 
     @Before
     fun init() {
@@ -148,5 +152,13 @@ class DbHelperTests {
         val id = Tracking.save(dummyName)
         val tracking = Tracking.load(id)
         assert(tracking.name == dummyName)
+    }
+
+    @Test
+    fun testlogin() {
+        val id = dbHelper.saveWorker(WORKER_DUMMY_FIRST_NAME, WORKER_DUMMY_LAST_NAME, LocalDate.now(), "", DUMMY_EMAIL, DUMMY_PASSWORD, "", LocalDateTime.now(), 1)
+        val worker = Worker.login(DUMMY_EMAIL, DUMMY_PASSWORD)
+        assert(worker != null)
+        assert(worker?.getId() == id)
     }
 }
