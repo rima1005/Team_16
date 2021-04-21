@@ -1,0 +1,1 @@
+ALTER TABLE companies ADD COLUMN test1 INTEGER;
