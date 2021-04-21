@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/lbPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/lbPassword"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/tfMail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -27,10 +27,11 @@
         app:layout_constraintHorizontal_bias="0.676"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.4"
+        android:autofillHints="Jackson@mail.com" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/tfPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -39,16 +40,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.676"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints="Password" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/lbUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/lbUsername"
+        android:text="@string/lbEmail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.121"
+        app:layout_constraintHorizontal_bias="0.186"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.403" />
@@ -57,6 +59,7 @@
         android:id="@+id/button"
         android:layout_width="89dp"
         android:layout_height="42dp"
+        android:onClick="readInputVals"
         android:text="@string/btnLoginOk"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

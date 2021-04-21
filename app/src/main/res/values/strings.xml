@@ -2,8 +2,8 @@
     <string name="app_name">EasyTracker</string>
     <string name="btnRegister">Register</string>
     <string name="btnLogin">Login</string>
-    <string name="tfName">Name</string>
-    <string name="lbUsername">Username: </string>
+    <string name="tfMail">Mail</string>
+    <string name="lbEmail">Email: </string>
     <string name="lbPassword">Password: </string>
     <string name="btnLoginOk">Login</string>
 </resources>
