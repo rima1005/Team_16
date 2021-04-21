@@ -9,7 +9,6 @@ class Worker(
     val dateOfBirth: LocalDate,
     val title: String,
     val email: String,
-    val password: String,
     val phoneNumber: String,
     val createdAt: LocalDateTime,
     val addressId: Int,

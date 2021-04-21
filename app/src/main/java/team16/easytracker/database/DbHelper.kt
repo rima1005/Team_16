@@ -6,6 +6,7 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import org.mindrot.jbcrypt.BCrypt
 import team16.easytracker.database.Contracts.Company
 import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
@@ -17,9 +18,8 @@ import team16.easytracker.model.Company as CompanyModel
 import team16.easytracker.model.Tracking as TrackingModel
 import team16.easytracker.model.Worker as WorkerModel
 import java.io.*
-import java.lang.IllegalArgumentException
 import java.time.*
-import java.time.format.DateTimeFormatter
+import kotlin.IllegalArgumentException
 
 
 private const val SQL_CREATE_COMPANY =
@@ -221,7 +221,6 @@ class DbHelper(context: Context) :
             LocalDate.ofEpochDay(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)))
         val title = result.getString(result.getColumnIndex(Worker.COL_TITLE))
         val email = result.getString(result.getColumnIndex(Worker.COL_EMAIL))
-        val password = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
         val phoneNumber = result.getString(result.getColumnIndex(Worker.COL_PHONE_NUMBER))
         val createdAt = LocalDateTime.ofEpochSecond(
             result.getLong(result.getColumnIndex(Worker.COL_CREATED_AT)),
@@ -233,18 +232,20 @@ class DbHelper(context: Context) :
         var position: String? = null
 
         result.close();
-        val resultCompany = readableDatabase.rawQuery(
+        val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ?",
             arrayOf(id.toString())
         )
-        if (result.moveToFirst()) {
-            val companyId = result.getInt(result.getColumnIndex(CompanyWorker.COL_COMPANY_ID))
+        if (resultCompanyWorker.moveToFirst()) {
+            val companyId =
+                resultCompanyWorker.getInt(resultCompanyWorker.getColumnIndex(CompanyWorker.COL_COMPANY_ID))
             company = loadCompany(companyId)
             if (company == null)
                 throw IllegalArgumentException("CompanyWorker: The Company with ID $companyId does not exist!")
-            position = result.getString(result.getColumnIndex(CompanyWorker.COL_POSITION))
+            position =
+                resultCompanyWorker.getString(resultCompanyWorker.getColumnIndex(CompanyWorker.COL_POSITION))
         }
-        resultCompany.close()
+        resultCompanyWorker.close()
         return WorkerModel(
             id,
             firstName,
@@ -252,7 +253,6 @@ class DbHelper(context: Context) :
             dateOfBirth,
             title,
             email,
-            password,
             phoneNumber,
             createdAt,
             addressId,
@@ -271,13 +271,14 @@ class DbHelper(context: Context) :
         createdAt: LocalDateTime,
         addressId: Int,
     ): Int {
+        val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
         val values = ContentValues().apply {
             put(Worker.COL_FIRST_NAME, firstName)
             put(Worker.COL_LAST_NAME, lastName)
             put(Worker.COL_DATE_OF_BIRTH, dateOfBirth.toEpochDay())
             put(Worker.COL_TITLE, title)
             put(Worker.COL_EMAIL, email)
-            put(Worker.COL_PASSWORD, password)
+            put(Worker.COL_PASSWORD, passwordHash)
             put(Worker.COL_PHONE_NUMBER, phoneNumber)
             put(Worker.COL_CREATED_AT, createdAt.toEpochSecond(ZoneOffset.UTC))
             put(Worker.COL_ADDRESS_ID, addressId)
@@ -285,7 +286,58 @@ class DbHelper(context: Context) :
         return writableDatabase.insert(Worker.TABLE_NAME, null, values).toInt()
     }
 
+    fun loginWorker(email: String, password: String): WorkerModel? {
+        val result = readableDatabase.rawQuery(
+            "SELECT ${Worker.COL_ID}, ${Worker.COL_PASSWORD} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_EMAIL} = ?",
+            arrayOf(email)
+        )
 
+        if (!result.moveToNext()) {
+            result.close()
+            return null;
+        }
 
+        val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
 
+        if (!BCrypt.checkpw(password, passwordHash)) {
+            result.close()
+            return null;
+        }
+
+        val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
+
+        result.close()
+        return loadWorker(workerId)
+    }
+
+    fun addWorkerToCompany(workerId: Int, companyId: Int, position: String): Boolean {
+        val company = loadCompany(companyId)
+            ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
+        val worker = loadWorker(workerId)
+            ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
+
+        val resultCompanyWorker = readableDatabase.rawQuery(
+            "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
+            arrayOf(workerId.toString(), companyId.toString())
+        )
+
+        val alreadyExists = resultCompanyWorker.moveToFirst()
+        resultCompanyWorker.close()
+
+        if (alreadyExists)
+            return true // TODO: should this fail?
+
+        val values = ContentValues().apply {
+            put(CompanyWorker.COL_WORKER_ID, workerId)
+            put(CompanyWorker.COL_COMPANY_ID, companyId)
+            put(CompanyWorker.COL_POSITION, position)
+        }
+        val rowId = writableDatabase.insert(CompanyWorker.TABLE_NAME, null, values).toInt()
+
+        if (rowId < 0) {
+            throw SQLException("Failed to assign worker $workerId to company $companyId!")
+        }
+
+        return true
+    }
 }

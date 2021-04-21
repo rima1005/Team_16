@@ -10,13 +10,8 @@ import org.junit.runner.RunWith
 import team16.easytracker.database.Contracts.Company as CompanyContract
 import team16.easytracker.database.Contracts.Worker as WorkerContract
 import team16.easytracker.database.DbHelper
-import team16.easytracker.model.Address
-import team16.easytracker.model.Company
-import team16.easytracker.model.Tracking
-import team16.easytracker.model.Worker
 import java.time.LocalDate
 import java.time.LocalDateTime
-
 
 @RunWith(AndroidJUnit4::class)
 class DbHelperTests {
@@ -85,7 +80,8 @@ class DbHelperTests {
     @Test
     fun testReadCompany() {
         val newRowId = insertDummyCompany()
-        val query = "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
+        val query =
+            "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
         val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
         result.moveToFirst()
         val companyName = result.getString(result.getColumnIndexOrThrow(CompanyContract.COL_NAME))
@@ -98,9 +94,11 @@ class DbHelperTests {
         val query = "SELECT * FROM ${WorkerContract.TABLE_NAME} WHERE ${WorkerContract.COL_ID} = ?"
         val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
         result.moveToFirst()
-        val workerFirstName = result.getString(result.getColumnIndexOrThrow(WorkerContract.COL_FIRST_NAME))
+        val workerFirstName =
+            result.getString(result.getColumnIndexOrThrow(WorkerContract.COL_FIRST_NAME))
         assert(workerFirstName == WORKER_DUMMY_FIRST_NAME)
-        val workerLastName = result.getString(result.getColumnIndexOrThrow(WorkerContract.COL_LAST_NAME))
+        val workerLastName =
+            result.getString(result.getColumnIndexOrThrow(WorkerContract.COL_LAST_NAME))
         assert(workerLastName == WORKER_DUMMY_LAST_NAME)
     }
 
@@ -110,7 +108,8 @@ class DbHelperTests {
         val inputStream = assetManager.open("dbtest1.sql")
         dbHelper.executeSQLFile(writableDb, inputStream)
         val newRowId = insertDummyCompany()
-        val query = "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
+        val query =
+            "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
         val result = readableDb.rawQuery(query, arrayOf(newRowId.toString()))
         result.moveToFirst()
         val columnIndex = result.getColumnIndex("test1")
@@ -120,17 +119,32 @@ class DbHelperTests {
     @Test
     fun testCompanyModel() {
         val dummyAddressId = 69;
-        val id = Company.save(COMPANY_DUMMY_NAME, dummyAddressId)
-        val company = Company.load(id)
-        assert(company.name == COMPANY_DUMMY_NAME)
-        assert(company.addressId == dummyAddressId)
+        val id = dbHelper.saveCompany(COMPANY_DUMMY_NAME, dummyAddressId)
+        val company = dbHelper.loadCompany(id)
+        assert(company != null)
+        assert(company?.name == COMPANY_DUMMY_NAME)
+        assert(company?.addressId == dummyAddressId)
     }
 
     @Test
     fun testWorkerModel() {
-        val id = Worker.save(WORKER_DUMMY_FIRST_NAME)
-        val worker = Worker.load(id)
-        assert(worker.firstName == WORKER_DUMMY_FIRST_NAME)
+        val now = LocalDateTime.now().withNano(0)
+        val id = dbHelper.saveWorker(
+            WORKER_DUMMY_FIRST_NAME,
+            WORKER_DUMMY_LAST_NAME,
+            now.toLocalDate(),
+            "",
+            DUMMY_EMAIL,
+            DUMMY_PASSWORD,
+            "",
+            now,
+            1
+        )
+        val worker = dbHelper.loadWorker(id)
+        assert(worker != null)
+        assert(worker?.firstName == WORKER_DUMMY_FIRST_NAME)
+        assert(worker?.dateOfBirth == now.toLocalDate())
+        assert(worker?.createdAt == now)
     }
 
     @Test
@@ -138,8 +152,8 @@ class DbHelperTests {
         val dummyStreet = "TEST"
         val dummyZipCode = "1234"
         val dummyCity = "Graz"
-        val id = Address.save(dummyStreet, dummyZipCode, dummyCity, dbHelper)
-        val address = Address.load(id, dbHelper)
+        val id = dbHelper.saveAddress(dummyStreet, dummyZipCode, dummyCity)
+        val address = dbHelper.loadAddress(id)
         assert(address != null)
         assert(address?.street == dummyStreet)
         assert(address?.zipCode == dummyZipCode)
@@ -149,16 +163,58 @@ class DbHelperTests {
     @Test
     fun testTrackingModel() {
         val dummyName = "TEST"
-        val id = Tracking.save(dummyName)
-        val tracking = Tracking.load(id)
-        assert(tracking.name == dummyName)
+        val now = LocalDateTime.now()
+        val id = dbHelper.saveTracking(dummyName, 1, now, now, "desc", "bluetooth")
+        val tracking = dbHelper.loadTracking(id)
+        assert(tracking != null)
+        assert(tracking?.name == dummyName)
     }
 
     @Test
-    fun testlogin() {
-        val id = dbHelper.saveWorker(WORKER_DUMMY_FIRST_NAME, WORKER_DUMMY_LAST_NAME, LocalDate.now(), "", DUMMY_EMAIL, DUMMY_PASSWORD, "", LocalDateTime.now(), 1)
-        val worker = Worker.login(DUMMY_EMAIL, DUMMY_PASSWORD)
+    fun testLogin() {
+        val id = dbHelper.saveWorker(
+            WORKER_DUMMY_FIRST_NAME,
+            WORKER_DUMMY_LAST_NAME,
+            LocalDate.now(),
+            "",
+            DUMMY_EMAIL,
+            DUMMY_PASSWORD,
+            "",
+            LocalDateTime.now(),
+            1
+        )
+        val worker = dbHelper.loginWorker(DUMMY_EMAIL, DUMMY_PASSWORD)
         assert(worker != null)
         assert(worker?.getId() == id)
+    }
+
+    @Test
+    fun testAddWorkerToCompany() {
+        val workerId = insertDummyWorker().toInt()
+        val companyId = insertDummyCompany().toInt()
+        val success = dbHelper.addWorkerToCompany(workerId, companyId, "pos")
+        assert(success)
+
+        // invalid workerId should throw
+        var exceptionThrown = false
+        try {
+            dbHelper.addWorkerToCompany(-1, companyId, "pos")
+        } catch (e: IllegalArgumentException) {
+            exceptionThrown = true
+        }
+        assert(exceptionThrown)
+
+        // invalid companyId should throw
+        exceptionThrown = false
+        try {
+            dbHelper.addWorkerToCompany(workerId, -1, "pos")
+        } catch (e: IllegalArgumentException) {
+            exceptionThrown = true
+        }
+        assert(exceptionThrown)
+
+        // double insert shouldn't break
+        val doubleInsertSuccess = dbHelper.addWorkerToCompany(workerId, companyId, "pos")
+        assert(doubleInsertSuccess)
     }
 }
