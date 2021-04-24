@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.adarshr.test-logger' version '3.0.0'
 }
 
 android {
