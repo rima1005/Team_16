@@ -43,6 +43,7 @@ private const val SQL_CREATE_ADDRESS =
             "${Address.COL_ZIP_CODE} VARCHAR(16)," +
             "${Address.COL_CITY} VARCHAR(64))"
 
+// TODO: pending flag until worker accepts?
 private const val SQL_CREATE_COMPANY_WORKER =
     "CREATE TABLE IF NOT EXISTS ${CompanyWorker.TABLE_NAME} (" +
             "${CompanyWorker.COL_COMPANY_ID} INTEGER," +
@@ -402,5 +403,16 @@ class DbHelper(context: Context) :
 
         writableDatabase.endTransaction()
         throw SQLException("Failed to set worker $workerId to admin $admin for company $companyId")
+    }
+
+    fun loadWorker(workerEmail: String) : WorkerModel? {
+        val result = readableDatabase.rawQuery(
+            "SELECT ${Worker.COL_ID} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_EMAIL} = ?",
+            arrayOf(workerEmail)
+        )
+        if (!result.moveToFirst())
+            return null
+        val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
+        return loadWorker(workerId)
     }
 }
