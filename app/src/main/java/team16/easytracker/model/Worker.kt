@@ -12,6 +12,7 @@ class Worker(
     val phoneNumber: String,
     val createdAt: LocalDateTime,
     val addressId: Int,
+    val admin: Boolean,
     val position: String? = null,
     val company: Company? = null
 ) {

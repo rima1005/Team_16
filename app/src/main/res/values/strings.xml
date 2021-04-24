@@ -21,6 +21,9 @@
     <string name="register">Register</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="log_in">Log In</string>
+    <string name="create_company">Create Company</string>
+    <string name="company_name">Company Name</string>
+    <string name="company_position">Position</string>
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>

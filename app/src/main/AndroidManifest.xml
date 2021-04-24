@@ -21,6 +21,11 @@
                 <action android:name="android.intent.action.REGISTER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CreateCompanyActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_COMPANY" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
