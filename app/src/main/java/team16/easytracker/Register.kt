@@ -6,8 +6,12 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import team16.easytracker.database.DbHelper
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class Register : AppCompatActivity() {
 
@@ -147,7 +151,24 @@ class Register : AppCompatActivity() {
                         )
 
                     // TODO: Check if username is available in validateUsername
-                    // TODO: Insert new worker into DB and go to next activity
+                    val dbHelper = DbHelper(this)
+
+                    val addressId = dbHelper.saveAddress(street, postCode, city)
+
+                    val workerId = dbHelper.saveWorker(
+                        firstName,
+                        lastName,
+                        LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                        "",
+                        email,
+                        password,
+                        "",
+                        LocalDateTime.now().withNano(0),
+                        1
+                    )
+
+                    val intent = Intent(this, Login::class.java)
+                    startActivity(intent)
                 } else {
                     Log.i("Invalid worker", "The worker is invalid")
                 }
