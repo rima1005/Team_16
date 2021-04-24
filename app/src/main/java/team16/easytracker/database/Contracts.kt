@@ -48,5 +48,6 @@ object Contracts {
         const val COL_COMPANY_ID = "company_id"
         const val COL_WORKER_ID = "worker_id"
         const val COL_POSITION = "position"
+        const val COL_ADMIN = "admin"
     }
 }
