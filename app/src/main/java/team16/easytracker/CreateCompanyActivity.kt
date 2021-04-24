@@ -6,6 +6,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import team16.easytracker.database.DbHelper
+import team16.easytracker.model.Company
 import team16.easytracker.utils.Validator
 
 class CreateCompanyActivity : AppCompatActivity(){
@@ -22,11 +24,12 @@ class CreateCompanyActivity : AppCompatActivity(){
     lateinit var tvErrorStreet : TextView
     lateinit var tvErrorCity : TextView
 
-
+    lateinit var dbHelper : DbHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.createcompanyactivity)
+        dbHelper = DbHelper(this)
 
         etCompanyName = findViewById(R.id.etCompanyName)
         etStreet = findViewById(R.id.etStreet)
@@ -51,16 +54,32 @@ class CreateCompanyActivity : AppCompatActivity(){
 
         resetErrorMessages()
 
-        val errorCompanyName = Validator.validateCompanyName(etCompanyName.text.toString())
+        val companyName = etCompanyName.text.toString()
+        val position = etPosition.text.toString()
+        val zipCode = etZipCode.text.toString()
+        val city = etCity.text.toString()
+        val street = etCity.text.toString()
+
+        var errorOccured = false
+        val errorCompanyName = Validator.validateCompanyName(companyName)
         if (errorCompanyName != "")
         {
+            errorOccured = true
             tvErrorCompanyName.text = errorCompanyName
+            tvErrorCompanyName.visibility = View.VISIBLE
+        }
+
+        val duplicate = dbHelper.companyExists(companyName)
+        if(duplicate) {
+            errorOccured = true
+            tvErrorCompanyName.text = "Company with this name already exists"
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
         val errorPosition = Validator.validatePosition(etPosition.text.toString())
         if (errorPosition != "")
         {
+            errorOccured = true
             tvErrorCompanyPosition.text = errorPosition
             tvErrorCompanyPosition.visibility = View.VISIBLE
         }
@@ -68,6 +87,7 @@ class CreateCompanyActivity : AppCompatActivity(){
         val errorZipCode = Validator.validatePostCode(etZipCode.text.toString())
         if (errorZipCode != "")
         {
+            errorOccured = true
             tvErrorZipCode.text = errorZipCode
             tvErrorZipCode.visibility = View.VISIBLE
         }
@@ -75,6 +95,7 @@ class CreateCompanyActivity : AppCompatActivity(){
         val errorCity = Validator.validateCity(etCity.text.toString())
         if (errorCity != "")
         {
+            errorOccured = true
             tvErrorCity.text = errorCity
             tvErrorCity.visibility = View.VISIBLE
         }
@@ -82,9 +103,20 @@ class CreateCompanyActivity : AppCompatActivity(){
         val errorStreet = Validator.validateStreet(etStreet.text.toString())
         if (errorStreet != "")
         {
+            errorOccured = true
             tvErrorStreet.text = errorStreet
             tvErrorStreet.visibility = View.VISIBLE
         }
+
+        if(errorOccured)
+           return
+
+        // TODO: check for duplicate addresses?
+        val addressId = dbHelper.saveAddress(street, zipCode, city)
+        val companyId = dbHelper.saveCompany(companyName, addressId)
+        val workerId = 0; // TODO: set this from logged in worker
+        dbHelper.addWorkerToCompany(workerId, companyId, position)
+        dbHelper.setCompanyAdmin(workerId, companyId, true)
     }
 
     fun resetErrorMessages() {
