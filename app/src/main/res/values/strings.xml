@@ -2,6 +2,7 @@
     <string name="app_name">EasyTracker</string>
     <string name="btnRegister">Register</string>
     <string name="btnLogin">Login</string>
+    <string name="tfMail">Mail</string>
     <string name="tfName">Name</string>
     <string name="registration">Registration</string>
     <string name="first_name">First Name</string>
@@ -21,6 +22,9 @@
     <string name="register">Register</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="log_in">Log In</string>
+    <string name="email_hint">john.doe@something.com</string>
+    <string name="password_hint">*********</string>
+    <string name="not_registered_yet">Not registered yet?</string>
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>
