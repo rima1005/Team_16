@@ -21,6 +21,14 @@ import java.io.*
 import java.time.*
 import kotlin.IllegalArgumentException
 
+/*
+    TODO: USAGE:
+    In order to update the database schema increment DATABASE_VERSION by 1
+    Create a .sql file in assets with naming oldversion-newversion.sql (e.g. 1-2.sql) which
+    contains your SQL Statement.
+    ATTENTION: Also make sure that you add the SQL-Statement to the onCreate method by either changing
+    the existing statements or executing a new one with db.execSQL()
+ */
 
 private const val SQL_CREATE_COMPANY =
     "CREATE TABLE IF NOT EXISTS ${Company.TABLE_NAME} (" +
@@ -35,11 +43,13 @@ private const val SQL_CREATE_ADDRESS =
             "${Address.COL_ZIP_CODE} VARCHAR(16)," +
             "${Address.COL_CITY} VARCHAR(64))"
 
+// TODO: pending flag until worker accepts?
 private const val SQL_CREATE_COMPANY_WORKER =
     "CREATE TABLE IF NOT EXISTS ${CompanyWorker.TABLE_NAME} (" +
             "${CompanyWorker.COL_COMPANY_ID} INTEGER," +
             "${CompanyWorker.COL_WORKER_ID} INTEGER," +
-            "${CompanyWorker.COL_POSITION} VARCHAR(128))"
+            "${CompanyWorker.COL_POSITION} VARCHAR(128)," +
+            "${CompanyWorker.COL_ADMIN} INTEGER DEFAULT 0)"
 
 private const val SQL_CREATE_TRACKING =
     "CREATE TABLE IF NOT EXISTS ${Tracking.TABLE_NAME} (" +
@@ -101,7 +111,7 @@ class DbHelper(context: Context) :
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "EasyTracker.db"
     }
 
@@ -230,7 +240,7 @@ class DbHelper(context: Context) :
         val addressId = result.getInt(result.getColumnIndex(Worker.COL_ADDRESS_ID))
         var company: CompanyModel? = null
         var position: String? = null
-
+        var admin = false
         result.close();
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ?",
@@ -244,6 +254,8 @@ class DbHelper(context: Context) :
                 throw IllegalArgumentException("CompanyWorker: The Company with ID $companyId does not exist!")
             position =
                 resultCompanyWorker.getString(resultCompanyWorker.getColumnIndex(CompanyWorker.COL_POSITION))
+            admin =
+                resultCompanyWorker.getInt(resultCompanyWorker.getColumnIndex(CompanyWorker.COL_ADMIN)) != 0
         }
         resultCompanyWorker.close()
         return WorkerModel(
@@ -256,6 +268,7 @@ class DbHelper(context: Context) :
             phoneNumber,
             createdAt,
             addressId,
+            admin,
             position,
             company
         );
@@ -339,5 +352,67 @@ class DbHelper(context: Context) :
         }
 
         return true
+    }
+
+    fun companyExists(companyName: String): Boolean {
+        // TODO: case sensitive?
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_NAME} = ?",
+            arrayOf(companyName)
+        )
+        val found = result.moveToFirst()
+        result.close()
+        return found
+    }
+
+    fun setCompanyAdmin(workerId: Int, companyId: Int, admin: Boolean) {
+        val company = loadCompany(companyId)
+            ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
+        val worker = loadWorker(workerId)
+            ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
+
+        val resultCompanyWorker = readableDatabase.rawQuery(
+            "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
+            arrayOf(workerId.toString(), companyId.toString())
+        )
+
+        val alreadyExists = resultCompanyWorker.moveToFirst()
+        resultCompanyWorker.close()
+
+        if (!alreadyExists)
+            throw IllegalArgumentException("Worker $workerId does not work at company $companyId!")
+
+        val adminInt = if (admin) 1 else 0
+
+        val values = ContentValues().apply {
+            put(CompanyWorker.COL_ADMIN, adminInt)
+        }
+
+        writableDatabase.beginTransaction()
+        val rowsAffected = writableDatabase.update(
+            CompanyWorker.TABLE_NAME, values,
+            "${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
+            arrayOf(workerId.toString(), companyId.toString())
+        )
+
+        if (rowsAffected == 1) {
+            writableDatabase.setTransactionSuccessful()
+            writableDatabase.endTransaction()
+            return
+        }
+
+        writableDatabase.endTransaction()
+        throw SQLException("Failed to set worker $workerId to admin $admin for company $companyId")
+    }
+
+    fun loadWorker(workerEmail: String) : WorkerModel? {
+        val result = readableDatabase.rawQuery(
+            "SELECT ${Worker.COL_ID} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_EMAIL} = ?",
+            arrayOf(workerEmail)
+        )
+        if (!result.moveToFirst())
+            return null
+        val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
+        return loadWorker(workerId)
     }
 }

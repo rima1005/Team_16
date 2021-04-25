@@ -32,6 +32,14 @@
     <string name="not_registered_yet">Not registered yet?</string>
     <string name="show_trackings">Show Trackings</string>
     <string name="my_profile">My Profile</string>
+    <string name="create_company">Create Company</string>
+    <string name="company_name">Company Name</string>
+    <string name="company_position">Position</string>
+    <string name="example_email">example@example.com</string>
+    <string name="add_as_administrator">Add as administrator</string>
+    <string name="add_worker">Add Employee</string>
+    <string name="worker_email">Worker Email</string>
+    <string name="employee_position">Employee Position</string>
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>

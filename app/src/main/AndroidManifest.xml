@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EasyTracker">
+        <activity android:name=".CompanyAdminActivity"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,6 +32,11 @@
         <activity android:name=".Home">
             <intent-filter>
                 <action android:name="android.intent.action.DASHBOARD" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".CreateCompanyActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_COMPANY" />
             </intent-filter>
         </activity>
     </application>

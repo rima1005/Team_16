@@ -1,11 +1,16 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.adarshr.test-logger' version '3.0.0'
 }
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
+
+    lintOptions {
+        abortOnError false
+    }
 
     defaultConfig {
         applicationId "team16.easytracker"

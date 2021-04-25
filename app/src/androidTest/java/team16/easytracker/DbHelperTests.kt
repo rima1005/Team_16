@@ -194,6 +194,10 @@ class DbHelperTests {
         val companyId = insertDummyCompany().toInt()
         val success = dbHelper.addWorkerToCompany(workerId, companyId, "pos")
         assert(success)
+        val worker = dbHelper.loadWorker(workerId)
+        assert(worker?.company != null)
+        assert(worker?.position != null)
+        assert(worker?.admin == false)
 
         // invalid workerId should throw
         var exceptionThrown = false
@@ -216,5 +220,29 @@ class DbHelperTests {
         // double insert shouldn't break
         val doubleInsertSuccess = dbHelper.addWorkerToCompany(workerId, companyId, "pos")
         assert(doubleInsertSuccess)
+    }
+
+    @Test
+    fun testCompanyExists() {
+        insertDummyCompany()
+        assert(dbHelper.companyExists(COMPANY_DUMMY_NAME))
+        assert(!dbHelper.companyExists(""))
+    }
+
+    @Test
+    fun testSetCompanyAdmin() {
+        val companyId = insertDummyCompany().toInt()
+        val workerId = insertDummyWorker().toInt()
+        dbHelper.addWorkerToCompany(workerId, companyId, "pos")
+
+        // admin should be false now (default)
+
+        dbHelper.setCompanyAdmin(workerId, companyId, true)
+        val adminWorker = dbHelper.loadWorker(workerId)
+        assert(adminWorker?.admin == true)
+
+        dbHelper.setCompanyAdmin(workerId, companyId, false)
+        val nonAdminWorker = dbHelper.loadWorker(workerId)
+        assert(nonAdminWorker?.admin == false)
     }
 }
