@@ -1,10 +1,16 @@
 <resources>
+    <!-- General Strings -->
     <string name="app_name">EasyTracker</string>
-    <string name="btnRegister">Register</string>
-    <string name="btnLogin">Login</string>
-    <string name="tfMail">Mail</string>
-    <string name="tfName">Name</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="mail">Mail</string>
+    <string name="name">Name</string>
+    <string name="worker">Worker</string>
+    <string name="start_tracking">Start Tracking</string>
+    <string name="create_tracking">Create Tracking</string>
     <string name="registration">Registration</string>
+
+    <!-- Registration Form -->
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="email">Email</string>
@@ -19,16 +25,22 @@
     <string name="street">Street</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="register">Register</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="log_in">Log In</string>
     <string name="email_hint">john.doe@something.com</string>
     <string name="password_hint">*********</string>
     <string name="not_registered_yet">Not registered yet?</string>
+    <string name="show_trackings">Show Trackings</string>
+    <string name="my_profile">My Profile</string>
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>
         <item>Male</item>
         <item>Other</item>
     </string-array>
+
+    <!-- Home Activity Fragments -->
+    <string name="profile_fragment">Hello profile fragment</string>
+    <string name="trackings_fragment">Hello trackings fragment</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

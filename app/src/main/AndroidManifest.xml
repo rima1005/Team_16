@@ -28,6 +28,11 @@
                 <action android:name="android.intent.action.REGISTER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Home">
+            <intent-filter>
+                <action android:name="android.intent.action.DASHBOARD" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
