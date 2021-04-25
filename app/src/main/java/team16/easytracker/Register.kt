@@ -8,8 +8,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -154,10 +152,10 @@ class Register : AppCompatActivity() {
                 firstName,
                 lastName,
                 LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                "",
+                title,
                 email,
                 password,
-                "",
+                phonePrefix + phoneNumber,
                 LocalDateTime.now().withNano(0),
                 1
             )
