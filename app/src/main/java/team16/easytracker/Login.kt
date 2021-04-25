@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import team16.easytracker.database.DbHelper
 
 class Login : AppCompatActivity() {
 
@@ -40,7 +41,7 @@ class Login : AppCompatActivity() {
         tfMail = findViewById<EditText>(R.id.etEmail)
         tfPassword = findViewById<EditText>(R.id.etPassword)
 
-        loginMap = mapOf("test" to "123", "user1" to "1", "user2" to "password")
+        loginMap = mapOf("test@test.at" to "123", "user1" to "1", "user2" to "password")
 
         btnLogin.setOnClickListener(loginListener)
 
@@ -62,11 +63,22 @@ class Login : AppCompatActivity() {
                 val validEmail = validateEmail(email)
                 val validPassword = validatePassword(password)
 
-                if(validEmail && validPassword){
+                Log.i("Data", "Email: " + email + ", PW: " + password)
+
+                if (validEmail && validPassword) {
                     Log.i("Valid worker", "The worker is valid: " +
                     "Email: " + email + "," +
                     "Password: " + password + ",")
-                } else{
+
+                    val dbHelper = DbHelper(this);
+
+                    val worker = dbHelper.loginWorker(email, password)
+                    Log.i("Login", "Worker: " + worker?.toString())
+                    if (worker != null) {
+                        val intent = Intent(this, Home::class.java)
+                        startActivity(intent)
+                    }
+                } else {
                     Log.i("Invalid worker", "The worker is invalid")
                 }
             }
