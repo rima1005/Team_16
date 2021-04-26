@@ -74,6 +74,9 @@ class LoginActivity : AppCompatActivity() {
                     if (worker != null) {
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
+                    } else {
+                        tvErrorPassword.text = "Invalid email or password"
+                        tvErrorPassword.visibility = View.VISIBLE
                     }
                 } else {
                     Log.i("Invalid worker", "The worker is invalid")
