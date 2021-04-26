@@ -8,13 +8,11 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class Register : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
 
     lateinit var etTitle : EditText
     lateinit var etFirstName : EditText
@@ -85,13 +83,13 @@ class Register : AppCompatActivity() {
 
         val genders = resources.getStringArray(R.array.genders)
         val adapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_dropdown_item, genders)
+                android.R.layout.simple_spinner_dropdown_item, genders)
         spGender.adapter = adapter
 
         btnRegistration.setOnClickListener { registerWorker() }
 
         tvGoToLogin.setOnClickListener {
-            val intent = Intent(this, Login::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
@@ -127,8 +125,8 @@ class Register : AppCompatActivity() {
         val validPassword = validatePassword(password)
 
         if (validTitle && validFirstName && validLastName && validEmail && validDateOfBirth &&
-            validPhonePrefix && validPhoneNumber && validPostCode && validCity &&
-            validStreet && validUsername && validPassword) {
+                validPhonePrefix && validPhoneNumber && validPostCode && validCity &&
+                validStreet && validUsername && validPassword) {
 
             Log.i("Valid Worker", "The worker is valid: " +
                     "Gender: " + gender + ", " +
@@ -151,18 +149,18 @@ class Register : AppCompatActivity() {
             val addressId = dbHelper.saveAddress(street, postCode, city)
 
             val workerId = dbHelper.saveWorker(
-                firstName,
-                lastName,
-                LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                "",
-                email,
-                password,
-                "",
-                LocalDateTime.now().withNano(0),
-                1
+                    firstName,
+                    lastName,
+                    LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    title,
+                    email,
+                    password,
+                    phonePrefix + phoneNumber,
+                    LocalDateTime.now().withNano(0),
+                    1
             )
 
-            val intent = Intent(this, Login::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         } else {
             Log.i("Invalid worker", "The worker is invalid")

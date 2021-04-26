@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import team16.easytracker.database.DbHelper
 
-class Login : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     lateinit var tfMail : TextView
     lateinit var tfPassword : TextView
@@ -46,7 +46,7 @@ class Login : AppCompatActivity() {
         btnLogin.setOnClickListener(loginListener)
 
         tvGoToRegister.setOnClickListener {
-            val intent = Intent(this, Register::class.java)
+            val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
     }
@@ -75,7 +75,7 @@ class Login : AppCompatActivity() {
                     val worker = dbHelper.loginWorker(email, password)
                     Log.i("Login", "Worker: " + worker?.toString())
                     if (worker != null) {
-                        val intent = Intent(this, Home::class.java)
+                        val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                     }
                 } else {
