@@ -85,19 +85,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun readinputvals(view : View) {
-        val email = tfMail.text.toString()
-        val password : String = tfPassword.text.toString()
-        val userPW = loginMap.get(email)
-        if(userPW == password) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-        else{
-            Toast.makeText(applicationContext, "This user does not exist!", Toast.LENGTH_LONG).show()
-        }
-    }
-
     fun validateEmail(email: String) : Boolean {
         if (email.isEmpty()) {
             tvErrorEmail.text = "The email is required"
