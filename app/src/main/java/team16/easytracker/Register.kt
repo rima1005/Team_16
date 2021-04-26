@@ -83,7 +83,7 @@ class Register : AppCompatActivity() {
 
         val genders = resources.getStringArray(R.array.genders)
         val adapter = ArrayAdapter(this,
-            android.R.layout.simple_spinner_dropdown_item, genders)
+                android.R.layout.simple_spinner_dropdown_item, genders)
         spGender.adapter = adapter
 
         btnRegistration.setOnClickListener { registerWorker() }
@@ -142,22 +142,22 @@ class Register : AppCompatActivity() {
                     "Street: " + street + ", " +
                     "Username: " + username + ", " +
                     "Password: " + password
-                )
+            )
 
             val dbHelper = DbHelper(this)
 
             val addressId = dbHelper.saveAddress(street, postCode, city)
 
             val workerId = dbHelper.saveWorker(
-                firstName,
-                lastName,
-                LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
-                title,
-                email,
-                password,
-                phonePrefix + phoneNumber,
-                LocalDateTime.now().withNano(0),
-                1
+                    firstName,
+                    lastName,
+                    LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+                    title,
+                    email,
+                    password,
+                    phonePrefix + phoneNumber,
+                    LocalDateTime.now().withNano(0),
+                    1
             )
 
             val intent = Intent(this, Login::class.java)
