@@ -25,6 +25,7 @@ class WorkerRegistrationTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(RegisterActivity::class.java)
 
+    @Ignore
     @Test
     fun invalidRegisterWithEmptyInputData() {
         // Error textviews should not be visible before clicking registration button
@@ -151,6 +152,7 @@ class WorkerRegistrationTest {
         Thread.sleep(1000)
     }
 
+    @Ignore
     @Test
     fun invalidRegister_titleContainsNumber() {
         onView(withId(R.id.tvErrorTitle))
@@ -171,6 +173,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The title must not contain numbers")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_firstNameContainsNumber() {
         onView(withId(R.id.etLastName))
@@ -193,6 +196,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The first name must not contain numbers")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_firstNameTooShort() {
         onView(withId(R.id.etLastName))
@@ -215,6 +219,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The first name must be between 2 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_firstNameTooLong() {
         onView(withId(R.id.etLastName))
@@ -237,6 +242,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The first name must be between 2 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_lastNameContainsNumber() {
         onView(withId(R.id.etEmail))
@@ -259,6 +265,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The last name must not contain numbers")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_lastNameTooShort() {
         onView(withId(R.id.etEmail))
@@ -281,6 +288,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The last name must be between 2 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_lastNameTooLong() {
         onView(withId(R.id.etEmail))
@@ -326,6 +334,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The email must be between 5 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_emailTooLong() {
         onView(withId(R.id.etDateOfBirth))
@@ -348,6 +357,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The email must be between 5 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_emailNotValid() {
         onView(withId(R.id.etDateOfBirth))
@@ -370,6 +380,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The email must be a valid email address")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_dateOfBirthNotValid() {
         onView(withId(R.id.etPhonePrefix))
@@ -438,6 +449,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The phone prefix must be between 2 and 3 digits")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_phonePrefixTooLong() {
         onView(withId(R.id.etPostCode))
@@ -460,6 +472,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The phone prefix must be between 2 and 3 digits")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_phoneNumberContainsLetter() {
         onView(withId(R.id.etPostCode))
@@ -505,6 +518,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The phone number must be between 2 and 12 digits")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_phoneNumberTooLong() {
         onView(withId(R.id.etPostCode))
@@ -573,6 +587,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The post code must be between 4 and 10 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_cityContainsNumber() {
         onView(withId(R.id.etStreet))
@@ -618,6 +633,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The city must be between 2 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun invalidRegister_cityTooLong() {
         onView(withId(R.id.etStreet))
@@ -686,6 +702,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("The password must have at least 8 characters")))
     }
 
+    @Ignore
     @Test
     fun registerWithValidInputData() {
         // Error textviews should not be visible before clicking registration button
