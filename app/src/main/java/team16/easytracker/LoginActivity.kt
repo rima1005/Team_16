@@ -13,7 +13,6 @@ class LoginActivity : AppCompatActivity() {
 
     lateinit var tfMail : TextView
     lateinit var tfPassword : TextView
-    lateinit var loginMap : Map<String, String>
     lateinit var btnLogin : Button
 
     lateinit var etPassword : EditText
@@ -40,8 +39,6 @@ class LoginActivity : AppCompatActivity() {
 
         tfMail = findViewById<EditText>(R.id.etEmail)
         tfPassword = findViewById<EditText>(R.id.etPassword)
-
-        loginMap = mapOf("test@test.at" to "123", "user1" to "1", "user2" to "password")
 
         btnLogin.setOnClickListener(loginListener)
 
@@ -95,8 +92,6 @@ class LoginActivity : AppCompatActivity() {
             tvErrorEmail.visibility = View.VISIBLE
             return false
         }
-        //TODO Datenbankabfrage --> email in der database vorhanden
-
         return true
     }
 
@@ -106,8 +101,6 @@ class LoginActivity : AppCompatActivity() {
             tvErrorPassword.visibility = View.VISIBLE
             return false
         }
-        //TODO Datenbankabfrage --> password in der database vorhanden
-
         return true
     }
 
