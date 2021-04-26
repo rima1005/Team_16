@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 class WorkerRegistrationTest {
 
     @get:Rule
-    val activityRule = ActivityScenarioRule(Register::class.java)
+    val activityRule = ActivityScenarioRule(RegisterActivity::class.java)
 
     @Test
     fun invalidRegisterWithEmptyInputData() {
@@ -773,7 +773,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText("CaTrObAt")))
 
         onView(withId(R.id.btnRegistration))
-                .perform(click())
+                .perform(scrollTo(), click())
     }
 
 }

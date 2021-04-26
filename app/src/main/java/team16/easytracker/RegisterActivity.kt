@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class Register : AppCompatActivity() {
+class RegisterActivity : AppCompatActivity() {
 
     lateinit var etTitle : EditText
     lateinit var etFirstName : EditText
@@ -89,7 +89,7 @@ class Register : AppCompatActivity() {
         btnRegistration.setOnClickListener { registerWorker() }
 
         tvGoToLogin.setOnClickListener {
-            val intent = Intent(this, Login::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
     }
@@ -160,7 +160,7 @@ class Register : AppCompatActivity() {
                     1
             )
 
-            val intent = Intent(this, Login::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         } else {
             Log.i("Invalid worker", "The worker is invalid")
