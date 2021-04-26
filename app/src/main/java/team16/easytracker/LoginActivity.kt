@@ -13,7 +13,6 @@ class LoginActivity : AppCompatActivity() {
 
     lateinit var tfMail : TextView
     lateinit var tfPassword : TextView
-    lateinit var loginMap : Map<String, String>
     lateinit var btnLogin : Button
 
     lateinit var etPassword : EditText
@@ -40,8 +39,6 @@ class LoginActivity : AppCompatActivity() {
 
         tfMail = findViewById<EditText>(R.id.etEmail)
         tfPassword = findViewById<EditText>(R.id.etPassword)
-
-        loginMap = mapOf("test@test.at" to "123", "user1" to "1", "user2" to "password")
 
         btnLogin.setOnClickListener(loginListener)
 
@@ -77,24 +74,14 @@ class LoginActivity : AppCompatActivity() {
                     if (worker != null) {
                         val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
+                    } else {
+                        tvErrorPassword.text = "Invalid email or password"
+                        tvErrorPassword.visibility = View.VISIBLE
                     }
                 } else {
                     Log.i("Invalid worker", "The worker is invalid")
                 }
             }
-        }
-    }
-
-    fun readinputvals(view : View) {
-        val email = tfMail.text.toString()
-        val password : String = tfPassword.text.toString()
-        val userPW = loginMap.get(email)
-        if(userPW == password) {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-        else{
-            Toast.makeText(applicationContext, "This user does not exist!", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -108,8 +95,6 @@ class LoginActivity : AppCompatActivity() {
             tvErrorEmail.visibility = View.VISIBLE
             return false
         }
-        //TODO Datenbankabfrage --> email in der database vorhanden
-
         return true
     }
 
@@ -119,8 +104,6 @@ class LoginActivity : AppCompatActivity() {
             tvErrorPassword.visibility = View.VISIBLE
             return false
         }
-        //TODO Datenbankabfrage --> password in der database vorhanden
-
         return true
     }
 
