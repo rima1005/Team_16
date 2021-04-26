@@ -4,28 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#168AAD"
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnLogin"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btnRegister"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/custom_button"
+        android:text="@string/login"
+        android:textColor="#168AAD"
+        android:textSize="18sp"
+        app:backgroundTint="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegister"
+        tools:layout_editor_absoluteX="0dp" />
 
     <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btnLogin"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="60dp"
+        android:background="@drawable/custom_button"
+        android:text="@string/register"
+        android:textColor="#168AAD"
+        android:textSize="18sp"
+        app:backgroundTint="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/tvStartScreenEasyTracker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_horizontal"
+        android:text="EasyTracker"
+        android:textColor="#ffffff"
+        android:textSize="40sp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.603" />
+        tools:layout_editor_absoluteX="9dp" />
+
+    <TextView
+        android:id="@+id/tvStartScreenDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="40dp"
+        android:fontFamily="sans-serif-light"
+        android:justificationMode="inter_word"
+        android:lineSpacingExtra="4sp"
+        android:text="EasyTracker tracks your working time automatically. Just connect to your working device via Bluetooth and a timer in the app will start. You can add, edit and delete entries to build your timesheet, which can then be exported for your authorities, accountants or your boss."
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/tvStartScreenEasyTracker"
+        tools:layout_editor_absoluteX="10dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
