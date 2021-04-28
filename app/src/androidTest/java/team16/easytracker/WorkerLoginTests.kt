@@ -25,7 +25,6 @@ import java.time.format.DateTimeFormatter
 class WorkerLoginTests {
 
     val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    lateinit var dbHelper: DbHelper
     lateinit var writableDb: SQLiteDatabase
     lateinit var readable: SQLiteDatabase
 
@@ -43,9 +42,8 @@ class WorkerLoginTests {
 
     @Before
     fun init() {
-        dbHelper = DbHelper(appContext)
-        writableDb = dbHelper.writableDatabase
-        readable = dbHelper.readableDatabase
+        writableDb = DbHelper.writableDatabase
+        readable = DbHelper.readableDatabase
         writableDb.beginTransaction()
     }
 
@@ -68,9 +66,9 @@ class WorkerLoginTests {
             put(Contracts.Worker.COL_ADDRESS_ID, 1)
         }*/
 
-        val addressId = dbHelper.saveAddress(street, postCode, city)
+        val addressId = DbHelper.saveAddress(street, postCode, city)
 
-        val workerId = dbHelper.saveWorker(
+        val workerId = DbHelper.saveWorker(
                 firstName,
                 lastName,
                 LocalDate.now(),
@@ -174,6 +172,15 @@ class WorkerLoginTests {
                 .check(matches(isDisplayed()))
                 .check(matches(withText("Invalid email or password")))
 
+    }
+
+    @Test
+    fun setGlobalWorkerAfterLogin()
+    {
+        val result = insertDummyWorker()
+        DbHelper.loginWorker("test.test@test.at", "securePassword")
+        assert(MyApplication.loggedInWorker != null)
+        assert(MyApplication.loggedInWorker?.firstName == firstName)
     }
 
 //TODO Refactoring dbHelper singleton pattern
