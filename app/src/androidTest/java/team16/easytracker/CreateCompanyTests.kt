@@ -1,17 +1,13 @@
 package team16.easytracker
 
 import android.app.Activity
-import android.database.sqlite.SQLiteDatabase
-import androidx.fragment.app.Fragment
+import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
@@ -19,26 +15,9 @@ import org.hamcrest.CoreMatchers
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import team16.easytracker.database.DbHelper
 
 @RunWith(AndroidJUnit4::class)
 class CreateCompanyTests {
-    val appContext = getInstrumentation().targetContext
-    lateinit var dbHelper: DbHelper
-    lateinit var writableDb: SQLiteDatabase
-    lateinit var readable: SQLiteDatabase
-
-    val firstName = "Max"
-    val lastName = "Mustermann"
-    val email = "test.test@test.at"
-    val password = "securePassword"
-    val dateOfBirth = "11.06.1999"
-    val street = "straße 1"
-    val postCode = "0989"
-    val city = "graz"
-    val title = ""
-    val phoneNumber = "43660151625"
-    val phonePrefix = "43"
 
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
@@ -64,7 +43,7 @@ class CreateCompanyTests {
     }
 
     @Test
-    fun invalidRegisterWithEmptyInputData() {
+    fun errorsHiddenOnStart() {
         openFragment()
         // Error textviews should not be visible before clicking registration button
         onView(withId(R.id.tvErrorCompanyName))
@@ -81,41 +60,142 @@ class CreateCompanyTests {
 
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(CoreMatchers.not(isDisplayed())))
-
-
-        // Click registration button
-        onView(withId(R.id.btnCreateCompany))
-                .perform(ViewActions.scrollTo(), ViewActions.click())
-
-        // Most error textviews should now be visible
-        onView(withId(R.id.etTitle))
-                .perform(ViewActions.scrollTo())
-        onView(withId(R.id.tvErrorGender))
-                .check(matches(CoreMatchers.not(isDisplayed())))
-
-        onView(withId(R.id.etFirstName))
-                .perform(ViewActions.scrollTo())
-        onView(withId(R.id.tvErrorTitle))
-                .check(matches(CoreMatchers.not(isDisplayed())))
-
-        onView(withId(R.id.etLastName))
-                .perform(ViewActions.scrollTo())
-        onView(withId(R.id.tvErrorFirstName))
-                .check(matches(isDisplayed()))
-                .check(matches(ViewMatchers.withText("The first name is required")))
-
-        onView(withId(R.id.etEmail))
-                .perform(ViewActions.scrollTo())
-        onView(withId(R.id.tvErrorLastName))
-                .check(matches(isDisplayed()))
-                .check(matches(ViewMatchers.withText("The last name is required")))
-
-        Thread.sleep(1000)
     }
 
     @Test
-    fun invalidInputData() {
+    fun emptyInputData() {
 
+        openFragment()
+
+        // Click registration button without any data entered
+        onView(withId(R.id.btnCreateCompany))
+                .perform(ViewActions.scrollTo(), ViewActions.click())
+
+        // TODO: replace matcher texts with string resources
+
+        // Most error textviews should now be visible
+        onView(withId(R.id.tvErrorCompanyName))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The company name is required")))
+
+        onView(withId(R.id.tvErrorCompanyPosition))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The position is required")))
+
+        onView(withId(R.id.tvErrorPostCode))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The post code is required")))
+
+        onView(withId(R.id.tvErrorCity))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The city is required")))
+
+        onView(withId(R.id.tvErrorStreet))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The street is required")))
+    }
+
+    @Test
+    fun invalidInputDataTooShort() {
+        openFragment()
+
+        // type too short company name
+        onView(withId(R.id.etCompanyName))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+
+        // type too short company position
+        onView(withId(R.id.etCompanyPosition))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+
+        // type too short postal code
+        onView(withId(R.id.etPostCode))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+
+        // type too short city
+        onView(withId(R.id.etCity))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+
+        // type Street without nr/street name (only 1 word)
+        onView(withId(R.id.etStreet))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("Street"))
+
+        closeSoftKeyboard()
+
+        // Click registration button
+        val btn = withId(R.id.btnCreateCompany)
+        onView(btn).perform(ViewActions.scrollTo(), ViewActions.click())
+
+        // check if error messages are correct
+        // TODO: replace with string resources
+        onView(withId(R.id.tvErrorCompanyName))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The company name must be between 2 and 255 characters")))
+
+        onView(withId(R.id.tvErrorCompanyPosition))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The position must be between 2 and 255 characters")))
+
+        onView(withId(R.id.tvErrorPostCode))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The post code must be between 4 and 10 characters")))
+
+        onView(withId(R.id.tvErrorCity))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The city must be between 2 and 255 characters")))
+
+        onView(withId(R.id.tvErrorStreet))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The street must contain a street name and a street number")))
+
+    }
+
+    @Test
+    fun invalidInputDataTooLong() {
+        openFragment()
+
+        // TODO: add as variable to Validator?
+        val characterLimit = 255
+        val characterLimitPostalCode = 10
+
+        // type too long company name
+        onView(withId(R.id.etCompanyName))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimit + 1)))
+
+        // type too long company position
+        onView(withId(R.id.etCompanyPosition))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimit + 1)))
+
+        // type too long postal code
+        onView(withId(R.id.etPostCode))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimitPostalCode + 1)))
+
+        // type too long city
+        onView(withId(R.id.etCity))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimit + 1)))
+
+        closeSoftKeyboard()
+
+        // Click registration button
+        val btn = withId(R.id.btnCreateCompany)
+        onView(btn).perform(ViewActions.scrollTo(), ViewActions.click())
+
+        // check if error messages are correct
+        // TODO: replace with string resources
+        onView(withId(R.id.tvErrorCompanyName))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The company name must be between 2 and 255 characters")))
+
+        onView(withId(R.id.tvErrorCompanyPosition))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The position must be between 2 and 255 characters")))
+
+        onView(withId(R.id.tvErrorPostCode))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The post code must be between 4 and 10 characters")))
+
+        onView(withId(R.id.tvErrorCity))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The city must be between 2 and 255 characters")))
     }
 
     @Test
