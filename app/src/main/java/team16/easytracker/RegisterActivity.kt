@@ -144,11 +144,10 @@ class RegisterActivity : AppCompatActivity() {
                     "Password: " + password
             )
 
-            val dbHelper = DbHelper(this)
 
-            val addressId = dbHelper.saveAddress(street, postCode, city)
+            val addressId = DbHelper.saveAddress(street, postCode, city)
 
-            val workerId = dbHelper.saveWorker(
+            val workerId = DbHelper.saveWorker(
                     firstName,
                     lastName,
                     LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
