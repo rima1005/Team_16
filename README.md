@@ -19,3 +19,7 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 | **Developer**     | Mattia Zoggia       |
 
 ### Implemented Features
+
+EasyTracker-124 Worker Registration
+EasyTracker-125 Company Login
+EasyTracker-126 Worker Login
