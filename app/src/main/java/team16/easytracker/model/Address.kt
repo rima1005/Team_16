@@ -11,11 +11,11 @@ class Address(
 ) {
     companion object {
         fun load(id: Int, dbHelper: DbHelper): Address? {
-            return dbHelper.loadAddress(id)
+            return DbHelper.loadAddress(id)
         }
 
         fun save(street: String, zipCode: String, city: String, dbHelper: DbHelper): Int {
-            return dbHelper.saveAddress(street, zipCode, city)
+            return DbHelper.saveAddress(street, zipCode, city)
         }
     }
 }

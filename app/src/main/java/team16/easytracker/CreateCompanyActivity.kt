@@ -24,12 +24,9 @@ class CreateCompanyActivity : AppCompatActivity(){
     lateinit var tvErrorStreet : TextView
     lateinit var tvErrorCity : TextView
 
-    lateinit var dbHelper : DbHelper
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.createcompanyactivity)
-        dbHelper = DbHelper(this)
 
         etCompanyName = findViewById(R.id.etCompanyName)
         etStreet = findViewById(R.id.etStreet)
@@ -69,7 +66,7 @@ class CreateCompanyActivity : AppCompatActivity(){
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
-        val duplicate = dbHelper.companyExists(companyName)
+        val duplicate = DbHelper.companyExists(companyName)
         if(duplicate) {
             errorOccured = true
             tvErrorCompanyName.text = "Company with this name already exists"
@@ -112,11 +109,15 @@ class CreateCompanyActivity : AppCompatActivity(){
            return
 
         // TODO: check for duplicate addresses?
-        val addressId = dbHelper.saveAddress(street, zipCode, city)
-        val companyId = dbHelper.saveCompany(companyName, addressId)
-        val workerId = 0; // TODO: set this from logged in worker
-        dbHelper.addWorkerToCompany(workerId, companyId, position)
-        dbHelper.setCompanyAdmin(workerId, companyId, true)
+        val addressId = DbHelper.saveAddress(street, zipCode, city)
+        val companyId = DbHelper.saveCompany(companyName, addressId)
+        val workerId = MyApplication.loggedInWorker?.getId(); // TODO: set this from logged in worker
+        if(workerId != null)
+        {
+            DbHelper.addWorkerToCompany(workerId, companyId, position)
+            DbHelper.setCompanyAdmin(workerId, companyId, true)
+        }
+
     }
 
     fun resetErrorMessages() {
