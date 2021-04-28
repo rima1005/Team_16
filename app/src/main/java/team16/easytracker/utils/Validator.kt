@@ -175,5 +175,21 @@ class Validator {
 
             return ""
         }
+
+        fun validateDate(date: String, required: Boolean = false) : String {
+            return ""
+        }
+
+        fun validateRequiredDate(date: String) : String {
+            return validateDate(date, true)
+        }
+
+        fun validateTime(time: String, required: Boolean = false) : String {
+            return ""
+        }
+
+        fun validateRequiredTime(time: String) : String {
+            return validateTime(time, true)
+        }
     }
 }
