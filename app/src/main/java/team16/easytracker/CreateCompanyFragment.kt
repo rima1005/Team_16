@@ -1,17 +1,15 @@
 package team16.easytracker
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import team16.easytracker.database.DbHelper
-import team16.easytracker.model.Company
 import team16.easytracker.utils.Validator
 
-class createCompany : Fragment(R.layout.fragment_create_company) {
+class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
     lateinit var etCompanyName: EditText
     lateinit var etStreet: EditText
     lateinit var etZipCode: EditText
@@ -21,36 +19,36 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
 
     lateinit var tvErrorCompanyName: TextView
     lateinit var tvErrorCompanyPosition: TextView
-    lateinit var tvErrorZipCode : TextView
-    lateinit var tvErrorStreet : TextView
-    lateinit var tvErrorCity : TextView
+    lateinit var tvErrorZipCode: TextView
+    lateinit var tvErrorStreet: TextView
+    lateinit var tvErrorCity: TextView
 
-    lateinit var dbHelper : DbHelper
+    lateinit var dbHelper: DbHelper
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
         dbHelper = DbHelper(activity!!)
 
-        etCompanyName = getView()?.findViewById(R.id.etCompanyName)!!
-        etStreet = getView()?.findViewById(R.id.etStreet)!!
-        etZipCode = getView()?.findViewById(R.id.etPostCode)!!
-        etCity = getView()?.findViewById(R.id.etCity)!!
-        etPosition = getView()?.findViewById(R.id.etCompanyPosition)!!
-        btnCreateCompany = getView()?.findViewById(R.id.btnCreateCompany)!!
+        val fragmentView = view!!
 
-        tvErrorCompanyName = getView()?.findViewById(R.id.tvErrorCompanyName)!!
-        tvErrorCompanyPosition = getView()?.findViewById(R.id.tvErrorCompanyPosition)!!
-        tvErrorZipCode = getView()?.findViewById(R.id.tvErrorPostCode)!!
-        tvErrorStreet = getView()?.findViewById(R.id.tvErrorStreet)!!
-        tvErrorCity = getView()?.findViewById(R.id.tvErrorCity)!!
+        etCompanyName = fragmentView.findViewById(R.id.etCompanyName)
+        etStreet = fragmentView.findViewById(R.id.etStreet)
+        etZipCode = fragmentView.findViewById(R.id.etPostCode)
+        etCity = fragmentView.findViewById(R.id.etCity)
+        etPosition = fragmentView.findViewById(R.id.etCompanyPosition)
+        btnCreateCompany = fragmentView.findViewById(R.id.btnCreateCompany)
 
+        tvErrorCompanyName = fragmentView.findViewById(R.id.tvErrorCompanyName)
+        tvErrorCompanyPosition = fragmentView.findViewById(R.id.tvErrorCompanyPosition)
+        tvErrorZipCode = fragmentView.findViewById(R.id.tvErrorPostCode)
+        tvErrorStreet = fragmentView.findViewById(R.id.tvErrorStreet)
+        tvErrorCity = fragmentView.findViewById(R.id.tvErrorCity)
 
         btnCreateCompany.setOnClickListener { createCompany() }
-
-
     }
 
-    fun createCompany(){
+    private fun createCompany() {
 
         resetErrorMessages()
 
@@ -62,64 +60,59 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
 
         var errorOccured = false
         val errorCompanyName = Validator.validateCompanyName(companyName)
-        if (errorCompanyName != "")
-        {
+        if (errorCompanyName != "") {
             errorOccured = true
             tvErrorCompanyName.text = errorCompanyName
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
         val duplicate = dbHelper.companyExists(companyName)
-        if(duplicate) {
+        if (duplicate) {
             errorOccured = true
-            tvErrorCompanyName.text = "Company with this name already exists"
+            tvErrorCompanyName.text = getString(R.string.error_company_exists)
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
         val errorPosition = Validator.validatePosition(etPosition.text.toString())
-        if (errorPosition != "")
-        {
+        if (errorPosition != "") {
             errorOccured = true
             tvErrorCompanyPosition.text = errorPosition
             tvErrorCompanyPosition.visibility = View.VISIBLE
         }
 
         val errorZipCode = Validator.validatePostCode(etZipCode.text.toString())
-        if (errorZipCode != "")
-        {
+        if (errorZipCode != "") {
             errorOccured = true
             tvErrorZipCode.text = errorZipCode
             tvErrorZipCode.visibility = View.VISIBLE
         }
 
         val errorCity = Validator.validateCity(etCity.text.toString())
-        if (errorCity != "")
-        {
+        if (errorCity != "") {
             errorOccured = true
             tvErrorCity.text = errorCity
             tvErrorCity.visibility = View.VISIBLE
         }
 
         val errorStreet = Validator.validateStreet(etStreet.text.toString())
-        if (errorStreet != "")
-        {
+        if (errorStreet != "") {
             errorOccured = true
             tvErrorStreet.text = errorStreet
             tvErrorStreet.visibility = View.VISIBLE
         }
 
-        if(errorOccured)
+        if (errorOccured)
             return
 
         // TODO: check for duplicate addresses?
         val addressId = dbHelper.saveAddress(street, zipCode, city)
         val companyId = dbHelper.saveCompany(companyName, addressId)
-        val workerId = 0; // TODO: set this from logged in worker
+        val workerId = 0 // TODO: set this from logged in worker
         dbHelper.addWorkerToCompany(workerId, companyId, position)
         dbHelper.setCompanyAdmin(workerId, companyId, true)
     }
 
-    fun resetErrorMessages() {
+    private fun resetErrorMessages() {
         tvErrorCompanyPosition.text = ""
         tvErrorCompanyPosition.visibility = View.GONE
 
