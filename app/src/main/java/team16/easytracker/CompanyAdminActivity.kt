@@ -15,6 +15,7 @@ import java.time.LocalDateTime
 
 class CompanyAdminActivity : AppCompatActivity() {
 
+    lateinit var dbHelper: DbHelper
 
     lateinit var etWorkerEmail: EditText
     lateinit var tvErrorEmail: TextView
@@ -26,6 +27,8 @@ class CompanyAdminActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.companyadminactivity)
+
+        dbHelper = DbHelper(this)
 
         etWorkerEmail = findViewById(R.id.etEmail)
         tvErrorEmail = findViewById(R.id.tvErrorEmail)
@@ -44,7 +47,7 @@ class CompanyAdminActivity : AppCompatActivity() {
         var errorOccured = false
 
         val workerEmail = etWorkerEmail.text.toString()
-        val emailError = Validator.validateEmail(workerEmail)
+        val emailError = Validator.validateEmail(workerEmail, resources)
         if (emailError != "") {
             errorOccured = true
             tvErrorEmail.text = "Invalid Email Address"
@@ -52,7 +55,7 @@ class CompanyAdminActivity : AppCompatActivity() {
         }
 
         val companyPosition = etPosition.text.toString()
-        val positionError = Validator.validatePosition(companyPosition)
+        val positionError = Validator.validatePosition(companyPosition, resources)
         if (positionError != "") {
             errorOccured = true
             tvErrorPosition.text = "Invalid Employee Position"
@@ -63,7 +66,7 @@ class CompanyAdminActivity : AppCompatActivity() {
             return
 
         val now = LocalDateTime.now().withNano(0)
-        val id = DbHelper.saveWorker(
+        val id = dbHelper.saveWorker(
             "Test",
             "WORKER_DUMMY_LAST_NAME",
             now.toLocalDate(),
@@ -74,9 +77,9 @@ class CompanyAdminActivity : AppCompatActivity() {
             now,
             1
         )
-        val worker = DbHelper.loadWorker(workerEmail) ?: return
+        val worker = dbHelper.loadWorker(workerEmail) ?: return
         val companyId = 0 // TODO: get id from logged in CompanyWorker
-        DbHelper.addWorkerToCompany(worker.getId(), companyId, companyPosition)
+        dbHelper.addWorkerToCompany(worker.getId(), companyId, companyPosition)
         // TODO: redirect back to worker?
     }
 

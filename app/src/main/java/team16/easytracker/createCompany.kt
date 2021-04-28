@@ -61,7 +61,7 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
         val street = etCity.text.toString()
 
         var errorOccured = false
-        val errorCompanyName = Validator.validateCompanyName(companyName)
+        val errorCompanyName = Validator.validateCompanyName(companyName, resources)
         if (errorCompanyName != "")
         {
             errorOccured = true
@@ -76,7 +76,7 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
-        val errorPosition = Validator.validatePosition(etPosition.text.toString())
+        val errorPosition = Validator.validatePosition(etPosition.text.toString(), resources)
         if (errorPosition != "")
         {
             errorOccured = true
@@ -84,7 +84,7 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
             tvErrorCompanyPosition.visibility = View.VISIBLE
         }
 
-        val errorZipCode = Validator.validatePostCode(etZipCode.text.toString())
+        val errorZipCode = Validator.validatePostCode(etZipCode.text.toString(), resources)
         if (errorZipCode != "")
         {
             errorOccured = true
@@ -92,7 +92,7 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
             tvErrorZipCode.visibility = View.VISIBLE
         }
 
-        val errorCity = Validator.validateCity(etCity.text.toString())
+        val errorCity = Validator.validateCity(etCity.text.toString(), resources)
         if (errorCity != "")
         {
             errorOccured = true
@@ -100,7 +100,7 @@ class createCompany : Fragment(R.layout.fragment_create_company) {
             tvErrorCity.visibility = View.VISIBLE
         }
 
-        val errorStreet = Validator.validateStreet(etStreet.text.toString())
+        val errorStreet = Validator.validateStreet(etStreet.text.toString(), resources)
         if (errorStreet != "")
         {
             errorOccured = true
