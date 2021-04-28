@@ -20,8 +20,14 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 
 ### Implemented Features
 
-EasyTracker-124 Worker Registration
+| Ticket                                | Finished  | 
+| :---                                  | :----:    |
+| EasyTracker-124 Worker Registration   | ✔️        |
+| EasyTracker-125 Company Login         | ✔️        |
+| EasyTracker-126 Worker Login          | ✔️        |
+| EasyTracker-127 New Tracking          | ❌        |
+| EasyTracker-129 Edit Trackings        | ❌        |
+| EasyTracker-128 Add workers to company| ❌        |
+| EasyTracker-123 Company Registration  | ❌        |
 
-EasyTracker-125 Company Login
 
-EasyTracker-126 Worker Login
