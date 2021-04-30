@@ -2,6 +2,10 @@ package team16.easytracker.utils
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class Validator {
 
@@ -173,6 +177,73 @@ class Validator {
                 return "The password must have at least 8 characters"
             }
 
+            return ""
+        }
+
+        fun validateTrackingStartDate(startDate: String) : String {
+            if (startDate.isEmpty()) {
+                return "The start date is required"
+            } else {
+                val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+                dateFormat.isLenient = false
+                try {
+                    dateFormat.parse(startDate.trim())
+                } catch (pe: ParseException) {
+                    return "The start date must be of format DD.MM.YYYY"
+                }
+            }
+
+            return ""
+        }
+
+        fun validateTrackingEndDate(endDate: String) : String {
+            if (endDate.isEmpty()) {
+                return "The end date is required"
+            } else {
+                val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+                dateFormat.isLenient = false
+                try {
+                    dateFormat.parse(endDate.trim())
+                } catch (pe: ParseException) {
+                    return "The end date must be of format DD.MM.YYYY"
+                }
+            }
+
+            return ""
+        }
+
+        fun validateTrackingStartTime(startTime: String) : String {
+            if (startTime.isEmpty()) {
+                return "The start time is required"
+            } else {
+                try{
+                    val timeFormat = LocalTime.parse(startTime, DateTimeFormatter.ofPattern("H:mm"))
+                } catch (pe: DateTimeParseException) {
+                    return "The start time must be of format H:mm"
+                }
+            }
+
+            return ""
+        }
+
+        fun validateTrackingEndTime(endTime: String) : String {
+            if (endTime.isEmpty()) {
+                return "The end time is required"
+            } else {
+                try{
+                    val timeFormat = LocalTime.parse(endTime, DateTimeFormatter.ofPattern("H:mm"))
+                } catch (pe: DateTimeParseException) {
+                    return "The end time must be of format H:mm"
+                }
+            }
+
+            return ""
+        }
+
+        fun validateTrackingName(trackingName: String) :String {
+            if (trackingName.isEmpty()) {
+                return "The tracking name is required"
+            }
             return ""
         }
     }
