@@ -156,8 +156,9 @@ class CreateTracking : Fragment() {
         val validStartTime = validateStartTime(startTime)
         val validEndDate = validateEndDate(endDate)
         val validEndTime = validateEndTime(endTime)
+        val validTrackingName = validateTrackingName(trackingName)
 
-        if (validStartDate && validStartTime && validEndDate && validEndTime) {
+        if (validStartDate && validStartTime && validEndDate && validEndTime && validTrackingName) {
             Log.i(
                 "Valid Tracking", "The tracking is valid: " +
                         "Start Date: " + startDate + ", " +
@@ -252,4 +253,16 @@ class CreateTracking : Fragment() {
         }
         return true
     }
+
+    fun validateTrackingName(trackingName: String) : Boolean {
+        val errorTrackingName = Validator.validateTrackingName(trackingName)
+        if (errorTrackingName != "") {
+            tvErrorTrackingName.text = errorTrackingName
+            tvErrorTrackingName.visibility = VISIBLE
+            return false
+        }
+        return true
+    }
+
+
 }

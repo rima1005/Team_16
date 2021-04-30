@@ -239,5 +239,12 @@ class Validator {
 
             return ""
         }
+
+        fun validateTrackingName(trackingName: String) :String {
+            if (trackingName.isEmpty()) {
+                return "The tracking name is required"
+            }
+            return ""
+        }
     }
 }
