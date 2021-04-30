@@ -2,6 +2,10 @@ package team16.easytracker.utils
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 class Validator {
 
@@ -209,6 +213,15 @@ class Validator {
         }
 
         fun validateTrackingStartTime(startTime: String) : String {
+            if (startTime.isEmpty()) {
+                return "The start time is required"
+            } else {
+                try{
+                    val timeFormat = LocalTime.parse(startTime, DateTimeFormatter.ofPattern("H:mm"))
+                } catch (pe: DateTimeParseException) {
+                    return "The start time must be of format H:mm"
+                }
+            }
             return ""
         }
 

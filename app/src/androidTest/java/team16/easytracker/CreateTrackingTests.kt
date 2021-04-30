@@ -239,7 +239,89 @@ class CreateTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingStartTime))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start time must be of format mm:hh")))
+                .check(matches(withText("The start time must be of format H:mm")))
+    }
+
+    @Test
+    fun emptyStartTimeCreateTracking() {
+        val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
+
+        val createTrackingFragment = Trackings()
+        currentActivity!!.supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
+                .addToBackStack(null)
+                .commit()
+
+        onView(withId(R.id.btnCreateTracking))
+                .perform(click())
+
+        onView(withId(R.id.etTrackingStartDate))
+                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+
+        onView(withId(R.id.etTrackingEndDate))
+                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTime))
+                .perform(typeText("14:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingName))
+                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+
+        onView(withId(R.id.btnCreateTrackingBack))
+                .perform(scrollTo())
+
+        onView(withId(R.id.btnCreateTrackingSave))
+                .perform(click())
+
+        onView(withId(R.id.tvTrackingStartTime))
+                .perform(scrollTo())
+
+        onView(withId(R.id.tvErrorTrackingStartTime))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The start time is required")))
+    }
+
+    @Test
+    fun invalidEndTimeCreateTracking() {
+        val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
+
+        val createTrackingFragment = Trackings()
+        currentActivity!!.supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
+                .addToBackStack(null)
+                .commit()
+
+        onView(withId(R.id.btnCreateTracking))
+                .perform(click())
+
+        onView(withId(R.id.etTrackingStartDate))
+                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingStartTime))
+                .perform(typeText("10:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndDate))
+                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTime))
+                .perform(typeText("10asdf:asdf:99"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingName))
+                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+
+        onView(withId(R.id.btnCreateTrackingBack))
+                .perform(scrollTo())
+
+        onView(withId(R.id.btnCreateTrackingSave))
+                .perform(click())
+
+        onView(withId(R.id.tvTrackingStartTime))
+                .perform(scrollTo())
+
+        onView(withId(R.id.tvErrorTrackingEndTime))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The end time must be of format H:mm")))
     }
 
 }
