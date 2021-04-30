@@ -228,4 +228,62 @@ class ValidatorTest {
         // password is too long
         //assertEquals(false, Validator.validatePassword("invalid".repeat(100)))
     }
+
+    @Test
+    fun trackingStartTimeIsCorrect() {
+        // valid StartTime
+        assertEquals("", Validator.validateTrackingStartTime("10:00"))
+
+        // empty StartTime
+        assertEquals("The start time is required", Validator.validateTrackingStartTime(""))
+
+        // StartTime is too invalid
+        assertEquals("The start time must be of format H:mm", Validator.validateTrackingStartTime("invalid"))
+    }
+
+    @Test
+    fun trackingEndTimeIsCorrect() {
+        // valid EndTime
+        assertEquals("", Validator.validateTrackingEndTime("10:00"))
+
+        // empty EndTime
+        assertEquals("The end time is required", Validator.validateTrackingEndTime(""))
+
+        // EndTime is too invalid
+        assertEquals("The end time must be of format H:mm", Validator.validateTrackingEndTime("invalid"))
+    }
+
+    @Test
+    fun trackingStartDateIsCorrect() {
+        // valid StartDate
+        assertEquals("", Validator.validateTrackingStartDate("12.05.2019"))
+
+        // empty StartDate
+        assertEquals("The start date is required", Validator.validateTrackingStartDate(""))
+
+        // StartDate is too invalid
+        assertEquals("The start date must be of format DD.MM.YYYY", Validator.validateTrackingStartDate("invalid"))
+    }
+
+    @Test
+    fun trackingEndDateIsCorrect() {
+        // valid EndDate
+        assertEquals("", Validator.validateTrackingEndDate("12.05.2019"))
+
+        // empty EndDate
+        assertEquals("The end date is required", Validator.validateTrackingEndDate(""))
+
+        // EndDate is too invalid
+        assertEquals("The end date must be of format DD.MM.YYYY", Validator.validateTrackingEndDate("invalid"))
+    }
+
+    @Test
+    fun trackingNameIsCorrect() {
+        // valid TrackingName
+        assertEquals("", Validator.validateTrackingName("ValidName"))
+
+        // empty TrackingName
+        assertEquals("The tracking name is required", Validator.validateTrackingName(""))
+    }
+
 }
