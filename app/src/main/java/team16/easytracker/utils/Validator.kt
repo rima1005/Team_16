@@ -222,10 +222,21 @@ class Validator {
                     return "The start time must be of format H:mm"
                 }
             }
+
             return ""
         }
 
         fun validateTrackingEndTime(endTime: String) : String {
+            if (endTime.isEmpty()) {
+                return "The end time is required"
+            } else {
+                try{
+                    val timeFormat = LocalTime.parse(endTime, DateTimeFormatter.ofPattern("H:mm"))
+                } catch (pe: DateTimeParseException) {
+                    return "The end time must be of format H:mm"
+                }
+            }
+
             return ""
         }
     }
