@@ -72,12 +72,53 @@ class CreateTrackingTests {
         onView(withId(R.id.btnCreateTrackingSave))
                 .perform(click())
 
-        onView(withId(R.id.etTrackingStartTime))
+        onView(withId(R.id.tvTrackingStartDate))
                 .perform(scrollTo())
 
         onView(withId(R.id.tvErrorTrackingStartDate))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The start date must be of format DD.MM.YYYY")))
     }
+
+    @Test
+    fun emptyDateCreateTracking() {
+        val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
+
+        val createTrackingFragment = Trackings()
+        currentActivity!!.supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
+                .addToBackStack(null)
+                .commit()
+
+        onView(withId(R.id.btnCreateTracking))
+                .perform(click())
+
+        onView(withId(R.id.etTrackingStartTime))
+                .perform(typeText("10:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndDate))
+                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTime))
+                .perform(typeText("14:30"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingName))
+                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+
+        onView(withId(R.id.btnCreateTrackingBack))
+                .perform(scrollTo())
+
+        onView(withId(R.id.btnCreateTrackingSave))
+                .perform(click())
+
+        onView(withId(R.id.tvTrackingStartDate))
+                .perform(scrollTo())
+
+        onView(withId(R.id.tvErrorTrackingStartDate))
+                .check(matches(isDisplayed()))
+                .check(matches(withText("The start date is required")))
+    }
+
+
 
 }
