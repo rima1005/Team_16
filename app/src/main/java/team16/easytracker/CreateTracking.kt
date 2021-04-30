@@ -70,7 +70,7 @@ class CreateTracking : Fragment() {
         tvErrorTrackingNotes = view.findViewById(R.id.tvErrorTrackingNotes)
         tvErrorBluetoothDevice = view.findViewById(R.id.tvErrorBluetoothDevice)
 
-        etStartDate.setOnClickListener { setDate(etStartDate, view) }
+        /*etStartDate.setOnClickListener { setDate(etStartDate, view) }
         etStartDate.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
             if (hasFocus) {
                 setDate(etStartDate, view)
@@ -96,7 +96,7 @@ class CreateTracking : Fragment() {
             if (hasFocus) {
                 setTime(etEndTime)
             }
-        }
+        }*/
 
         btnSaveTracking = view.findViewById(R.id.btnCreateTrackingSave)
         btnBack = view.findViewById(R.id.btnCreateTrackingBack)
@@ -173,9 +173,8 @@ class CreateTracking : Fragment() {
             val startDateTime: LocalDateTime = LocalDateTime.parse("$startDate $startTime", formatter)
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
-            val dbHelper = DbHelper(activity!!)
             val workerId = 0; // TODO: set this from logged in worker
-            val trackingId = dbHelper.saveTracking(
+            val trackingId = DbHelper.saveTracking(
                 trackingName,
                 workerId,
                 startDateTime,
@@ -215,7 +214,7 @@ class CreateTracking : Fragment() {
     }
 
     fun validateStartDate(startDate: String) : Boolean {
-        val errorStartDate = Validator.validateRequiredDate(startDate)
+        val errorStartDate = Validator.validateTrackingStartDate(startDate)
         if (errorStartDate != "") {
             tvErrorStartDate.text = errorStartDate
             tvErrorStartDate.visibility = VISIBLE
@@ -225,7 +224,7 @@ class CreateTracking : Fragment() {
     }
 
     fun validateStartTime(startTime: String) : Boolean {
-        val errorStartDate = Validator.validateRequiredTime(startTime)
+        val errorStartDate = Validator.validateTrackingStartTime(startTime)
         if (errorStartDate != "") {
             tvErrorStartTime.text = errorStartDate
             tvErrorStartTime.visibility = VISIBLE
@@ -235,7 +234,7 @@ class CreateTracking : Fragment() {
     }
 
     fun validateEndDate(endDate: String) : Boolean {
-        val errorStartDate = Validator.validateRequiredDate(endDate)
+        val errorStartDate = Validator.validateTrackingEndDate(endDate)
         if (errorStartDate != "") {
             tvErrorEndDate.text = errorStartDate
             tvErrorEndDate.visibility = VISIBLE
@@ -245,7 +244,7 @@ class CreateTracking : Fragment() {
     }
 
     fun validateEndTime(endTime: String) : Boolean {
-        val errorStartDate = Validator.validateRequiredTime(endTime)
+        val errorStartDate = Validator.validateTrackingEndTime(endTime)
         if (errorStartDate != "") {
             tvErrorEndTime.text = errorStartDate
             tvErrorEndTime.visibility = VISIBLE

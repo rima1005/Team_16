@@ -176,20 +176,44 @@ class Validator {
             return ""
         }
 
-        fun validateDate(date: String, required: Boolean = false) : String {
+        fun validateTrackingStartDate(startDate: String) : String {
+            if (startDate.isEmpty()) {
+                return "The start date is required"
+            } else {
+                val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+                dateFormat.isLenient = false
+                try {
+                    dateFormat.parse(startDate.trim())
+                } catch (pe: ParseException) {
+                    return "The start date must be of format DD.MM.YYYY"
+                }
+            }
+
             return ""
         }
 
-        fun validateRequiredDate(date: String) : String {
-            return validateDate(date, true)
-        }
+        fun validateTrackingEndDate(endDate: String) : String {
+            if (endDate.isEmpty()) {
+                return "The end date is required"
+            } else {
+                val dateFormat = SimpleDateFormat("dd.MM.yyyy")
+                dateFormat.isLenient = false
+                try {
+                    dateFormat.parse(endDate.trim())
+                } catch (pe: ParseException) {
+                    return "The end date must be of format DD.MM.YYYY"
+                }
+            }
 
-        fun validateTime(time: String, required: Boolean = false) : String {
             return ""
         }
 
-        fun validateRequiredTime(time: String) : String {
-            return validateTime(time, true)
+        fun validateTrackingStartTime(startTime: String) : String {
+            return ""
+        }
+
+        fun validateTrackingEndTime(endTime: String) : String {
+            return ""
         }
     }
 }
