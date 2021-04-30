@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import org.mindrot.jbcrypt.BCrypt
+import team16.easytracker.MyApplication
 import team16.easytracker.database.Contracts.Company
 import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
@@ -74,10 +75,14 @@ private const val SQL_CREATE_WORKERS =
             "${Worker.COL_CREATED_AT} LONG," +
             "${Worker.COL_ADDRESS_ID} INTEGER)"
 
-class DbHelper(context: Context) :
-    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    val ctx = context;
+// If you change the database schema, you must increment the database version.
+private const val DATABASE_VERSION = 2
+private const val DATABASE_NAME = "EasyTracker.db"
+
+object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    val ctx = MyApplication.instance;
     val tag = DbHelper::class.java.name;
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -95,7 +100,7 @@ class DbHelper(context: Context) :
             for (i in oldVersion until newVersion) {
                 val fileName = "${i}-${i + 1}.sql"
                 val file = ctx.assets.open(fileName)
-                executeSQLFile(db, file)
+                executeSQLFile(file)
                 file.close()
             }
         } catch (e: IOException) {
@@ -109,21 +114,15 @@ class DbHelper(context: Context) :
         onUpgrade(db, oldVersion, newVersion)
     }
 
-    companion object {
-        // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 2
-        const val DATABASE_NAME = "EasyTracker.db"
-    }
-
     @Throws(SQLException::class)
-    fun executeSQLFile(db: SQLiteDatabase, inputStream: InputStream) {
+    fun executeSQLFile(inputStream: InputStream) {
         val reader = inputStream.bufferedReader()
         var line = reader.readLine()
         while (line != null) {
             if (!line.endsWith(";")) {
                 throw SQLException("Invalid .sql file!")
             }
-            db.execSQL(line)
+            writableDatabase.execSQL(line)
             line = reader.readLine()
         }
     }
@@ -320,7 +319,8 @@ class DbHelper(context: Context) :
         val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
 
         result.close()
-        return loadWorker(workerId)
+        MyApplication.loggedInWorker = loadWorker(workerId)
+        return MyApplication.loggedInWorker
     }
 
     fun addWorkerToCompany(workerId: Int, companyId: Int, position: String): Boolean {
