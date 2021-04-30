@@ -32,6 +32,11 @@ class CreateTracking : Fragment() {
     lateinit var etTrackingNotes : EditText
     lateinit var etBluetoothDevice : EditText
 
+    lateinit var btnSelectStartDate : Button
+    lateinit var btnSelectStartTime : Button
+    lateinit var btnSelectEndDate : Button
+    lateinit var btnSelectEndTime : Button
+
     lateinit var tvErrorStartDate : TextView
     lateinit var tvErrorStartTime : TextView
     lateinit var tvErrorEndDate : TextView
@@ -62,6 +67,11 @@ class CreateTracking : Fragment() {
         etTrackingNotes = view.findViewById(R.id.etTrackingNotes)
         etBluetoothDevice = view.findViewById(R.id.etBluetoothDevice)
 
+        btnSelectStartDate = view.findViewById(R.id.btnCreateTrackingSelectStartDate)
+        btnSelectStartTime = view.findViewById(R.id.btnCreateTrackingSelectStartTime)
+        btnSelectEndDate = view.findViewById(R.id.btnCreateTrackingSelectEndDate)
+        btnSelectEndTime = view.findViewById(R.id.btnCreateTrackingSelectEndTime)
+
         tvErrorStartDate = view.findViewById(R.id.tvErrorTrackingStartDate)
         tvErrorStartTime = view.findViewById(R.id.tvErrorTrackingStartTime)
         tvErrorEndDate = view.findViewById(R.id.tvErrorTrackingEndDate)
@@ -70,33 +80,10 @@ class CreateTracking : Fragment() {
         tvErrorTrackingNotes = view.findViewById(R.id.tvErrorTrackingNotes)
         tvErrorBluetoothDevice = view.findViewById(R.id.tvErrorBluetoothDevice)
 
-        /*etStartDate.setOnClickListener { setDate(etStartDate, view) }
-        etStartDate.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                setDate(etStartDate, view)
-            }
-        }
-
-        etStartTime.setOnClickListener { setTime(etStartTime) }
-        etStartTime.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                setTime(etStartTime)
-            }
-        }
-
-        etEndDate.setOnClickListener { setDate(etEndDate, view) }
-        etEndDate.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                setDate(etEndDate, view)
-            }
-        }
-
-        etEndTime.setOnClickListener { setTime(etEndTime) }
-        etEndTime.onFocusChangeListener = OnFocusChangeListener { view, hasFocus ->
-            if (hasFocus) {
-                setTime(etEndTime)
-            }
-        }*/
+        btnSelectStartDate.setOnClickListener { setDate(etStartDate, view) }
+        btnSelectStartTime.setOnClickListener { setTime(etStartTime) }
+        btnSelectEndDate.setOnClickListener { setDate(etEndDate, view) }
+        btnSelectEndTime.setOnClickListener { setTime(etEndTime) }
 
         btnSaveTracking = view.findViewById(R.id.btnCreateTrackingSave)
         btnBack = view.findViewById(R.id.btnCreateTrackingBack)
@@ -144,6 +131,8 @@ class CreateTracking : Fragment() {
     }
 
     fun createTracking() {
+        resetErrorMessages()
+
         val startDate = etStartDate.text.toString()
         val startTime = etStartTime.text.toString()
         val endDate = etEndDate.text.toString()
@@ -264,5 +253,22 @@ class CreateTracking : Fragment() {
         return true
     }
 
+    fun resetErrorMessages() {
+        tvErrorStartDate.text = ""
+        tvErrorStartDate.visibility = View.GONE
+
+        tvErrorStartTime.text = ""
+        tvErrorStartTime.visibility = View.GONE
+
+        tvErrorEndDate.text = ""
+        tvErrorEndDate.visibility = View.GONE
+
+        tvErrorEndTime.text = ""
+        tvErrorEndTime.visibility = View.GONE
+
+        tvErrorTrackingName.text = ""
+        tvErrorTrackingName.visibility = View.GONE
+
+    }
 
 }

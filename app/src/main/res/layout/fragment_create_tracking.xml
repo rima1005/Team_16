@@ -47,24 +47,49 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="Start Date"
+                android:text="@string/start_date"
                 android:textColor="#000" />
 
-            <EditText
-                android:id="@+id/etTrackingStartDate"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_edit_text"
-                android:ems="10"
-                android:fontFamily="sans-serif-light"
-                android:inputType="date"
-                android:padding="10dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etTrackingStartDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_edit_text"
+                    android:ems="10"
+                    android:fontFamily="sans-serif-light"
+                    android:inputType="date"
+                    android:padding="10dp" />
+
+                <Button
+                    android:id="@+id/btnCreateTrackingSelectStartDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="2"
+                    android:background="#168AAD"
+                    android:fontFamily="sans-serif-light"
+                    android:minHeight="40dip"
+                    android:text="@string/select"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#168AAD" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvErrorTrackingStartDate"
@@ -90,24 +115,49 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="Start Time"
+                android:text="@string/start_time"
                 android:textColor="#000" />
 
-            <EditText
-                android:id="@+id/etTrackingStartTime"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_edit_text"
-                android:ems="10"
-                android:fontFamily="sans-serif-light"
-                android:inputType="text|time"
-                android:padding="10dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etTrackingStartTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_edit_text"
+                    android:ems="10"
+                    android:fontFamily="sans-serif-light"
+                    android:inputType="text|time"
+                    android:padding="10dp" />
+
+                <Button
+                    android:id="@+id/btnCreateTrackingSelectStartTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="2"
+                    android:background="#168AAD"
+                    android:fontFamily="sans-serif-light"
+                    android:minHeight="40dip"
+                    android:text="@string/select"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#168AAD" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvErrorTrackingStartTime"
@@ -133,24 +183,49 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="End Date"
+                android:text="@string/end_date"
                 android:textColor="#000" />
 
-            <EditText
-                android:id="@+id/etTrackingEndDate"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_edit_text"
-                android:ems="10"
-                android:fontFamily="sans-serif-light"
-                android:inputType="date"
-                android:padding="10dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etTrackingEndDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_edit_text"
+                    android:ems="10"
+                    android:fontFamily="sans-serif-light"
+                    android:inputType="date"
+                    android:padding="10dp" />
+
+                <Button
+                    android:id="@+id/btnCreateTrackingSelectEndDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="2"
+                    android:background="#168AAD"
+                    android:fontFamily="sans-serif-light"
+                    android:minHeight="40dip"
+                    android:text="@string/select"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#168AAD" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvErrorTrackingEndDate"
@@ -176,24 +251,49 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="End Time"
+                android:text="@string/end_time"
                 android:textColor="#000" />
 
-            <EditText
-                android:id="@+id/etTrackingEndTime"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_edit_text"
-                android:ems="10"
-                android:fontFamily="sans-serif-light"
-                android:inputType="text|time"
-                android:padding="10dp" />
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etTrackingEndTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/custom_edit_text"
+                    android:ems="10"
+                    android:fontFamily="sans-serif-light"
+                    android:inputType="date"
+                    android:padding="10dp" />
+
+                <Button
+                    android:id="@+id/btnCreateTrackingSelectEndTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="2"
+                    android:background="#168AAD"
+                    android:fontFamily="sans-serif-light"
+                    android:minHeight="40dip"
+                    android:text="@string/select"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#168AAD" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvErrorTrackingEndTime"
@@ -219,7 +319,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="Tracking Name"
+                android:text="@string/tracking_name"
                 android:textColor="#000" />
 
             <EditText
@@ -235,7 +335,7 @@
                 android:background="@drawable/custom_edit_text"
                 android:ems="10"
                 android:fontFamily="sans-serif-light"
-                android:hint="Work"
+                android:hint="@string/work"
                 android:inputType="text"
                 android:padding="10dp" />
 
@@ -263,7 +363,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="Notes"
+                android:text="@string/notes"
                 android:textColor="#000" />
 
             <EditText
@@ -280,7 +380,7 @@
                 android:background="@drawable/custom_edit_text"
                 android:ems="10"
                 android:fontFamily="sans-serif-light"
-                android:hint="Some notes"
+                android:hint="@string/some_notes"
                 android:inputType="textMultiLine"
                 android:padding="10dp" />
 
@@ -308,7 +408,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:fontFamily="sans-serif"
-                android:text="Bluetooth Device"
+                android:text="@string/bluetooth_device"
                 android:textColor="#000" />
 
             <EditText
@@ -351,7 +451,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="#168AAD"
                 android:fontFamily="sans-serif-light"
-                android:text="Save Tracking"
+                android:text="@string/save_tracking"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="#168AAD" />
 
@@ -365,7 +465,7 @@
                 android:layout_marginBottom="10dp"
                 android:background="#168AAD"
                 android:fontFamily="sans-serif-light"
-                android:text="Back"
+                android:text="@string/back"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="#168AAD" />
 
