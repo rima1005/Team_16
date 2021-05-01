@@ -12,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,7 +40,7 @@ class CreateCompanyTests {
     @Test
     fun testOpenFragment() {
         openFragment()
-        onView(withId(R.id.etCompanyName)).check(matches((isDisplayed())))
+        onView(withId(R.id.clFragmentCreateCompany)).check(matches((isDisplayed())))
     }
 
     @Test
@@ -159,19 +160,19 @@ class CreateCompanyTests {
 
         // type too long company name
         onView(withId(R.id.etCompanyName))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimit + 1)))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimit + 1)))
 
         // type too long company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimit + 1)))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimit + 1)))
 
         // type too long postal code
         onView(withId(R.id.etPostCode))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimitPostalCode + 1)))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimitPostalCode + 1)))
 
         // type too long city
         onView(withId(R.id.etCity))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A".repeat(characterLimit + 1)))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimit + 1)))
 
         closeSoftKeyboard()
 
@@ -200,7 +201,40 @@ class CreateCompanyTests {
 
     @Test
     fun validInputData() {
+        openFragment()
 
+        // TODO: add as variable to Validator?
+        val characterLimit = 255
+        val characterLimitPostalCode = 10
+
+        // type valid company name
+        onView(withId(R.id.etCompanyName))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("Google"))
+
+        // type valid company position
+        onView(withId(R.id.etCompanyPosition))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("CEO"))
+
+        // type valid postal code
+        onView(withId(R.id.etPostCode))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("8010"))
+
+        // type valid city
+        onView(withId(R.id.etCity))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("Graz"))
+
+        // type valid Street
+        onView(withId(R.id.etStreet))
+                .perform(ViewActions.scrollTo(), ViewActions.typeText("Street 1"))
+
+        closeSoftKeyboard()
+
+        // Click registration button
+        val btn = withId(R.id.btnCreateCompany)
+        onView(btn).perform(ViewActions.scrollTo(), ViewActions.click())
+
+        //onView(withId(R.id.clFragmentCreateCompany)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.flFragmentCompany)).check(matches(isDisplayed()))
     }
 
 }

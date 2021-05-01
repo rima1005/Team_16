@@ -105,11 +105,16 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
             return
 
         // TODO: check for duplicate addresses?
-        val addressId = dbHelper.saveAddress(street, zipCode, city)
+        /*val addressId = dbHelper.saveAddress(street, zipCode, city)
         val companyId = dbHelper.saveCompany(companyName, addressId)
         val workerId = 0 // TODO: set this from logged in worker
         dbHelper.addWorkerToCompany(workerId, companyId, position)
-        dbHelper.setCompanyAdmin(workerId, companyId, true)
+        dbHelper.setCompanyAdmin(workerId, companyId, true)*/
+
+        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flFragment, Company())
+        transaction.disallowAddToBackStack()
+        transaction.commit()
     }
 
     private fun resetErrorMessages() {
