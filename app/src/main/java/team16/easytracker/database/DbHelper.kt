@@ -160,8 +160,11 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
 
         val name = result.getString(result.getColumnIndex(Company.COL_NAME))
         val addressId = result.getInt(result.getColumnIndex(Company.COL_ADDRESS_ID))
-        result.close();
-        return CompanyModel(id, name, addressId);
+
+        // TODO: set address object of company
+
+        result.close()
+        return CompanyModel(id, name, addressId)
     }
 
     fun saveCompany(name: String, addressId: Int): Int {

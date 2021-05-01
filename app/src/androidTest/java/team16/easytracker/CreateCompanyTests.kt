@@ -3,7 +3,7 @@ package team16.easytracker
 import android.app.Activity
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -11,14 +11,54 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
+import team16.easytracker.database.DbHelper
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @RunWith(AndroidJUnit4::class)
 class CreateCompanyTests {
+
+    private fun setupLoggedInWorker() {
+
+        val addressId = DbHelper.saveAddress("street", "1234", "city")
+
+        val email = "email@email.at";
+        val pw = "12345678"
+        val workerId = DbHelper.saveWorker(
+                "firstName",
+                "lastName",
+                LocalDate.now(),
+                "title",
+                email,
+                pw,
+                "12345678",
+                LocalDateTime.now().withNano(0),
+                addressId
+        )
+
+        DbHelper.loginWorker(email, pw)
+    }
+
+    private fun insertDummyCompany(companyName: String) {
+        DbHelper.saveCompany(companyName, 1);
+    }
+
+    @Before
+    fun init() {
+        // TODO: this doesn't work because further reads (e.g.: in fragment) don't work if transaction is open
+        // DbHelper.writableDatabase.beginTransaction()
+        if(MyApplication.loggedInWorker == null) {
+            setupLoggedInWorker()
+        }
+    }
+
+    @After
+    fun tearDown() {
+        //DbHelper.writableDatabase.endTransaction()
+    }
 
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
@@ -48,19 +88,19 @@ class CreateCompanyTests {
         openFragment()
         // Error textviews should not be visible before clicking registration button
         onView(withId(R.id.tvErrorCompanyName))
-                .check(matches(CoreMatchers.not(isDisplayed())))
+                .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorCompanyPosition))
-                .check(matches(CoreMatchers.not(isDisplayed())))
+                .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorPostCode))
-                .check(matches(CoreMatchers.not(isDisplayed())))
+                .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorCity))
-                .check(matches(CoreMatchers.not(isDisplayed())))
+                .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorStreet))
-                .check(matches(CoreMatchers.not(isDisplayed())))
+                .check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -70,7 +110,7 @@ class CreateCompanyTests {
 
         // Click registration button without any data entered
         onView(withId(R.id.btnCreateCompany))
-                .perform(ViewActions.scrollTo(), ViewActions.click())
+                .perform(scrollTo(), click())
 
         // TODO: replace matcher texts with string resources
 
@@ -102,29 +142,29 @@ class CreateCompanyTests {
 
         // type too short company name
         onView(withId(R.id.etCompanyName))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+                .perform(scrollTo(), typeText("A"))
 
         // type too short company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+                .perform(scrollTo(), typeText("A"))
 
         // type too short postal code
         onView(withId(R.id.etPostCode))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+                .perform(scrollTo(), typeText("A"))
 
         // type too short city
         onView(withId(R.id.etCity))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("A"))
+                .perform(scrollTo(), typeText("A"))
 
         // type Street without nr/street name (only 1 word)
         onView(withId(R.id.etStreet))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("Street"))
+                .perform(scrollTo(), typeText("Street"))
 
         closeSoftKeyboard()
 
         // Click registration button
         val btn = withId(R.id.btnCreateCompany)
-        onView(btn).perform(ViewActions.scrollTo(), ViewActions.click())
+        onView(btn).perform(scrollTo(), click())
 
         // check if error messages are correct
         // TODO: replace with string resources
@@ -160,25 +200,25 @@ class CreateCompanyTests {
 
         // type too long company name
         onView(withId(R.id.etCompanyName))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimit + 1)))
+                .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
 
         // type too long company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimit + 1)))
+                .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
 
         // type too long postal code
         onView(withId(R.id.etPostCode))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimitPostalCode + 1)))
+                .perform(scrollTo(), typeText("a".repeat(characterLimitPostalCode + 1)))
 
         // type too long city
         onView(withId(R.id.etCity))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("a".repeat(characterLimit + 1)))
+                .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
 
         closeSoftKeyboard()
 
         // Click registration button
         val btn = withId(R.id.btnCreateCompany)
-        onView(btn).perform(ViewActions.scrollTo(), ViewActions.click())
+        onView(btn).perform(scrollTo(), click())
 
         // check if error messages are correct
         // TODO: replace with string resources
@@ -200,41 +240,87 @@ class CreateCompanyTests {
     }
 
     @Test
-    fun validInputData() {
+    fun duplicateCompanyFails() {
+
         openFragment()
 
-        // TODO: add as variable to Validator?
-        val characterLimit = 255
-        val characterLimitPostalCode = 10
+        // assume company exists
+        val dummyCompanyName = "Google123"
+        insertDummyCompany(dummyCompanyName)
+
+        // try to create company with same name:
 
         // type valid company name
         onView(withId(R.id.etCompanyName))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("Google"))
+            .perform(scrollTo(), typeText(dummyCompanyName))
 
         // type valid company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("CEO"))
+            .perform(scrollTo(), typeText("CEO"))
 
         // type valid postal code
         onView(withId(R.id.etPostCode))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("8010"))
+            .perform(scrollTo(), typeText("8010"))
 
         // type valid city
         onView(withId(R.id.etCity))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("Graz"))
+            .perform(scrollTo(), typeText("Graz"))
 
         // type valid Street
         onView(withId(R.id.etStreet))
-                .perform(ViewActions.scrollTo(), ViewActions.typeText("Street 1"))
+            .perform(scrollTo(), typeText("Street 1"))
+
+        // Click registration button
+        val btn = withId(R.id.btnCreateCompany)
+        onView(btn).perform(scrollTo(), click())
+
+        // check if correct error is displayed
+        onView(withId(R.id.tvErrorCompanyName))
+            .check(matches(isDisplayed()))
+            .check(matches(withText(R.string.error_company_exists)))
+    }
+
+    @Test
+    fun validInputData() {
+        openFragment()
+
+        val dummyCompanyName = "Google"
+
+        // type valid company name
+        onView(withId(R.id.etCompanyName))
+                .perform(scrollTo(), typeText(dummyCompanyName))
+
+        // type valid company position
+        onView(withId(R.id.etCompanyPosition))
+                .perform(scrollTo(), typeText("CEO"))
+
+        // type valid postal code
+        onView(withId(R.id.etPostCode))
+                .perform(scrollTo(), typeText("8010"))
+
+        // type valid city
+        onView(withId(R.id.etCity))
+                .perform(scrollTo(), typeText("Graz"))
+
+        // type valid Street
+        onView(withId(R.id.etStreet))
+                .perform(scrollTo(), typeText("Street 1"))
 
         closeSoftKeyboard()
 
         // Click registration button
         val btn = withId(R.id.btnCreateCompany)
-        onView(btn).perform(ViewActions.scrollTo(), ViewActions.click())
+        onView(btn).perform(scrollTo(), click())
 
-        //onView(withId(R.id.clFragmentCreateCompany)).check(matches(not(isDisplayed())))
+        // check if company was correctly created and assigned
+        assert(MyApplication.loggedInWorker!!.admin)
+        val company = MyApplication.loggedInWorker!!.company
+        assert(company != null)
+        assert(MyApplication.loggedInWorker!!.company!!.name == dummyCompanyName)
+
+        // check for correct redirect + company create button should now be gone
         onView(withId(R.id.flFragmentCompany)).check(matches(isDisplayed()))
+        onView(withId(R.id.btnCreateCompany)).check(matches(not(isDisplayed())))
     }
 
 }

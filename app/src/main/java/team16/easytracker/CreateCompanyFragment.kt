@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
+import java.time.LocalDateTime
 
 class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
     lateinit var etCompanyName: EditText
@@ -23,27 +24,21 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
     lateinit var tvErrorStreet: TextView
     lateinit var tvErrorCity: TextView
 
-    lateinit var dbHelper: DbHelper
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+        etCompanyName = view.findViewById(R.id.etCompanyName)
+        etStreet = view.findViewById(R.id.etStreet)
+        etZipCode = view.findViewById(R.id.etPostCode)
+        etCity = view.findViewById(R.id.etCity)
+        etPosition = view.findViewById(R.id.etCompanyPosition)
+        btnCreateCompany = view.findViewById(R.id.btnCreateCompany)
 
-        dbHelper = DbHelper(activity!!)
-
-        val fragmentView = view!!
-
-        etCompanyName = fragmentView.findViewById(R.id.etCompanyName)
-        etStreet = fragmentView.findViewById(R.id.etStreet)
-        etZipCode = fragmentView.findViewById(R.id.etPostCode)
-        etCity = fragmentView.findViewById(R.id.etCity)
-        etPosition = fragmentView.findViewById(R.id.etCompanyPosition)
-        btnCreateCompany = fragmentView.findViewById(R.id.btnCreateCompany)
-
-        tvErrorCompanyName = fragmentView.findViewById(R.id.tvErrorCompanyName)
-        tvErrorCompanyPosition = fragmentView.findViewById(R.id.tvErrorCompanyPosition)
-        tvErrorZipCode = fragmentView.findViewById(R.id.tvErrorPostCode)
-        tvErrorStreet = fragmentView.findViewById(R.id.tvErrorStreet)
-        tvErrorCity = fragmentView.findViewById(R.id.tvErrorCity)
+        tvErrorCompanyName = view.findViewById(R.id.tvErrorCompanyName)
+        tvErrorCompanyPosition = view.findViewById(R.id.tvErrorCompanyPosition)
+        tvErrorZipCode = view.findViewById(R.id.tvErrorPostCode)
+        tvErrorStreet = view.findViewById(R.id.tvErrorStreet)
+        tvErrorCity = view.findViewById(R.id.tvErrorCity)
 
         btnCreateCompany.setOnClickListener { createCompany() }
     }
@@ -66,7 +61,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
-        val duplicate = dbHelper.companyExists(companyName)
+        val duplicate = DbHelper.companyExists(companyName)
         if (duplicate) {
             errorOccured = true
             tvErrorCompanyName.text = getString(R.string.error_company_exists)
@@ -105,13 +100,16 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
             return
 
         // TODO: check for duplicate addresses?
-        /*val addressId = dbHelper.saveAddress(street, zipCode, city)
-        val companyId = dbHelper.saveCompany(companyName, addressId)
-        val workerId = 0 // TODO: set this from logged in worker
-        dbHelper.addWorkerToCompany(workerId, companyId, position)
-        dbHelper.setCompanyAdmin(workerId, companyId, true)*/
+        val worker = MyApplication.loggedInWorker!!
+        val addressId = DbHelper.saveAddress(street, zipCode, city)
+        val companyId = DbHelper.saveCompany(companyName, addressId)
+        DbHelper.addWorkerToCompany(worker.getId(), companyId, position)
+        DbHelper.setCompanyAdmin(worker.getId(), companyId, true)
 
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
+        // update worker because he now has a company and is admin
+        MyApplication.loggedInWorker = DbHelper.loadWorker(worker.getId())
+
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.flFragment, Company())
         transaction.disallowAddToBackStack()
         transaction.commit()
