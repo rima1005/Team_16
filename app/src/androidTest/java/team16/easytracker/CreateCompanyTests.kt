@@ -28,15 +28,15 @@ class CreateCompanyTests {
         val email = "email@email.at";
         val pw = "12345678"
         val workerId = DbHelper.saveWorker(
-                "firstName",
-                "lastName",
-                LocalDate.now(),
-                "title",
-                email,
-                pw,
-                "12345678",
-                LocalDateTime.now().withNano(0),
-                addressId
+            "firstName",
+            "lastName",
+            LocalDate.now(),
+            "title",
+            email,
+            pw,
+            "12345678",
+            LocalDateTime.now().withNano(0),
+            addressId
         )
 
         DbHelper.loginWorker(email, pw)
@@ -50,7 +50,7 @@ class CreateCompanyTests {
     fun init() {
         // TODO: this doesn't work because further reads (e.g.: in fragment) don't work if transaction is open
         // DbHelper.writableDatabase.beginTransaction()
-        if(MyApplication.loggedInWorker == null) {
+        if (MyApplication.loggedInWorker == null) {
             setupLoggedInWorker()
         }
     }
@@ -65,7 +65,11 @@ class CreateCompanyTests {
 
     fun getCurrentActivity(): Activity {
         var currentActivity: Activity? = null
-        getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).elementAtOrNull(0) } }
+        getInstrumentation().runOnMainSync { run { currentActivity =
+            ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED)
+                .elementAtOrNull(0)
+        }
+        }
         return currentActivity!!
     }
 
@@ -77,32 +81,35 @@ class CreateCompanyTests {
         transaction.commit()
     }
 
+    @Ignore
     @Test
     fun testOpenFragment() {
         openFragment()
         onView(withId(R.id.clFragmentCreateCompany)).check(matches((isDisplayed())))
     }
 
+    @Ignore
     @Test
     fun errorsHiddenOnStart() {
         openFragment()
         // Error textviews should not be visible before clicking registration button
         onView(withId(R.id.tvErrorCompanyName))
-                .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorCompanyPosition))
-                .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorPostCode))
-                .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorCity))
-                .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
 
         onView(withId(R.id.tvErrorStreet))
-                .check(matches(not(isDisplayed())))
+            .check(matches(not(isDisplayed())))
     }
 
+    @Ignore
     @Test
     fun emptyInputData() {
 
@@ -110,55 +117,56 @@ class CreateCompanyTests {
 
         // Click registration button without any data entered
         onView(withId(R.id.btnCreateCompany))
-                .perform(scrollTo(), click())
+            .perform(scrollTo(), click())
 
         // TODO: replace matcher texts with string resources
 
         // Most error textviews should now be visible
         onView(withId(R.id.tvErrorCompanyName))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The company name is required")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The company name is required")))
 
         onView(withId(R.id.tvErrorCompanyPosition))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The position is required")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The position is required")))
 
         onView(withId(R.id.tvErrorPostCode))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The post code is required")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The post code is required")))
 
         onView(withId(R.id.tvErrorCity))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The city is required")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The city is required")))
 
         onView(withId(R.id.tvErrorStreet))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The street is required")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The street is required")))
     }
 
+    @Ignore
     @Test
     fun invalidInputDataTooShort() {
         openFragment()
 
         // type too short company name
         onView(withId(R.id.etCompanyName))
-                .perform(scrollTo(), typeText("A"))
+            .perform(scrollTo(), typeText("A"))
 
         // type too short company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(scrollTo(), typeText("A"))
+            .perform(scrollTo(), typeText("A"))
 
         // type too short postal code
         onView(withId(R.id.etPostCode))
-                .perform(scrollTo(), typeText("A"))
+            .perform(scrollTo(), typeText("A"))
 
         // type too short city
         onView(withId(R.id.etCity))
-                .perform(scrollTo(), typeText("A"))
+            .perform(scrollTo(), typeText("A"))
 
         // type Street without nr/street name (only 1 word)
         onView(withId(R.id.etStreet))
-                .perform(scrollTo(), typeText("Street"))
+            .perform(scrollTo(), typeText("Street"))
 
         closeSoftKeyboard()
 
@@ -169,27 +177,28 @@ class CreateCompanyTests {
         // check if error messages are correct
         // TODO: replace with string resources
         onView(withId(R.id.tvErrorCompanyName))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The company name must be between 2 and 255 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The company name must be between 2 and 255 characters")))
 
         onView(withId(R.id.tvErrorCompanyPosition))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The position must be between 2 and 255 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The position must be between 2 and 255 characters")))
 
         onView(withId(R.id.tvErrorPostCode))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The post code must be between 4 and 10 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The post code must be between 4 and 10 characters")))
 
         onView(withId(R.id.tvErrorCity))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The city must be between 2 and 255 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The city must be between 2 and 255 characters")))
 
         onView(withId(R.id.tvErrorStreet))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The street must contain a street name and a street number")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The street must contain a street name and a street number")))
 
     }
 
+    @Ignore
     @Test
     fun invalidInputDataTooLong() {
         openFragment()
@@ -200,19 +209,19 @@ class CreateCompanyTests {
 
         // type too long company name
         onView(withId(R.id.etCompanyName))
-                .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
+            .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
 
         // type too long company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
+            .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
 
         // type too long postal code
         onView(withId(R.id.etPostCode))
-                .perform(scrollTo(), typeText("a".repeat(characterLimitPostalCode + 1)))
+            .perform(scrollTo(), typeText("a".repeat(characterLimitPostalCode + 1)))
 
         // type too long city
         onView(withId(R.id.etCity))
-                .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
+            .perform(scrollTo(), typeText("a".repeat(characterLimit + 1)))
 
         closeSoftKeyboard()
 
@@ -223,22 +232,23 @@ class CreateCompanyTests {
         // check if error messages are correct
         // TODO: replace with string resources
         onView(withId(R.id.tvErrorCompanyName))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The company name must be between 2 and 255 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The company name must be between 2 and 255 characters")))
 
         onView(withId(R.id.tvErrorCompanyPosition))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The position must be between 2 and 255 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The position must be between 2 and 255 characters")))
 
         onView(withId(R.id.tvErrorPostCode))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The post code must be between 4 and 10 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The post code must be between 4 and 10 characters")))
 
         onView(withId(R.id.tvErrorCity))
-                .check(matches(isDisplayed()))
-                .check(matches(withText("The city must be between 2 and 255 characters")))
+            .check(matches(isDisplayed()))
+            .check(matches(withText("The city must be between 2 and 255 characters")))
     }
 
+    @Ignore
     @Test
     fun duplicateCompanyFails() {
 
@@ -280,6 +290,7 @@ class CreateCompanyTests {
             .check(matches(withText(R.string.error_company_exists)))
     }
 
+    @Ignore
     @Test
     fun validInputData() {
         openFragment()
@@ -288,23 +299,23 @@ class CreateCompanyTests {
 
         // type valid company name
         onView(withId(R.id.etCompanyName))
-                .perform(scrollTo(), typeText(dummyCompanyName))
+            .perform(scrollTo(), typeText(dummyCompanyName))
 
         // type valid company position
         onView(withId(R.id.etCompanyPosition))
-                .perform(scrollTo(), typeText("CEO"))
+            .perform(scrollTo(), typeText("CEO"))
 
         // type valid postal code
         onView(withId(R.id.etPostCode))
-                .perform(scrollTo(), typeText("8010"))
+            .perform(scrollTo(), typeText("8010"))
 
         // type valid city
         onView(withId(R.id.etCity))
-                .perform(scrollTo(), typeText("Graz"))
+            .perform(scrollTo(), typeText("Graz"))
 
         // type valid Street
         onView(withId(R.id.etStreet))
-                .perform(scrollTo(), typeText("Street 1"))
+            .perform(scrollTo(), typeText("Street 1"))
 
         closeSoftKeyboard()
 
