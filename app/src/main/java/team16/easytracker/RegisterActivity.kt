@@ -147,6 +147,7 @@ class RegisterActivity : AppCompatActivity() {
 
             val addressId = DbHelper.saveAddress(street, postCode, city)
 
+            // TODO: no check for error! workerId is -1 if email is duplicate
             val workerId = DbHelper.saveWorker(
                     firstName,
                     lastName,
