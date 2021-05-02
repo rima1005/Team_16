@@ -9,18 +9,34 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <Button
-        android:id="@+id/btnCreateCompany"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="#168AAD"
-        android:fontFamily="sans-serif-light"
-        android:text="@string/create_company"
-        android:textColor="#FFFFFF"
-        app:backgroundTint="#168AAD" />
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAddWorker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5pt"
+            android:background="#168AAD"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/add_worker"
+            android:textColor="#FFFFFF"
+            android:layout_weight="1"
+            app:backgroundTint="#168AAD" />
+
+        <Button
+            android:id="@+id/btnCreateCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5pt"
+            android:background="#168AAD"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/create_company"
+            android:textColor="#FFFFFF"
+            android:layout_weight="1"
+            app:backgroundTint="#168AAD" />
+    </LinearLayout>
 
 </FrameLayout>
