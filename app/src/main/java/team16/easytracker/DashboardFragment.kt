@@ -80,17 +80,29 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         val worker_trackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
         val active_tracking = worker_trackings!!.elementAt(worker_trackings.size - 1)
         if(active_tracking.endTime == LocalDateTime.MIN){
-            DbHelper.updateTracking(active_tracking.id,
-                                    active_tracking.name,
-                                    active_tracking.workerId,
-                                    active_tracking.startTime,
-                                    LocalDateTime.now(),
-                                    active_tracking.description,
-                                    active_tracking.bluetoothDevice)
-            btnStopTracking.visibility = View.GONE
-            tvActiveTracking.visibility = View.GONE
-            tvLabelActiveTracking.visibility = View.GONE
-            btnStartTracking.visibility = View.VISIBLE
+            val builder = AlertDialog.Builder(activity)
+            builder.setTitle("Stop Tracking?")
+            builder.setMessage("Do you really want to stop the tracking?")
+            builder.setCancelable(true)
+
+            builder.setPositiveButton(android.R.string.ok) { dialog, which ->
+                DbHelper.updateTracking(active_tracking.id,
+                                        active_tracking.name,
+                                        active_tracking.workerId,
+                                        active_tracking.startTime,
+                                        LocalDateTime.now(),
+                                        active_tracking.description,
+                                        active_tracking.bluetoothDevice)
+                btnStopTracking.visibility = View.GONE
+                tvActiveTracking.visibility = View.GONE
+                tvLabelActiveTracking.visibility = View.GONE
+                btnStartTracking.visibility = View.VISIBLE
+            }
+            builder.setNegativeButton(android.R.string.cancel) { dialog, which ->
+                //do nothing
+            }
+
+            builder.show()
         }
     }
 }
