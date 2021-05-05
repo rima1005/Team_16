@@ -20,6 +20,7 @@ import team16.easytracker.model.Tracking as TrackingModel
 import team16.easytracker.model.Worker as WorkerModel
 import java.io.*
 import java.time.*
+import java.time.format.DateTimeFormatter
 import kotlin.IllegalArgumentException
 
 /*
@@ -183,19 +184,19 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         if (!result.moveToFirst())
             return null
         val name = result.getString(result.getColumnIndex(Tracking.COL_NAME))
-        val workerId = result.getInt(result.getColumnIndex(Tracking.COL_NAME))
+        val workerId = result.getInt(result.getColumnIndex(Tracking.COL_WORKER_ID))
         val startTime = LocalDateTime.ofEpochSecond(
             result.getLong(result.getColumnIndex(Tracking.COL_START_TIME)),
             0,
             ZoneOffset.UTC
         )
         val endTime = LocalDateTime.ofEpochSecond(
-            result.getLong(result.getColumnIndex(Tracking.COL_NAME)),
+            result.getLong(result.getColumnIndex(Tracking.COL_END_TIME)),
             0,
             ZoneOffset.UTC
         )
-        val description = result.getString(result.getColumnIndex(Tracking.COL_NAME))
-        val bluetoothDevice = result.getString(result.getColumnIndex(Tracking.COL_NAME))
+        val description = result.getString(result.getColumnIndex(Tracking.COL_DESCRIPTION))
+        val bluetoothDevice = result.getString(result.getColumnIndex(Tracking.COL_BLUETOOTH_DEVICE))
 
         result.close()
         return TrackingModel(id, name, workerId, startTime, endTime, description, bluetoothDevice)
@@ -204,7 +205,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     fun loadWorkerTrackings(workerId: Int): List<TrackingModel>? {
         val result = readableDatabase.rawQuery(
                 "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ?",
-                arrayOf("0")//workerId.toString())
+                arrayOf(workerId.toString())
         )
         var trackings: List<TrackingModel> = ArrayList<TrackingModel>()
         if (result == null || !result.moveToFirst())
@@ -458,9 +459,8 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         startDateTime: LocalDateTime,
         endDateTime: LocalDateTime,
         trackingNotes: String,
-        bluetoothDevice: String): Int {
+        bluetoothDevice: String) {
         val values = ContentValues().apply {
-            put(Tracking.COL_ID, trackingId)
             put(Tracking.COL_NAME, trackingName)
             put(Tracking.COL_WORKER_ID, workerId)
             put(Tracking.COL_START_TIME, startDateTime.toEpochSecond(ZoneOffset.UTC))
@@ -468,6 +468,9 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
             put(Tracking.COL_DESCRIPTION, trackingNotes)
             put(Tracking.COL_BLUETOOTH_DEVICE, bluetoothDevice)
         }
-        return writableDatabase.insert(Tracking.TABLE_NAME, null, values).toInt()
+        writableDatabase.update(Tracking.TABLE_NAME, values,
+                     "${Tracking.COL_ID} = ?",
+                                 arrayOf(trackingId.toString()))
+        return
     }
 }
