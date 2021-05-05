@@ -15,8 +15,6 @@ import java.time.LocalDateTime
 
 class CompanyAdminActivity : AppCompatActivity() {
 
-    lateinit var dbHelper: DbHelper
-
     lateinit var etWorkerEmail: EditText
     lateinit var tvErrorEmail: TextView
     lateinit var etPosition: EditText
@@ -27,8 +25,6 @@ class CompanyAdminActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.companyadminactivity)
-
-        dbHelper = DbHelper(this)
 
         etWorkerEmail = findViewById(R.id.etEmail)
         tvErrorEmail = findViewById(R.id.tvErrorEmail)
@@ -66,7 +62,7 @@ class CompanyAdminActivity : AppCompatActivity() {
             return
 
         val now = LocalDateTime.now().withNano(0)
-        val id = dbHelper.saveWorker(
+        val id = DbHelper.saveWorker(
             "Test",
             "WORKER_DUMMY_LAST_NAME",
             now.toLocalDate(),
@@ -77,9 +73,9 @@ class CompanyAdminActivity : AppCompatActivity() {
             now,
             1
         )
-        val worker = dbHelper.loadWorker(workerEmail) ?: return
+        val worker = DbHelper.loadWorker(workerEmail) ?: return
         val companyId = 0 // TODO: get id from logged in CompanyWorker
-        dbHelper.addWorkerToCompany(worker.getId(), companyId, companyPosition)
+        DbHelper.addWorkerToCompany(worker.getId(), companyId, companyPosition)
         // TODO: redirect back to worker?
     }
 
