@@ -98,6 +98,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun checkActiveTracking() {
+        if (MyApplication.loggedInWorker == null)
+            return
+
         val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
 
         if (workerTrackings.isNullOrEmpty())
