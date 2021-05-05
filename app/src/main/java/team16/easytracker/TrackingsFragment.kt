@@ -10,11 +10,6 @@ import android.widget.ListView
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.TrackingsAdapter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class Trackings : Fragment() {
     lateinit var btnCreateTracking : Button
 
@@ -39,14 +34,11 @@ class Trackings : Fragment() {
 
         //--------------------------------------------------------------------------
 
-        val trackingsList = DbHelper.loadWorkerTrackings(0)?.toMutableList() // TODO: Load trackings from logged in worker
+        val trackingsList = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())?.toMutableList()
 
         if (trackingsList != null) {
             val adapter = context?.let { TrackingsAdapter(it, trackingsList, activity!!) }
             listView.adapter = adapter
         }
-    }
-
-    fun createTracking(view: View) {
     }
 }

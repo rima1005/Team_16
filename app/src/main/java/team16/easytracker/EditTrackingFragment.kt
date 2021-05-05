@@ -66,13 +66,10 @@ class EditTrackingFragment : Fragment() {
             trackingId = it.getInt("id")
         }
 
-
-        Log.e("EditTrackingFragment", "TrackingId: " + trackingId.toString())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        Log.e("EditTrackingFragment", "Tracking: " + (DbHelper.loadTracking(trackingId!!)?.name))
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_tracking, container, false)
     }
@@ -80,26 +77,26 @@ class EditTrackingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Initialize view fields
-        etStartDate = view.findViewById(R.id.etTrackingStartDate)
-        etStartTime = view.findViewById(R.id.etTrackingStartTime)
-        etEndDate = view.findViewById(R.id.etTrackingEndDate)
-        etEndTime = view.findViewById(R.id.etTrackingEndTime)
-        etTrackingName = view.findViewById(R.id.etTrackingName)
-        etTrackingNotes = view.findViewById(R.id.etTrackingNotes)
-        etBluetoothDevice = view.findViewById(R.id.etBluetoothDevice)
+        etStartDate = view.findViewById(R.id.etTrackingStartDateEdit)
+        etStartTime = view.findViewById(R.id.etTrackingStartTimeEdit)
+        etEndDate = view.findViewById(R.id.etTrackingEndDateEdit)
+        etEndTime = view.findViewById(R.id.etTrackingEndTimeEdit)
+        etTrackingName = view.findViewById(R.id.etTrackingNameEdit)
+        etTrackingNotes = view.findViewById(R.id.etTrackingNotesEdit)
+        etBluetoothDevice = view.findViewById(R.id.etBluetoothDeviceEdit)
 
-        btnSelectStartDate = view.findViewById(R.id.btnCreateTrackingSelectStartDate)
-        btnSelectStartTime = view.findViewById(R.id.btnCreateTrackingSelectStartTime)
-        btnSelectEndDate = view.findViewById(R.id.btnCreateTrackingSelectEndDate)
-        btnSelectEndTime = view.findViewById(R.id.btnCreateTrackingSelectEndTime)
+        btnSelectStartDate = view.findViewById(R.id.btnEditTrackingSelectStartDate)
+        btnSelectStartTime = view.findViewById(R.id.btnEditTrackingSelectStartTime)
+        btnSelectEndDate = view.findViewById(R.id.btnEditTrackingSelectEndDate)
+        btnSelectEndTime = view.findViewById(R.id.btnEditTrackingSelectEndTime)
 
-        tvErrorStartDate = view.findViewById(R.id.tvErrorTrackingStartDate)
-        tvErrorStartTime = view.findViewById(R.id.tvErrorTrackingStartTime)
-        tvErrorEndDate = view.findViewById(R.id.tvErrorTrackingEndDate)
-        tvErrorEndTime = view.findViewById(R.id.tvErrorTrackingEndTime)
-        tvErrorTrackingName = view.findViewById(R.id.tvErrorTrackingName)
-        tvErrorTrackingNotes = view.findViewById(R.id.tvErrorTrackingNotes)
-        tvErrorBluetoothDevice = view.findViewById(R.id.tvErrorBluetoothDevice)
+        tvErrorStartDate = view.findViewById(R.id.tvErrorTrackingStartDateEdit)
+        tvErrorStartTime = view.findViewById(R.id.tvErrorTrackingStartTimeEdit)
+        tvErrorEndDate = view.findViewById(R.id.tvErrorTrackingEndDateEdit)
+        tvErrorEndTime = view.findViewById(R.id.tvErrorTrackingEndTimeEdit)
+        tvErrorTrackingName = view.findViewById(R.id.tvErrorTrackingNameEdit)
+        tvErrorTrackingNotes = view.findViewById(R.id.tvErrorTrackingNotesEdit)
+        tvErrorBluetoothDevice = view.findViewById(R.id.tvErrorBluetoothDeviceEdit)
 
         btnSelectStartDate.setOnClickListener { setDate(etStartDate, view) }
         btnSelectStartTime.setOnClickListener { setTime(etStartTime) }
@@ -116,9 +113,9 @@ class EditTrackingFragment : Fragment() {
         val tracking : Tracking? = DbHelper.loadTracking(trackingId!!)
 
         etStartDate.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-        etStartTime.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("hh:mm")))
+        etStartTime.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("HH:mm")))
         etEndDate.text = Editable.Factory.getInstance().newEditable(tracking?.endTime?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
-        etEndTime.text = Editable.Factory.getInstance().newEditable(tracking?.endTime?.format(DateTimeFormatter.ofPattern("hh:mm")))
+        etEndTime.text = Editable.Factory.getInstance().newEditable(tracking?.endTime?.format(DateTimeFormatter.ofPattern("HH:mm")))
         etTrackingName.text = Editable.Factory.getInstance().newEditable(tracking?.name)
         etTrackingNotes.text = Editable.Factory.getInstance().newEditable(tracking?.description)
         etBluetoothDevice.text = Editable.Factory.getInstance().newEditable(tracking?.bluetoothDevice)
@@ -182,8 +179,8 @@ class EditTrackingFragment : Fragment() {
             val startDateTime: LocalDateTime = LocalDateTime.parse("$startDate $startTime", formatter)
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
-            val workerId = 0 // TODO: set this from logged in worker
-            /*DbHelper.updateTracking(
+            val workerId = MyApplication.loggedInWorker!!.getId()
+            DbHelper.updateTracking(
                 trackingId,
                 trackingName,
                 workerId,
@@ -191,7 +188,7 @@ class EditTrackingFragment : Fragment() {
                 endDateTime,
                 trackingNotes,
                 bluetoothDevice
-            )*/
+            )
 
             Log.i("Tracking edited", "The tracking has been edited with tracking ID " + trackingId)
             showSuccessDialog()
