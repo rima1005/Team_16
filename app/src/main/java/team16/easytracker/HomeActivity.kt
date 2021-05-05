@@ -10,12 +10,12 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homeactivity)
 
-        val dashboardFragment=Dashboard()
-        val trackingsFragment=Trackings()
-        val companyFragment=CompanyFragment()
-        val profileFragment=Profile()
+        val dashboardFragment = DashboardFragment()
+        val trackingsFragment = Trackings()
+        val companyFragment = CompanyFragment()
+        val profileFragment = Profile()
 
-        setCurrentFragment(profileFragment)
+        setCurrentFragment(dashboardFragment)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setOnNavigationItemSelectedListener {
