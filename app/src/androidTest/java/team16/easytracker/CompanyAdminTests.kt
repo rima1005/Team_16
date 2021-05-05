@@ -122,7 +122,6 @@ class CompanyAdminTests {
         transaction.commit()
     }
 
-    @Ignore
     @Test
     fun testOpenFragment() {
         openFragment()
@@ -130,7 +129,6 @@ class CompanyAdminTests {
             .check(matches((isDisplayed())))
     }
 
-    @Ignore
     @Test
     fun errorsHiddenOnStart() {
         openFragment()
@@ -145,7 +143,6 @@ class CompanyAdminTests {
             .check(matches(not(isDisplayed())))
     }
 
-    @Ignore
     @Test
     fun emptyInputData() {
 
@@ -167,7 +164,6 @@ class CompanyAdminTests {
             .check(matches(withText("Invalid Employee Position")))
     }
 
-    @Ignore
     @Test
     fun validInputData() {
 
@@ -189,7 +185,6 @@ class CompanyAdminTests {
             .check(matches(withText("Employee has been added successfully")))
     }
 
-    @Ignore
     @Test
     fun invalidInputData() {
         openFragment()
