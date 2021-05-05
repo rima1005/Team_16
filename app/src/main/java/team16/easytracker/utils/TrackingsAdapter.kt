@@ -1,16 +1,19 @@
 package team16.easytracker.utils
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
+import team16.easytracker.EditTrackingFragment
 import team16.easytracker.R
-import team16.easytracker.Trackings
 import team16.easytracker.model.Tracking as TrackingModel
 
-class TrackingsAdapter(private val context: Context, private val source: List<TrackingModel>) : BaseAdapter() {
+class TrackingsAdapter(private val context: Context, private val source: List<TrackingModel>, private val activity: FragmentActivity) : BaseAdapter() {
     //private val inflater: LayoutInflater
     //        = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -35,6 +38,19 @@ class TrackingsAdapter(private val context: Context, private val source: List<Tr
         tvName?.text = source[position].name
         val time: String = source[position].startTime.toString() + " - " + source[position].endTime.toString()
         tvTime?.text = time
+
+        val btnEditTracking: Button? = convertView?.findViewById(R.id.btnEditTracking)
+        btnEditTracking?.setOnClickListener {
+            val bundle: Bundle = Bundle()
+            bundle.putInt("id", source[position].id)
+            val editTrackingFragment = EditTrackingFragment()
+            editTrackingFragment.arguments = bundle
+            activity!!.supportFragmentManager.beginTransaction()
+                    .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
+                    .addToBackStack(null)
+                    .commit()
+        }
+
         return convertView
     }
 }

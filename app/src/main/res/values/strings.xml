@@ -8,6 +8,8 @@
     <string name="worker">Worker</string>
     <string name="start_tracking">Start Tracking</string>
     <string name="create_tracking">Create Tracking</string>
+    <string name="edit_tracking">Edit Tracking</string>
+    <string name="update_tracking">Update Tracking</string>
     <string name="registration">Registration</string>
 
     <!-- Registration Form -->

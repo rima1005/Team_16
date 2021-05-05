@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
-import java.time.LocalDateTime
 
 class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
     lateinit var etCompanyName: EditText
@@ -110,7 +109,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         MyApplication.loggedInWorker = DbHelper.loadWorker(worker.getId())
 
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flFragment, Company())
+        transaction.replace(R.id.flFragment, CompanyFragment())
         transaction.disallowAddToBackStack()
         transaction.commit()
     }

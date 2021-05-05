@@ -9,7 +9,6 @@ import android.widget.Button
 import android.widget.ListView
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.TrackingsAdapter
-import java.time.LocalDateTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -29,7 +28,7 @@ class Trackings : Fragment() {
 
         btnCreateTracking = view.findViewById(R.id.btnCreateTracking)
         btnCreateTracking?.setOnClickListener {
-            val createTrackingFragment = CreateTracking()
+            val createTrackingFragment = CreateTrackingFragment()
             activity!!.supportFragmentManager.beginTransaction()
                     .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
                     .addToBackStack(null)
@@ -37,53 +36,15 @@ class Trackings : Fragment() {
         }
 
         var listView : ListView = view.findViewById<ListView>(R.id.lvTrackings)
-        //remove later just for testing -------------------------------------------------
-        var trackingId = DbHelper.saveTracking(
-                "test1",
-                0,
-                LocalDateTime.now() ,
-                LocalDateTime.now() ,
-                "note asdf",
-                "asdfasdfasdfasdf"
-        )
-        trackingId = DbHelper.saveTracking(
-                "test2",
-                0,
-                LocalDateTime.now() ,
-                LocalDateTime.now() ,
-                "note asdf",
-                "asdfasdfasdfasdf"
-        )
-        trackingId = DbHelper.saveTracking(
-                "test3",
-                0,
-                LocalDateTime.now() ,
-                LocalDateTime.now() ,
-                "note asdf",
-                "asdfasdfasdfasdf"
-        )
-        trackingId = DbHelper.saveTracking(
-                "test4",
-                0,
-                LocalDateTime.now() ,
-                LocalDateTime.now() ,
-                "note asdf",
-                "asdfasdfasdfasdf"
-        )
+
         //--------------------------------------------------------------------------
 
-        val trackingsList = DbHelper.loadWorkerTrackings(0)?.toMutableList()
-        val listItems = arrayOfNulls<String>(trackingsList!!.size!!)
+        val trackingsList = DbHelper.loadWorkerTrackings(0)?.toMutableList() // TODO: Load trackings from logged in worker
 
         if (trackingsList != null) {
-            for (i in listItems.indices) {
-                val tracking = trackingsList?.get(i)
-                listItems?.set(i, tracking.name)
-            }
+            val adapter = context?.let { TrackingsAdapter(it, trackingsList, activity!!) }
+            listView.adapter = adapter
         }
-
-        val adapter = context?.let { TrackingsAdapter(it, trackingsList) }
-        listView.adapter = adapter
     }
 
     fun createTracking(view: View) {

@@ -12,7 +12,7 @@ class HomeActivity : AppCompatActivity() {
 
         val dashboardFragment=Dashboard()
         val trackingsFragment=Trackings()
-        val companyFragment=Company()
+        val companyFragment=CompanyFragment()
         val profileFragment=Profile()
 
         setCurrentFragment(profileFragment)

@@ -450,4 +450,24 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
         return loadWorker(workerId)
     }
+
+    fun updateTracking(
+        trackingId: Int?,
+        trackingName: String,
+        workerId: Int,
+        startDateTime: LocalDateTime,
+        endDateTime: LocalDateTime,
+        trackingNotes: String,
+        bluetoothDevice: String): Int {
+        val values = ContentValues().apply {
+            put(Tracking.COL_ID, trackingId)
+            put(Tracking.COL_NAME, trackingName)
+            put(Tracking.COL_WORKER_ID, workerId)
+            put(Tracking.COL_START_TIME, startDateTime.toEpochSecond(ZoneOffset.UTC))
+            put(Tracking.COL_END_TIME, endDateTime.toEpochSecond(ZoneOffset.UTC))
+            put(Tracking.COL_DESCRIPTION, trackingNotes)
+            put(Tracking.COL_BLUETOOTH_DEVICE, bluetoothDevice)
+        }
+        return writableDatabase.insert(Tracking.TABLE_NAME, null, values).toInt()
+    }
 }
