@@ -27,6 +27,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loginactivity)
 
+        MyApplication.updateResources(this)
+
         btnLogin = findViewById(R.id.btnLogin)
 
         etPassword = findViewById(R.id.etPassword)

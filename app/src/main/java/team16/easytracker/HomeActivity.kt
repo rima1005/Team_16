@@ -10,6 +10,8 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homeactivity)
 
+        MyApplication.updateResources(this)
+
         val dashboardFragment=Dashboard()
         val trackingsFragment=Trackings()
         val companyFragment=Company()
@@ -27,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
-
+        bottomNavigationView.selectedItemId = R.id.profile
     }
 
     private fun setCurrentFragment(fragment: Fragment)=
