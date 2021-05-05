@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateTrackingFragment">
+    tools:context=".EditTrackingFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/create_tracking">
+        android:text="@string/edit_tracking">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:layout_margin="10dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
-                android:text="@string/create_tracking"
+                android:text="@string/edit_tracking"
                 android:textColor="#000"
                 android:textSize="40sp" />
 
@@ -443,7 +443,7 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/btnCreateTrackingSave"
+                android:id="@+id/btnUpdateTracking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -452,12 +452,12 @@
                 android:layout_marginBottom="10dp"
                 android:background="#168AAD"
                 android:fontFamily="sans-serif-light"
-                android:text="@string/save_tracking"
+                android:text="@string/update_tracking"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="#168AAD" />
 
             <Button
-                android:id="@+id/btnCreateTrackingBack"
+                android:id="@+id/btnEditTrackingBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
