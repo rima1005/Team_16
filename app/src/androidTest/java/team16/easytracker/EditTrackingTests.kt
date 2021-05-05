@@ -3,6 +3,7 @@ package team16.easytracker
 import android.app.Activity
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import android.os.Bundle
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
@@ -47,6 +48,8 @@ class EditTrackingTests {
     val phoneNumber = "43660151625"
     val phonePrefix = "43"
 
+    var trackingId = 0
+
     val startTime = LocalDateTime.parse("05.05.2021 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
     val endTime = LocalDateTime.parse("05.05.2021 18:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
     val trackingName = "Work ASD"
@@ -70,20 +73,20 @@ class EditTrackingTests {
         )
 
         val trackingId = DbHelper.saveTracking(trackingName, workerId, startTime, endTime, description, bluetoothDevice)
-
+        DbHelper.loginWorker(email, password)
         return trackingId
     }
 
     @Before
     fun init() {
-        writableDb = DbHelper.writableDatabase
+        /*writableDb = DbHelper.writableDatabase
         readable = DbHelper.readableDatabase
-        writableDb.beginTransaction()
+        writableDb.beginTransaction()*/
     }
 
     @After
     fun tearDown() {
-        writableDb.endTransaction()
+        /*writableDb.endTransaction()*/
     }
 
     fun getCurrentActivity(): Activity? {
@@ -92,34 +95,34 @@ class EditTrackingTests {
         return currentActivity
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun invalidStartDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
-
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.asd.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.asd.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:30"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:30"), closeSoftKeyboard())
-
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -127,39 +130,43 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingStartDate))
+        onView(withId(R.id.tvTrackingStartDateEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingStartDate))
+        onView(withId(R.id.tvErrorTrackingStartDateEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The start date must be of format DD.MM.YYYY")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun emptyStartDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnEditTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
 
         onView(withId(R.id.etTrackingStartTimeEdit))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
         onView(withId(R.id.etTrackingEndDateEdit))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
         onView(withId(R.id.etTrackingEndTimeEdit))
-                .perform(typeText("14:30"), closeSoftKeyboard())
+                .perform(replaceText("14:30"), closeSoftKeyboard())
 
         onView(withId(R.id.etTrackingNameEdit))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -175,34 +182,35 @@ class EditTrackingTests {
                 .check(matches(withText("The start date is required")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun invalidEndDateCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.asd.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.asd.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:30"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:30"), closeSoftKeyboard())
-
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -210,39 +218,43 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingEndDate))
+        onView(withId(R.id.tvTrackingEndDateEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingEndDate))
+        onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The end date must be of format DD.MM.YYYY")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun emptyEndDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:30"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:30"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -250,42 +262,43 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingEndDate))
+        onView(withId(R.id.tvTrackingEndDateEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingEndDate))
+        onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The end date is required")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun invalidStartTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10asdf:asdf:99"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10asdf:asdf:99"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:30"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:30"), closeSoftKeyboard())
-
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -293,40 +306,44 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingStartTime))
+        onView(withId(R.id.tvTrackingStartTimeEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingStartTime))
+        onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The start time must be of format H:mm")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun emptyStartTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
 
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -334,42 +351,43 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingStartTime))
+        onView(withId(R.id.tvTrackingStartTimeEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingStartTime))
+        onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The start time is required")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun invalidEndTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("10asdf:asdf:99"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("10asdf:asdf:99"), closeSoftKeyboard())
-
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -377,39 +395,43 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingEndTime))
+        onView(withId(R.id.tvTrackingEndTimeEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingEndTime))
+        onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The end time must be of format H:mm")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun emptyEndTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking name"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -417,39 +439,43 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingEndTime))
+        onView(withId(R.id.tvTrackingEndTimeEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingEndTime))
+        onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The end time is required")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun emptyTrackingNameEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -457,42 +483,61 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvLabelTrackingName))
+        onView(withId(R.id.tvLabelTrackingNameEdit))
                 .perform(scrollTo())
 
-        onView(withId(R.id.tvErrorTrackingName))
+        onView(withId(R.id.tvErrorTrackingNameEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The tracking name is required")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun emptyInputEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
 
-        onView(withId(R.id.tvErrorTrackingStartDate))
+        onView(withId(R.id.tvErrorTrackingStartDateEdit))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorTrackingStartTime))
+        onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorTrackingEndDate))
+        onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorTrackingEndTime))
+        onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorTrackingName))
+        onView(withId(R.id.tvErrorTrackingNameEdit))
                 .check(matches(not(isDisplayed())))
+
+
+
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText(""), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -500,71 +545,74 @@ class EditTrackingTests {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        onView(withId(R.id.tvTrackingStartDate))
+        onView(withId(R.id.tvTrackingStartDateEdit))
                 .perform(scrollTo())
-        onView(withId(R.id.tvErrorTrackingStartDate))
+        onView(withId(R.id.tvErrorTrackingStartDateEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The start date is required")))
 
-        onView(withId(R.id.tvTrackingStartTime))
+        onView(withId(R.id.tvTrackingStartTimeEdit))
                 .perform(scrollTo())
-        onView(withId(R.id.tvErrorTrackingStartTime))
+        onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The start time is required")))
 
-        onView(withId(R.id.tvTrackingEndDate))
+        onView(withId(R.id.tvTrackingEndDateEdit))
                 .perform(scrollTo())
-        onView(withId(R.id.tvErrorTrackingEndDate))
+        onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The end date is required")))
 
-        onView(withId(R.id.tvTrackingEndTime))
+        onView(withId(R.id.tvTrackingEndTimeEdit))
                 .perform(scrollTo())
-        onView(withId(R.id.tvErrorTrackingEndTime))
+        onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The end time is required")))
 
-        onView(withId(R.id.tvLabelTrackingName))
+        onView(withId(R.id.tvLabelTrackingNameEdit))
                 .perform(scrollTo())
-        onView(withId(R.id.tvErrorTrackingName))
+        onView(withId(R.id.tvErrorTrackingNameEdit))
                 .check(matches(isDisplayed()))
                 .check(matches(withText("The tracking name is required")))
     }
 
-    @Ignore
+    //@Ignore
     @Test
     fun validEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
+        trackingId = insertDummyTracking()
+        val bundle: Bundle = Bundle()
+        bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
-        onView(withId(R.id.btnCreateTracking))
-                .perform(click())
+        onView(withId(R.id.etTrackingStartDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingStartTimeEdit))
+                .perform(replaceText("10:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingStartTime))
-                .perform(typeText("10:00"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndDateEdit))
+                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndDate))
-                .perform(typeText("28.04.2021"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingEndTimeEdit))
+                .perform(replaceText("14:00"), closeSoftKeyboard())
 
-        onView(withId(R.id.etTrackingEndTime))
-                .perform(typeText("14:00"), closeSoftKeyboard())
-
-        onView(withId(R.id.etTrackingName))
-                .perform(typeText("Some example tracking"), closeSoftKeyboard())
+        onView(withId(R.id.etTrackingNameEdit))
+                .perform(replaceText("Some example tracking"), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
 
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
-    }
 
+        //onView(withId(R.id.lvTrackings))
+        //        .check(matches(not(isDisplayed())))
+    }
 }
