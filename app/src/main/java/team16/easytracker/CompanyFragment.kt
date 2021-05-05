@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.Button
 import androidx.fragment.app.Fragment
 
-class Company : Fragment(R.layout.fragment_company) {
+class CompanyFragment : Fragment(R.layout.fragment_company) {
 
     lateinit var btnCreateCompany: Button
     lateinit var btnAddWorker: Button

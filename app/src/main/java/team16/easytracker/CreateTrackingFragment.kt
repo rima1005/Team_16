@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnFocusChangeListener
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Button
@@ -22,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-class CreateTracking : Fragment() {
+class CreateTrackingFragment : Fragment() {
 
     lateinit var etStartDate : EditText
     lateinit var etStartTime : EditText
@@ -93,7 +92,7 @@ class CreateTracking : Fragment() {
         btnBack?.setOnClickListener { backToTrackings() }
     }
 
-    fun setDate(editText: EditText, view: View) {
+    private fun setDate(editText: EditText, view: View) {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
         val month = c.get(Calendar.MONTH)
@@ -114,7 +113,7 @@ class CreateTracking : Fragment() {
         dpd.show()
     }
 
-    fun setTime(editText: EditText) {
+    private fun setTime(editText: EditText) {
         val cal = Calendar.getInstance()
         val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
             cal.set(Calendar.HOUR_OF_DAY, hour)
@@ -130,7 +129,7 @@ class CreateTracking : Fragment() {
         ).show()
     }
 
-    fun createTracking() {
+    private fun createTracking() {
         resetErrorMessages()
 
         val startDate = etStartDate.text.toString()
@@ -163,7 +162,7 @@ class CreateTracking : Fragment() {
             val startDateTime: LocalDateTime = LocalDateTime.parse("$startDate $startTime", formatter)
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
-            val workerId = 0; // TODO: set this from logged in worker
+            val workerId = MyApplication.loggedInWorker!!.getId() 
             val trackingId = DbHelper.saveTracking(
                 trackingName,
                 workerId,
@@ -174,7 +173,7 @@ class CreateTracking : Fragment() {
             )
 
             Log.i("Tracking created", "The tracking has been created with tracking ID " + trackingId)
-            showSucessDialog()
+            showSuccessDialog()
             backToTrackings()
 
         } else {
@@ -182,7 +181,7 @@ class CreateTracking : Fragment() {
         }
     }
 
-    fun showSucessDialog() {
+    private fun showSuccessDialog() {
         val builder = AlertDialog.Builder(activity)
         builder.setTitle("Tracking created")
         builder.setMessage("The tracking has been created!")
@@ -195,7 +194,7 @@ class CreateTracking : Fragment() {
         builder.show()
     }
 
-    fun backToTrackings() {
+    private fun backToTrackings() {
         val trackings = Trackings()
         activity!!.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "TrackingsFragment")
@@ -203,7 +202,7 @@ class CreateTracking : Fragment() {
             .commit()
     }
 
-    fun validateStartDate(startDate: String) : Boolean {
+    private fun validateStartDate(startDate: String) : Boolean {
         val errorStartDate = Validator.validateTrackingStartDate(startDate)
         if (errorStartDate != "") {
             tvErrorStartDate.text = errorStartDate
@@ -213,7 +212,7 @@ class CreateTracking : Fragment() {
         return true
     }
 
-    fun validateStartTime(startTime: String) : Boolean {
+    private fun validateStartTime(startTime: String) : Boolean {
         val errorStartDate = Validator.validateTrackingStartTime(startTime)
         if (errorStartDate != "") {
             tvErrorStartTime.text = errorStartDate
@@ -223,7 +222,7 @@ class CreateTracking : Fragment() {
         return true
     }
 
-    fun validateEndDate(endDate: String) : Boolean {
+    private fun validateEndDate(endDate: String) : Boolean {
         val errorStartDate = Validator.validateTrackingEndDate(endDate)
         if (errorStartDate != "") {
             tvErrorEndDate.text = errorStartDate
@@ -233,7 +232,7 @@ class CreateTracking : Fragment() {
         return true
     }
 
-    fun validateEndTime(endTime: String) : Boolean {
+    private fun validateEndTime(endTime: String) : Boolean {
         val errorStartDate = Validator.validateTrackingEndTime(endTime)
         if (errorStartDate != "") {
             tvErrorEndTime.text = errorStartDate
@@ -243,7 +242,7 @@ class CreateTracking : Fragment() {
         return true
     }
 
-    fun validateTrackingName(trackingName: String) : Boolean {
+    private fun validateTrackingName(trackingName: String) : Boolean {
         val errorTrackingName = Validator.validateTrackingName(trackingName)
         if (errorTrackingName != "") {
             tvErrorTrackingName.text = errorTrackingName
@@ -253,7 +252,7 @@ class CreateTracking : Fragment() {
         return true
     }
 
-    fun resetErrorMessages() {
+    private fun resetErrorMessages() {
         tvErrorStartDate.text = ""
         tvErrorStartDate.visibility = View.GONE
 

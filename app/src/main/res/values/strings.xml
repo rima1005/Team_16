@@ -8,6 +8,8 @@
     <string name="worker">Worker</string>
     <string name="start_tracking">Start Tracking</string>
     <string name="create_tracking">Create Tracking</string>
+    <string name="edit_tracking">Edit Tracking</string>
+    <string name="update_tracking">Update Tracking</string>
     <string name="registration">Registration</string>
 
     <!-- Registration Form -->
@@ -47,9 +49,10 @@
         <item>Other</item>
     </string-array>
 
-    <!-- Home Activity Fragments -->
-    <string name="profile_fragment">Hello profile fragment</string>
-    <string name="trackings_fragment">Hello trackings fragment</string>
+    <!-- TrackingsAdapter -->
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="select">Select</string>
     <string name="start_date">Start Date</string>
