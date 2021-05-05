@@ -10,10 +10,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import team16.easytracker.database.DbHelper
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.LocalTime
-
+import java.time.format.DateTimeFormatter
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
@@ -32,29 +30,31 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         tvActiveTracking = view.findViewById(R.id.tvActiveTracking)
 
         checkActiveTracking()
+
         btnStartTracking.setOnClickListener{startTracking()}
         btnStopTracking.setOnClickListener{stopTracking()}
     }
 
     private fun startTracking(){
         val builder = AlertDialog.Builder(context)
-        builder.setTitle("TrackingName")
+        builder.setTitle(R.string.tracking_name)
         val viewInflated: View = LayoutInflater.from(context)
-            .inflate(R.layout.text_input_dialogue, view as ViewGroup?, false)
-        val input = viewInflated.findViewById<View>(R.id.etActiveTracking) as EditText
+            .inflate(R.layout.text_input_dialog, view as ViewGroup?, false)
+        val input = viewInflated.findViewById<View>(R.id.etActiveTrackingName) as EditText
         builder.setView(viewInflated)
 
         builder.setPositiveButton(
             android.R.string.ok
         ) { dialog, which ->
             dialog.dismiss()
-            val active_tracking = input.text.toString()
-            val tracking_id = DbHelper.saveTracking(active_tracking,
-                MyApplication.loggedInWorker!!.getId(),
-                LocalDateTime.now(),
-                LocalDateTime.MIN,
-                "",
-                "")
+            val activeTrackingName = input.text.toString()
+            DbHelper.saveTracking(
+                    activeTrackingName,
+                    MyApplication.loggedInWorker!!.getId(),
+                    LocalDateTime.now(),
+                    LocalDateTime.MIN,
+                    "",
+                    "")
             checkActiveTracking()
         }
         builder.setNegativeButton(
@@ -64,45 +64,51 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         builder.show()
     }
 
-    private fun checkActiveTracking(){
-        val worker_trackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
-        if(worker_trackings.isNullOrEmpty())
-            return
-        else if(worker_trackings.elementAt(worker_trackings.size - 1).endTime == LocalDateTime.MIN){
-            btnStartTracking.visibility = View.GONE
-            btnStopTracking.visibility = View.VISIBLE
-            tvActiveTracking.visibility = View.VISIBLE
-            tvLabelActiveTracking.visibility = View.VISIBLE
-            tvActiveTracking.text = worker_trackings.elementAt(worker_trackings.size - 1).startTime.toString()
-        }
-    }
-    private fun stopTracking(){
-        val worker_trackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
-        val active_tracking = worker_trackings!!.elementAt(worker_trackings.size - 1)
-        if(active_tracking.endTime == LocalDateTime.MIN){
+    private fun stopTracking() {
+        val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+        val activeTracking = workerTrackings!!.elementAt(workerTrackings.size - 1)
+
+        if (activeTracking.endTime == LocalDateTime.MIN) {
             val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Stop Tracking?")
-            builder.setMessage("Do you really want to stop the tracking?")
+            builder.setTitle(getString(R.string.stop_tracking_question))
+            builder.setMessage(getString(R.string.do_you_really_want_to_stop_the_tracking_question))
             builder.setCancelable(true)
 
             builder.setPositiveButton(android.R.string.ok) { dialog, which ->
-                DbHelper.updateTracking(active_tracking.id,
-                                        active_tracking.name,
-                                        active_tracking.workerId,
-                                        active_tracking.startTime,
-                                        LocalDateTime.now(),
-                                        active_tracking.description,
-                                        active_tracking.bluetoothDevice)
+                DbHelper.updateTracking(
+                        activeTracking.id,
+                        activeTracking.name,
+                        activeTracking.workerId,
+                        activeTracking.startTime,
+                        LocalDateTime.now(),
+                        activeTracking.description,
+                        activeTracking.bluetoothDevice)
+
                 btnStopTracking.visibility = View.GONE
                 tvActiveTracking.visibility = View.GONE
                 tvLabelActiveTracking.visibility = View.GONE
                 btnStartTracking.visibility = View.VISIBLE
             }
             builder.setNegativeButton(android.R.string.cancel) { dialog, which ->
-                //do nothing
+                // Don't stop the tracking by doing nothing here
             }
 
             builder.show()
+        }
+    }
+
+    private fun checkActiveTracking() {
+        val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+
+        if (workerTrackings.isNullOrEmpty())
+            return
+
+        else if (workerTrackings.elementAt(workerTrackings.size - 1).endTime == LocalDateTime.MIN) {
+            btnStartTracking.visibility = View.GONE
+            btnStopTracking.visibility = View.VISIBLE
+            tvActiveTracking.visibility = View.VISIBLE
+            tvLabelActiveTracking.visibility = View.VISIBLE
+            tvActiveTracking.text = workerTrackings.elementAt(workerTrackings.size - 1).startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
         }
     }
 }

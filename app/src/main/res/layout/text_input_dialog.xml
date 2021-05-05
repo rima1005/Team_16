@@ -8,14 +8,12 @@
     android:layout_marginHorizontal="10dp">
 
     <EditText
-        android:id="@+id/etActiveTracking"
+        android:id="@+id/etActiveTrackingName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:paddingHorizontal="10dp"
-        android:text="Name"
+        android:inputType="textShortMessage|text"
         tools:layout_editor_absoluteX="105dp"
         tools:layout_editor_absoluteY="291dp" />
 </FrameLayout>

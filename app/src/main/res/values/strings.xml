@@ -69,4 +69,7 @@
     <string name="error_company_exists">Company with this name already exists</string>
     <string name="stop_tracking">Stop Tracking</string>
     <string name="active_tracking">Active Tracking</string>
+    <string name="stop_tracking_question">Stop Tracking?</string>
+    <string name="do_you_really_want_to_stop_the_tracking_question">Do you really want to stop the tracking?</string>
+    <string name="active_tracking_running_since">Active tracking running since</string>
 </resources>
