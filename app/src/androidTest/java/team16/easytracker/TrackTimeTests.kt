@@ -36,8 +36,10 @@ class TrackTimeTests {
 
     }
 
+    @Ignore
     @Test
     fun closeTracking() {
-
+        onView(withId(R.id.btnStopTracking))
+            .perform(click())
     }
 }

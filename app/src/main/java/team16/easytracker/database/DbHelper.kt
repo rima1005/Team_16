@@ -204,7 +204,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     fun loadWorkerTrackings(workerId: Int): List<TrackingModel>? {
         val result = readableDatabase.rawQuery(
                 "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ?",
-                arrayOf("0")//workerId.toString())
+                arrayOf(workerId.toString())
         )
         var trackings: List<TrackingModel> = ArrayList<TrackingModel>()
         if (result == null || !result.moveToFirst())
