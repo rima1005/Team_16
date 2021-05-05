@@ -9,11 +9,14 @@ import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.EditTrackingFragment
 import team16.easytracker.R
+import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking as TrackingModel
 
-class TrackingsAdapter(private val context: Context, private val source: List<TrackingModel>, private val activity: FragmentActivity) : BaseAdapter() {
+class TrackingsAdapter(private val context: Context, private val source: MutableList<TrackingModel>, private val activity: FragmentActivity) : BaseAdapter() {
     //private val inflater: LayoutInflater
     //        = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
@@ -51,6 +54,34 @@ class TrackingsAdapter(private val context: Context, private val source: List<Tr
                     .commit()
         }
 
+        val btnDeleteTracking: Button? = convertView?.findViewById(R.id.btnDeleteTracking)
+        btnDeleteTracking?.setOnClickListener {
+            var tracking = DbHelper.loadTracking(source[position].id)
+            var success = DbHelper.deleteTracking(source[position].id)
+            val successMessage: Snackbar
+            if (success == 1) {
+                successMessage = Snackbar.make(convertView, R.string.success_delete_tracking, BaseTransientBottomBar.LENGTH_LONG)
+                source.removeAt(position)
+                notifyDataSetChanged()
+                val onClickListener = object : View.OnClickListener {
+                    override fun onClick(v: View?) {
+                        if (tracking != null) {
+                            val trackingId = DbHelper.saveTracking(tracking!!.name, tracking!!.workerId, tracking!!.startTime, tracking!!.endTime, tracking!!.description, tracking!!.bluetoothDevice)
+                            tracking = DbHelper.loadTracking(trackingId)
+                            source.add(tracking!!)
+                            source.sortByDescending { it.startTime }
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+                successMessage.setAction(R.string.undo_delete_tracking, onClickListener)
+
+            } else
+                successMessage = Snackbar.make(convertView, R.string.fail_delete_tracking, BaseTransientBottomBar.LENGTH_LONG)
+            successMessage.show()
+        }
+
         return convertView
     }
+
 }

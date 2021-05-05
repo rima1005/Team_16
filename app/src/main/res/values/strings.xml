@@ -67,4 +67,7 @@
     <string name="some_notes">Some notes</string>
     <string name="work">Work</string>
     <string name="error_company_exists">Company with this name already exists</string>
+    <string name="success_delete_tracking">Tracking was successfully deleted!</string>
+    <string name="fail_delete_tracking">There was an error deleting the tracking!</string>
+    <string name="undo_delete_tracking">UNDO</string>
 </resources>

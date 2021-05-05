@@ -25,7 +25,7 @@ class DbHelperTests {
     val COMPANY_DUMMY_NAME = "company 1"
     val WORKER_DUMMY_FIRST_NAME = "Max"
     val WORKER_DUMMY_LAST_NAME = "Mustermann"
-    val DUMMY_EMAIL = "test.test@test.at"
+    val DUMMY_EMAIL = "test1.test@test.at"
     val DUMMY_PASSWORD = "securePassword"
 
     @Before
@@ -104,7 +104,7 @@ class DbHelperTests {
 
     }
 
-    @Ignore //TODO: Test works only on single execution, not in combination with other tests? probably a synchronization/locking problem
+    //TODO: Test works only on single execution, not in combination with other tests? probably a synchronization/locking problem
     @Test
     fun testExecuteSQLScript() {
         val assetManager = appContext.assets
@@ -251,5 +251,18 @@ class DbHelperTests {
         DbHelper.setCompanyAdmin(workerId, companyId, false)
         val nonAdminWorker = DbHelper.loadWorker(workerId)
         assert(nonAdminWorker?.admin == false)
+    }
+
+    @Test
+    fun testdeleteTracking()
+    {
+        val dummyName = "TEST"
+        val now = LocalDateTime.now()
+        val id = DbHelper.saveTracking(dummyName, 1, now, now, "desc", "bluetooth")
+        val tracking = DbHelper.loadTracking(id)
+        assert(tracking != null)
+        assert(tracking?.name == dummyName)
+        val success = DbHelper.deleteTracking(id)
+        assert(success == 1)
     }
 }

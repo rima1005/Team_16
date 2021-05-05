@@ -81,14 +81,12 @@ class CreateCompanyTests {
         transaction.commit()
     }
 
-    @Ignore
     @Test
     fun testOpenFragment() {
         openFragment()
         onView(withId(R.id.clFragmentCreateCompany)).check(matches((isDisplayed())))
     }
 
-    @Ignore
     @Test
     fun errorsHiddenOnStart() {
         openFragment()
@@ -109,7 +107,6 @@ class CreateCompanyTests {
             .check(matches(not(isDisplayed())))
     }
 
-    @Ignore
     @Test
     fun emptyInputData() {
 
@@ -143,7 +140,6 @@ class CreateCompanyTests {
             .check(matches(withText("The street is required")))
     }
 
-    @Ignore
     @Test
     fun invalidInputDataTooShort() {
         openFragment()
@@ -198,7 +194,6 @@ class CreateCompanyTests {
 
     }
 
-    @Ignore
     @Test
     fun invalidInputDataTooLong() {
         openFragment()
@@ -248,7 +243,6 @@ class CreateCompanyTests {
             .check(matches(withText("The city must be between 2 and 255 characters")))
     }
 
-    @Ignore
     @Test
     fun duplicateCompanyFails() {
 
@@ -290,7 +284,6 @@ class CreateCompanyTests {
             .check(matches(withText(R.string.error_company_exists)))
     }
 
-    @Ignore
     @Test
     fun validInputData() {
         openFragment()

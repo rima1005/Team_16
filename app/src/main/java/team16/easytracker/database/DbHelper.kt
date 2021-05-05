@@ -473,4 +473,10 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
                                  arrayOf(trackingId.toString()))
         return
     }
+
+    fun deleteTracking(trackingId: Int): Int
+    {
+        return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
+
+    }
 }

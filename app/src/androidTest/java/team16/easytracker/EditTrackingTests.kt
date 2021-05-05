@@ -95,7 +95,6 @@ class EditTrackingTests {
         return currentActivity
     }
 
-    @Ignore
     @Test
     fun invalidStartDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -138,7 +137,6 @@ class EditTrackingTests {
                 .check(matches(withText("The start date must be of format DD.MM.YYYY")))
     }
 
-    @Ignore
     @Test
     fun emptyStartDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -182,7 +180,6 @@ class EditTrackingTests {
                 .check(matches(withText("The start date is required")))
     }
 
-    @Ignore
     @Test
     fun invalidEndDateCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -226,7 +223,6 @@ class EditTrackingTests {
                 .check(matches(withText("The end date must be of format DD.MM.YYYY")))
     }
 
-    @Ignore
     @Test
     fun emptyEndDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -270,7 +266,6 @@ class EditTrackingTests {
                 .check(matches(withText("The end date is required")))
     }
 
-    @Ignore
     @Test
     fun invalidStartTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -314,7 +309,6 @@ class EditTrackingTests {
                 .check(matches(withText("The start time must be of format H:mm")))
     }
 
-    @Ignore
     @Test
     fun emptyStartTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -359,7 +353,6 @@ class EditTrackingTests {
                 .check(matches(withText("The start time is required")))
     }
 
-    @Ignore
     @Test
     fun invalidEndTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -403,7 +396,6 @@ class EditTrackingTests {
                 .check(matches(withText("The end time must be of format H:mm")))
     }
 
-    @Ignore
     @Test
     fun emptyEndTimeEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -447,7 +439,6 @@ class EditTrackingTests {
                 .check(matches(withText("The end time is required")))
     }
 
-    @Ignore
     @Test
     fun emptyTrackingNameEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -491,7 +482,6 @@ class EditTrackingTests {
                 .check(matches(withText("The tracking name is required")))
     }
 
-    @Ignore
     @Test
     fun emptyInputEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -576,7 +566,6 @@ class EditTrackingTests {
                 .check(matches(withText("The tracking name is required")))
     }
 
-    @Ignore
     @Test
     fun validEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
