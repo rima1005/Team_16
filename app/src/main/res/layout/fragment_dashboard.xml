@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/flFragmentDashboard"
+    tools:context=".DashboardFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btnStartTracking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="#168AAD"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/start_tracking"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#168AAD" />
+
+        <TextView
+            android:id="@+id/tvLabelActiveTracking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="@string/active_tracking_running_since"
+            android:visibility="gone"
+            android:textColor="#000" />
+
+        <TextView
+            android:id="@+id/tvActiveTracking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text=""
+            android:visibility="gone"
+            android:textColor="#000"
+            android:textSize="40sp" />
+
+        <Button
+            android:id="@+id/btnStopTracking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="#168AAD"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/stop_tracking"
+            android:visibility="gone"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#168AAD" />
+
+    </LinearLayout>
+</FrameLayout>
