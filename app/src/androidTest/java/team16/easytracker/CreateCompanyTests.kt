@@ -116,28 +116,26 @@ class CreateCompanyTests {
         onView(withId(R.id.btnCreateCompany))
             .perform(scrollTo(), click())
 
-        // TODO: replace matcher texts with string resources
-
         // Most error textviews should now be visible
         onView(withId(R.id.tvErrorCompanyName))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The company name is required")))
+            .check(matches(withText(R.string.company_name_required)))
 
         onView(withId(R.id.tvErrorCompanyPosition))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The position is required")))
+            .check(matches(withText(R.string.position_required)))
 
         onView(withId(R.id.tvErrorPostCode))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The post code is required")))
+            .check(matches(withText(R.string.post_code_required)))
 
         onView(withId(R.id.tvErrorCity))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The city is required")))
+            .check(matches(withText(R.string.city_required)))
 
         onView(withId(R.id.tvErrorStreet))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The street is required")))
+            .check(matches(withText(R.string.street_required)))
     }
 
     @Test
@@ -171,26 +169,25 @@ class CreateCompanyTests {
         onView(btn).perform(scrollTo(), click())
 
         // check if error messages are correct
-        // TODO: replace with string resources
         onView(withId(R.id.tvErrorCompanyName))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The company name must be between 2 and 255 characters")))
+            .check(matches(withText(R.string.company_name_length)))
 
         onView(withId(R.id.tvErrorCompanyPosition))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The position must be between 2 and 255 characters")))
+            .check(matches(withText(R.string.position_name_length)))
 
         onView(withId(R.id.tvErrorPostCode))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The post code must be between 4 and 10 characters")))
+            .check(matches(withText(R.string.post_code_length)))
 
         onView(withId(R.id.tvErrorCity))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The city must be between 2 and 255 characters")))
+            .check(matches(withText(R.string.city_name_length)))
 
         onView(withId(R.id.tvErrorStreet))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The street must contain a street name and a street number")))
+            .check(matches(withText(R.string.street_name_format)))
 
     }
 
@@ -225,22 +222,21 @@ class CreateCompanyTests {
         onView(btn).perform(scrollTo(), click())
 
         // check if error messages are correct
-        // TODO: replace with string resources
         onView(withId(R.id.tvErrorCompanyName))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The company name must be between 2 and 255 characters")))
+            .check(matches(withText(R.string.company_name_length)))
 
         onView(withId(R.id.tvErrorCompanyPosition))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The position must be between 2 and 255 characters")))
+            .check(matches(withText(R.string.position_name_length)))
 
         onView(withId(R.id.tvErrorPostCode))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The post code must be between 4 and 10 characters")))
+            .check(matches(withText(R.string.post_code_length)))
 
         onView(withId(R.id.tvErrorCity))
             .check(matches(isDisplayed()))
-            .check(matches(withText("The city must be between 2 and 255 characters")))
+            .check(matches(withText(R.string.city_name_length)))
     }
 
     @Test
@@ -274,6 +270,8 @@ class CreateCompanyTests {
         onView(withId(R.id.etStreet))
             .perform(scrollTo(), typeText("Street 1"))
 
+        closeSoftKeyboard()
+
         // Click registration button
         val btn = withId(R.id.btnCreateCompany)
         onView(btn).perform(scrollTo(), click())
@@ -288,7 +286,7 @@ class CreateCompanyTests {
     fun validInputData() {
         openFragment()
 
-        val dummyCompanyName = "Google"
+        val dummyCompanyName = "Google4565"
 
         // type valid company name
         onView(withId(R.id.etCompanyName))
@@ -324,7 +322,7 @@ class CreateCompanyTests {
 
         // check for correct redirect + company create button should now be gone
         onView(withId(R.id.flFragmentCompany)).check(matches(isDisplayed()))
-        onView(withId(R.id.btnCreateCompany)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.btnCreateCompany)).check(matches(not(isEnabled())))
     }
 
 }

@@ -16,6 +16,9 @@ class MainActivity : AppCompatActivity() {
 
         MyApplication.initLanguageSpinner(languageSpinner, this)
 
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val btnRegister = findViewById<Button>(R.id.btnRegister)
         btnRegister?.setOnClickListener() {

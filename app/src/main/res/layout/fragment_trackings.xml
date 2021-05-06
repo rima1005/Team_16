@@ -8,7 +8,6 @@
 
 
     <LinearLayout
-        android:id="@+id/lvTrackings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -28,6 +27,7 @@
             app:backgroundTint="#168AAD" />
 
         <ListView
+            android:id="@+id/lvTrackings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
