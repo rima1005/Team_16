@@ -1,6 +1,7 @@
 <resources>
     <!-- General Strings -->
     <string name="app_name">EasyTracker</string>
+    <string name="welcome_text">EasyTracker tracks your working time automatically. Just connect to your working device via Bluetooth and a timer in the app will start. You can add, edit and delete entries to build your timesheet, which can then be exported for your authorities, accountants or your boss.</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="mail">Mail</string>
