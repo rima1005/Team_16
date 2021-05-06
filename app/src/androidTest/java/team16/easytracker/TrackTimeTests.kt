@@ -121,4 +121,108 @@ class TrackTimeTests {
                 .check(matches(not(isDisplayed())))
     }
 
+    @Test
+    fun cancelStopTracking() {
+        openFragment()
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(withText(R.string.tracking_name))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.etActiveTrackingName))
+                .perform(typeText("Example tracking"), closeSoftKeyboard())
+
+        onView(withText(android.R.string.ok))
+                .perform(click())
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(withText(android.R.string.cancel))
+                .perform(click())
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(withText(android.R.string.ok))
+                .perform(click())
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun cancelStartTracking() {
+        openFragment()
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(withText(R.string.tracking_name))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.etActiveTrackingName))
+                .perform(typeText("Example tracking"), closeSoftKeyboard())
+
+        onView(withText(android.R.string.cancel))
+                .perform(click())
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(isDisplayed()))
+    }
+
 }
