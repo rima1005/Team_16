@@ -183,8 +183,8 @@ class CreateTrackingFragment : Fragment() {
 
     private fun showSuccessDialog() {
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("Tracking created")
-        builder.setMessage("The tracking has been created!")
+        builder.setTitle(getString(R.string.tracking_created))
+        builder.setMessage(getString(R.string.tracking_created))
         builder.setCancelable(false)
 
         builder.setPositiveButton("OK") { dialog, which ->

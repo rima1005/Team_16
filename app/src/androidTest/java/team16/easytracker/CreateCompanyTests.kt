@@ -322,7 +322,7 @@ class CreateCompanyTests {
 
         // check for correct redirect + company create button should now be gone
         onView(withId(R.id.flFragmentCompany)).check(matches(isDisplayed()))
-        onView(withId(R.id.btnCreateCompany)).check(matches(not(isEnabled())))
+        onView(withId(R.id.btnCreateCompanyFragment)).check(matches(not(isEnabled())))
     }
 
 }

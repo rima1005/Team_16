@@ -120,4 +120,9 @@
     <string name="success_delete_tracking">Tracking was successfully deleted!</string>
     <string name="fail_delete_tracking">There was an error deleting the tracking!</string>
     <string name="undo_delete_tracking">UNDO</string>
+    <string name="tracking_been_created">The tracking has been created!</string>
+    <string name="tracking_created">Tracking created</string>
+    <string name="tracking_edited">Tracking edited</string>
+    <string name="tracking_been_edited">The tracking has been edited!</string>
+
 </resources>

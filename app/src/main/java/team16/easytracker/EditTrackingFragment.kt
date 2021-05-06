@@ -180,8 +180,8 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
     private fun showSuccessDialog() {
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("Tracking edited")
-        builder.setMessage("The tracking has been edited!")
+        builder.setTitle(getString(R.string.tracking_edited))
+        builder.setMessage(getString(R.string.tracking_been_edited))
         builder.setCancelable(false)
 
         builder.setPositiveButton("OK") { dialog, which ->
