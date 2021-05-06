@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreateTrackingFragment">
+    tools:context=".EditTrackingFragment">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/create_tracking">
+        android:text="@string/edit_tracking">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,13 +19,13 @@
             tools:layout_editor_absoluteY="183dp">
 
             <TextView
-                android:id="@+id/tvCreateTracking"
+                android:id="@+id/tvCreateTrackingEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center"
-                android:text="@string/create_tracking"
+                android:text="@string/edit_tracking"
                 android:textColor="#000"
                 android:textSize="40sp" />
 
@@ -39,7 +39,7 @@
                 android:background="#c0c0c0" />
 
             <TextView
-                android:id="@+id/tvTrackingStartDate"
+                android:id="@+id/tvTrackingStartDateEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -57,7 +57,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/etTrackingStartDate"
+                    android:id="@+id/etTrackingStartDateEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -74,7 +74,7 @@
                     android:padding="10dp" />
 
                 <Button
-                    android:id="@+id/btnCreateTrackingSelectStartDate"
+                    android:id="@+id/btnEditTrackingSelectStartDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -93,7 +93,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvErrorTrackingStartDate"
+                android:id="@+id/tvErrorTrackingStartDateEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -107,7 +107,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvTrackingStartTime"
+                android:id="@+id/tvTrackingStartTimeEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -125,7 +125,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/etTrackingStartTime"
+                    android:id="@+id/etTrackingStartTimeEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -142,7 +142,7 @@
                     android:padding="10dp" />
 
                 <Button
-                    android:id="@+id/btnCreateTrackingSelectStartTime"
+                    android:id="@+id/btnEditTrackingSelectStartTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -161,7 +161,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvErrorTrackingStartTime"
+                android:id="@+id/tvErrorTrackingStartTimeEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -175,7 +175,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvTrackingEndDate"
+                android:id="@+id/tvTrackingEndDateEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -193,7 +193,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/etTrackingEndDate"
+                    android:id="@+id/etTrackingEndDateEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -210,7 +210,7 @@
                     android:padding="10dp" />
 
                 <Button
-                    android:id="@+id/btnCreateTrackingSelectEndDate"
+                    android:id="@+id/btnEditTrackingSelectEndDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -229,7 +229,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvErrorTrackingEndDate"
+                android:id="@+id/tvErrorTrackingEndDateEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -243,7 +243,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvTrackingEndTime"
+                android:id="@+id/tvTrackingEndTimeEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -261,7 +261,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/etTrackingEndTime"
+                    android:id="@+id/etTrackingEndTimeEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -278,7 +278,7 @@
                     android:padding="10dp" />
 
                 <Button
-                    android:id="@+id/btnCreateTrackingSelectEndTime"
+                    android:id="@+id/btnEditTrackingSelectEndTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
@@ -297,7 +297,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvErrorTrackingEndTime"
+                android:id="@+id/tvErrorTrackingEndTimeEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -311,7 +311,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvLabelTrackingName"
+                android:id="@+id/tvLabelTrackingNameEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -324,7 +324,7 @@
                 android:textColor="#000" />
 
             <EditText
-                android:id="@+id/etTrackingName"
+                android:id="@+id/etTrackingNameEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -341,7 +341,7 @@
                 android:padding="10dp" />
 
             <TextView
-                android:id="@+id/tvErrorTrackingName"
+                android:id="@+id/tvErrorTrackingNameEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -355,7 +355,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvTrackingNotes"
+                android:id="@+id/tvTrackingNotesEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -368,7 +368,7 @@
                 android:textColor="#000" />
 
             <EditText
-                android:id="@+id/etTrackingNotes"
+                android:id="@+id/etTrackingNotesEdit"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:gravity="top"
@@ -386,7 +386,7 @@
                 android:padding="10dp" />
 
             <TextView
-                android:id="@+id/tvErrorTrackingNotes"
+                android:id="@+id/tvErrorTrackingNotesEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -400,7 +400,7 @@
                 android:visibility="gone" />
 
             <TextView
-                android:id="@+id/tvBluetoothDevice"
+                android:id="@+id/tvBluetoothDeviceEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -413,7 +413,7 @@
                 android:textColor="#000" />
 
             <EditText
-                android:id="@+id/etBluetoothDevice"
+                android:id="@+id/etBluetoothDeviceEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -429,7 +429,7 @@
                 android:padding="10dp" />
 
             <TextView
-                android:id="@+id/tvErrorBluetoothDevice"
+                android:id="@+id/tvErrorBluetoothDeviceEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -443,7 +443,7 @@
                 android:visibility="gone" />
 
             <Button
-                android:id="@+id/btnCreateTrackingSave"
+                android:id="@+id/btnUpdateTracking"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -452,12 +452,12 @@
                 android:layout_marginBottom="10dp"
                 android:background="#168AAD"
                 android:fontFamily="sans-serif-light"
-                android:text="@string/save_tracking"
+                android:text="@string/update_tracking"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="#168AAD" />
 
             <Button
-                android:id="@+id/btnCreateTrackingBack"
+                android:id="@+id/btnEditTrackingBack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"

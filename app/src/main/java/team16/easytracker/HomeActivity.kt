@@ -12,12 +12,12 @@ class HomeActivity : AppCompatActivity() {
 
         MyApplication.updateResources(this)
 
-        val dashboardFragment=Dashboard()
-        val trackingsFragment=Trackings()
-        val companyFragment=Company()
-        val profileFragment=Profile()
+        val dashboardFragment = DashboardFragment()
+        val trackingsFragment = Trackings()
+        val companyFragment = CompanyFragment()
+        val profileFragment = Profile()
 
-        setCurrentFragment(profileFragment)
+        setCurrentFragment(dashboardFragment)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setOnNavigationItemSelectedListener {
@@ -29,7 +29,7 @@ class HomeActivity : AppCompatActivity() {
             }
             true
         }
-        bottomNavigationView.selectedItemId = R.id.profile
+
     }
 
     private fun setCurrentFragment(fragment: Fragment)=

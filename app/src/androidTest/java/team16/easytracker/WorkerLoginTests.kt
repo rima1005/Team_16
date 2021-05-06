@@ -117,7 +117,6 @@ class WorkerLoginTests {
                 .check(matches(withText("The email must be a valid email address")))
     }
 
-    @Ignore
     @Test
     fun validLogin_passwordAndMailValid() {
         val newRowId = insertDummyWorker()
@@ -134,8 +133,7 @@ class WorkerLoginTests {
                 .perform(click())*/
 
     }
-
-    @Ignore
+    @Ignore //TODO: This test stucks in a endless loop? Maybe some database problems!
     @Test
     fun invalidLogin_passwordNotValid() {
         val newRowId = insertDummyWorker()

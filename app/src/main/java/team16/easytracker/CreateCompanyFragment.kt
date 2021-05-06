@@ -110,7 +110,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         MyApplication.loggedInWorker = DbHelper.loadWorker(worker.getId())
 
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flFragment, Company())
+        transaction.replace(R.id.flFragment, CompanyFragment())
         transaction.disallowAddToBackStack()
         transaction.commit()
     }
