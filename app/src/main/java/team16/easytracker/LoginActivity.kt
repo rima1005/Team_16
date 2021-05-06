@@ -8,6 +8,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
 import team16.easytracker.database.DbHelper
+import team16.easytracker.utils.Validator
 
 class LoginActivity : AppCompatActivity() {
 
@@ -26,6 +27,8 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.loginactivity)
+
+        MyApplication.updateResources(this)
 
         btnLogin = findViewById(R.id.btnLogin)
 
@@ -83,29 +86,30 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun validateEmail(email: String) : Boolean {
-        if (email.isEmpty()) {
-            tvErrorEmail.text = "The email is required"
-            tvErrorEmail.visibility = View.VISIBLE
-            return false
-        } else if (!email.contains("@") || !email.contains(".")) {
-            tvErrorEmail.text = "The email must be a valid email address"
-            tvErrorEmail.visibility = View.VISIBLE
-            return false
+    private fun validateEmail(email: String) : Boolean {
+
+        val error = Validator.validateEmail(email, resources)
+
+        if (error.isEmpty()) {
+            return true
         }
-        return true
+        tvErrorEmail.text = error
+        tvErrorEmail.visibility = View.VISIBLE
+        return false
     }
 
-    fun validatePassword(password: String) : Boolean {
-        if (password.isEmpty()) {
-            tvErrorPassword.text = "The password is required"
-            tvErrorPassword.visibility = View.VISIBLE
-            return false
+    private fun validatePassword(password: String) : Boolean {
+
+        val error = Validator.validatePassword(password, resources)
+        if (error.isEmpty()) {
+            return true
         }
-        return true
+        tvErrorPassword.text = error
+        tvErrorPassword.visibility = View.VISIBLE
+        return false
     }
 
-    fun resetErrorMessages() {
+    private fun resetErrorMessages() {
         tvErrorEmail.text = ""
         tvErrorEmail.visibility = View.GONE
 

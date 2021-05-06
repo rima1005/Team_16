@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
+import java.time.LocalDateTime
 
 class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
     lateinit var etCompanyName: EditText
@@ -51,9 +52,10 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         val zipCode = etZipCode.text.toString()
         val city = etCity.text.toString()
         val street = etCity.text.toString()
+        val createCompanyBtn = btnCreateCompany
 
         var errorOccured = false
-        val errorCompanyName = Validator.validateCompanyName(companyName)
+        val errorCompanyName = Validator.validateCompanyName(companyName, resources)
         if (errorCompanyName != "") {
             errorOccured = true
             tvErrorCompanyName.text = errorCompanyName
@@ -67,37 +69,39 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
-        val errorPosition = Validator.validatePosition(etPosition.text.toString())
+        val errorPosition = Validator.validatePosition(etPosition.text.toString(), resources)
         if (errorPosition != "") {
             errorOccured = true
             tvErrorCompanyPosition.text = errorPosition
             tvErrorCompanyPosition.visibility = View.VISIBLE
         }
 
-        val errorZipCode = Validator.validatePostCode(etZipCode.text.toString())
+        val errorZipCode = Validator.validatePostCode(etZipCode.text.toString(), resources)
         if (errorZipCode != "") {
             errorOccured = true
             tvErrorZipCode.text = errorZipCode
             tvErrorZipCode.visibility = View.VISIBLE
         }
 
-        val errorCity = Validator.validateCity(etCity.text.toString())
+        val errorCity = Validator.validateCity(etCity.text.toString(), resources)
         if (errorCity != "") {
             errorOccured = true
             tvErrorCity.text = errorCity
             tvErrorCity.visibility = View.VISIBLE
         }
 
-        val errorStreet = Validator.validateStreet(etStreet.text.toString())
+        val errorStreet = Validator.validateStreet(etStreet.text.toString(), resources)
         if (errorStreet != "") {
             errorOccured = true
             tvErrorStreet.text = errorStreet
             tvErrorStreet.visibility = View.VISIBLE
         }
 
+
+
         if (errorOccured)
             return
-
+        createCompanyBtn.visibility = View.INVISIBLE
         // TODO: check for duplicate addresses?
         val worker = MyApplication.loggedInWorker!!
         val addressId = DbHelper.saveAddress(street, zipCode, city)

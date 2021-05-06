@@ -49,6 +49,7 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.registeractivity)
+        MyApplication.updateResources(this)
 
         etTitle = findViewById(R.id.etTitle)
         etFirstName = findViewById(R.id.etFirstName)
@@ -168,7 +169,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateTitle(title: String) : Boolean {
-        val errorTitle = Validator.validateTitle(title)
+        val errorTitle = Validator.validateTitle(title, resources)
         if (errorTitle != "") {
             tvErrorTitle.text = errorTitle
             tvErrorTitle.visibility = View.VISIBLE
@@ -179,7 +180,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateFirstName(firstName: String) : Boolean {
-        val errorFirstName = Validator.validateFirstName(firstName)
+        val errorFirstName = Validator.validateFirstName(firstName, resources)
         if (errorFirstName != "") {
             tvErrorFirstName.text = errorFirstName
             tvErrorFirstName.visibility = View.VISIBLE
@@ -189,7 +190,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateLastName(lastName: String) : Boolean {
-        val errorLastName = Validator.validateLastName(lastName)
+        val errorLastName = Validator.validateLastName(lastName, resources)
         if (errorLastName != "") {
             tvErrorLastName.text = errorLastName
             tvErrorLastName.visibility = View.VISIBLE
@@ -199,7 +200,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateEmail(email: String) : Boolean {
-        val errorEmail = Validator.validateEmail(email)
+        val errorEmail = Validator.validateEmail(email, resources)
         if (errorEmail != "") {
             tvErrorEmail.text = errorEmail
             tvErrorEmail.visibility = View.VISIBLE
@@ -209,7 +210,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateDateOfBirth(dateOfBirth: String) : Boolean {
-        val errorDateOfBirth = Validator.validateDateOfBirth(dateOfBirth)
+        val errorDateOfBirth = Validator.validateDateOfBirth(dateOfBirth, resources)
         if (errorDateOfBirth != "") {
             tvErrorDateOfBirth.text = errorDateOfBirth
             tvErrorDateOfBirth.visibility = View.VISIBLE
@@ -219,7 +220,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validatePhonePrefix(phonePrefix: String) : Boolean {
-        val errorPhonePrefix = Validator.validatePhonePrefix(phonePrefix)
+        val errorPhonePrefix = Validator.validatePhonePrefix(phonePrefix, resources)
         if (errorPhonePrefix != "") {
             tvErrorPhonePrefix.text = errorPhonePrefix
             tvErrorPhonePrefix.visibility = View.VISIBLE
@@ -229,7 +230,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validatePhoneNumber(phoneNumber: String) : Boolean {
-        val errorPhoneNumber = Validator.validatePhoneNumber(phoneNumber)
+        val errorPhoneNumber = Validator.validatePhoneNumber(phoneNumber, resources)
         if (errorPhoneNumber != "") {
             tvErrorPhoneNumber.text = errorPhoneNumber
             tvErrorPhoneNumber.visibility = View.VISIBLE
@@ -240,7 +241,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validatePostCode(postCode: String) : Boolean {
-        val errorPostCode = Validator.validatePostCode(postCode)
+        val errorPostCode = Validator.validatePostCode(postCode, resources)
         if (errorPostCode != "") {
             tvErrorPostCode.text = errorPostCode
             tvErrorPostCode.visibility = View.VISIBLE
@@ -250,7 +251,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateCity(city: String) : Boolean {
-        val errorCity = Validator.validateCity(city)
+        val errorCity = Validator.validateCity(city, resources)
         if (errorCity != "") {
             tvErrorCity.text = errorCity
             tvErrorCity.visibility = View.VISIBLE
@@ -261,7 +262,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateStreet(street: String) : Boolean {
-        val errorStreet = Validator.validateStreet(street)
+        val errorStreet = Validator.validateStreet(street, resources)
         if (errorStreet != "") {
             tvErrorStreet.text = errorStreet
             tvErrorStreet.visibility = View.VISIBLE
@@ -271,7 +272,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validateUsername(username: String) : Boolean {
-        val errorUsername = Validator.validateUsername(username)
+        val errorUsername = Validator.validateUsername(username, resources)
         if (errorUsername != "") {
             tvErrorUsername.text = errorUsername
             tvErrorUsername.visibility = View.VISIBLE
@@ -281,7 +282,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun validatePassword(password: String) : Boolean {
-        val errorPassword = Validator.validatePassword(password)
+        val errorPassword = Validator.validatePassword(password, resources)
         if (errorPassword != "") {
             tvErrorPassword.text = errorPassword
             tvErrorPassword.visibility = View.VISIBLE

@@ -40,14 +40,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="40dp"
         android:fontFamily="sans-serif-light"
         android:gravity="center_horizontal"
         android:text="EasyTracker"
         android:textColor="#ffffff"
         android:textSize="40sp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="9dp" />
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="40dp" />
 
     <TextView
         android:id="@+id/tvStartScreenDescription"
@@ -63,5 +62,13 @@
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/tvStartScreenEasyTracker"
         tools:layout_editor_absoluteX="10dp" />
+
+    <Spinner
+        android:id="@+id/spLanguage"
+        android:layout_width="74dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/tvStartScreenEasyTracker"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

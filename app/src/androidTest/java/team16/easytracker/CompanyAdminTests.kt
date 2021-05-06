@@ -152,16 +152,14 @@ class CompanyAdminTests {
         onView(withId(R.id.btnAddWorker))
             .perform(click())
 
-        // TODO: replace matcher texts with string resources
-
         // Most error textviews should now be visible
         onView(withId(R.id.tvErrorEmail))
             .check(matches(isDisplayed()))
-            .check(matches(withText("Invalid Email Address")))
+            .check(matches(withText(R.string.email_required)))
 
         onView(withId(R.id.tvErrorCompanyPosition))
             .check(matches(isDisplayed()))
-            .check(matches(withText("Invalid Employee Position")))
+            .check(matches(withText(R.string.position_required)))
     }
 
     @Test
@@ -182,7 +180,7 @@ class CompanyAdminTests {
 
         onView(withId(R.id.tvErrorAddWorker))
             .check(matches(isDisplayed()))
-            .check(matches(withText("Employee has been added successfully")))
+            .check(matches(withText(R.string.success_adding_employee)))
     }
 
     @Test
@@ -200,6 +198,6 @@ class CompanyAdminTests {
 
         onView(withId(R.id.tvErrorAddWorker))
             .check(matches(isDisplayed()))
-            .check(matches(withText("Could not add employee")))
+            .check(matches(withText(R.string.error_adding_employee)))
     }
 }

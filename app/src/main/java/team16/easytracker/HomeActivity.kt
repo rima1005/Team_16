@@ -10,6 +10,8 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homeactivity)
 
+        MyApplication.updateResources(this)
+
         val dashboardFragment = DashboardFragment()
         val trackingsFragment = Trackings()
         val companyFragment = CompanyFragment()

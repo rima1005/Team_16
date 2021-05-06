@@ -134,7 +134,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingStartDateEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start date must be of format DD.MM.YYYY")))
+                .check(matches(withText(R.string.error_invalid_start_date_format)))
     }
 
     @Test
@@ -177,7 +177,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingStartDateEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start date is required")))
+                .check(matches(withText(R.string.error_start_date_required)))
     }
 
     @Test
@@ -220,7 +220,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The end date must be of format DD.MM.YYYY")))
+                .check(matches(withText(R.string.error_invalid_end_date_format)))
     }
 
     @Test
@@ -263,7 +263,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The end date is required")))
+                .check(matches(withText(R.string.error_end_date_required)))
     }
 
     @Test
@@ -306,7 +306,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start time must be of format H:mm")))
+                .check(matches(withText(R.string.error_invalid_start_time)))
     }
 
     @Test
@@ -350,7 +350,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start time is required")))
+                .check(matches(withText(R.string.error_start_time_required)))
     }
 
     @Test
@@ -393,7 +393,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The end time must be of format H:mm")))
+                .check(matches(withText(R.string.error_invalid_end_time)))
     }
 
     @Test
@@ -436,7 +436,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The end time is required")))
+                .check(matches(withText(R.string.error_end_time_required)))
     }
 
     @Test
@@ -479,7 +479,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.tvErrorTrackingNameEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The tracking name is required")))
+                .check(matches(withText(R.string.error_tracking_name_required)))
     }
 
     @Test
@@ -539,31 +539,31 @@ class EditTrackingTests {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorTrackingStartDateEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start date is required")))
+                .check(matches(withText(R.string.error_start_date_required)))
 
         onView(withId(R.id.tvTrackingStartTimeEdit))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorTrackingStartTimeEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The start time is required")))
+                .check(matches(withText(R.string.error_start_time_required)))
 
         onView(withId(R.id.tvTrackingEndDateEdit))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorTrackingEndDateEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The end date is required")))
+                .check(matches(withText(R.string.error_end_date_required)))
 
         onView(withId(R.id.tvTrackingEndTimeEdit))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorTrackingEndTimeEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The end time is required")))
+                .check(matches(withText(R.string.error_end_time_required)))
 
         onView(withId(R.id.tvLabelTrackingNameEdit))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorTrackingNameEdit))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The tracking name is required")))
+                .check(matches(withText(R.string.error_tracking_name_required)))
     }
 
     @Test
@@ -600,5 +600,7 @@ class EditTrackingTests {
 
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
+
+        // TODO: check if successful???
     }
 }

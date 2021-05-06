@@ -27,7 +27,7 @@
             app:backgroundTint="#168AAD" />
 
         <Button
-            android:id="@+id/btnCreateCompany"
+            android:id="@+id/btnCreateCompanyFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5pt"
