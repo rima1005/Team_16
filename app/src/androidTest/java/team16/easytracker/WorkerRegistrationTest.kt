@@ -24,6 +24,7 @@ class WorkerRegistrationTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(RegisterActivity::class.java)
+
     
     @Test
     fun invalidRegisterWithEmptyInputData() {
@@ -86,71 +87,72 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorFirstName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The first name is required")))
+                .check(matches(withText(R.string.first_name_required)))
 
         onView(withId(R.id.etEmail))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorLastName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The last name is required")))
+                .check(matches(withText(R.string.last_name_required)))
 
         onView(withId(R.id.etDateOfBirth))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorEmail))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The email is required")))
+                .check(matches(withText(R.string.email_required)))
 
         onView(withId(R.id.etPhonePrefix))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorDateOfBirth))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The date of birth is required")))
+                .check(matches(withText(R.string.dob_required)))
 
         onView(withId(R.id.etPhoneNumber))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhonePrefix))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone prefix is required")))
+                .check(matches(withText(R.string.phone_prefix_required)))
 
         onView(withId(R.id.etPostCode))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhoneNumber))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone number is required")))
+                .check(matches(withText(R.string.phone_nr_required)))
 
         onView(withId(R.id.etStreet))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPostCode))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The post code is required")))
+                .check(matches(withText(R.string.post_code_required)))
 
         onView(withId(R.id.etStreet))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorCity))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The city is required")))
+                .check(matches(withText(R.string.city_required)))
 
         onView(withId(R.id.etUsername))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The street is required")))
+                .check(matches(withText(R.string.street_required)))
 
         onView(withId(R.id.etPassword))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorUsername))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The username is required")))
+                .check(matches(withText(R.string.username_required)))
 
         onView(withId(R.id.btnRegistration))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The password is required")))
+                .check(matches(withText(R.string.pw_required)))
 
         Thread.sleep(1000)
     }
 
+    
     @Test
     fun invalidRegister_titleContainsNumber() {
         onView(withId(R.id.tvErrorTitle))
@@ -168,9 +170,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorTitle))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The title must not contain numbers")))
+                .check(matches(withText(R.string.no_number_title)))
     }
 
+    
     @Test
     fun invalidRegister_firstNameContainsNumber() {
         onView(withId(R.id.etLastName))
@@ -190,9 +193,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorFirstName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The first name must not contain numbers")))
+                .check(matches(withText(R.string.first_name_no_numbers)))
     }
 
+    
     @Test
     fun invalidRegister_firstNameTooShort() {
         onView(withId(R.id.etLastName))
@@ -212,9 +216,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorFirstName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The first name must be between 2 and 255 characters")))
+                .check(matches(withText(R.string.first_name_length)))
     }
 
+    
     @Test
     fun invalidRegister_firstNameTooLong() {
         onView(withId(R.id.etLastName))
@@ -234,9 +239,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorFirstName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The first name must be between 2 and 255 characters")))
+                .check(matches(withText(R.string.first_name_length)))
     }
 
+    
     @Test
     fun invalidRegister_lastNameContainsNumber() {
         onView(withId(R.id.etEmail))
@@ -256,9 +262,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorLastName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The last name must not contain numbers")))
+                .check(matches(withText(R.string.last_name_no_numbers)))
     }
 
+    
     @Test
     fun invalidRegister_lastNameTooShort() {
         onView(withId(R.id.etEmail))
@@ -278,9 +285,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorLastName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The last name must be between 2 and 255 characters")))
+                .check(matches(withText(R.string.last_name_length)))
     }
 
+    
     @Test
     fun invalidRegister_lastNameTooLong() {
         onView(withId(R.id.etEmail))
@@ -300,9 +308,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorLastName))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The last name must be between 2 and 255 characters")))
+                .check(matches(withText(R.string.last_name_length)))
     }
 
+    
     @Test
     fun invalidRegister_emailTooShort() {
         onView(withId(R.id.etDateOfBirth))
@@ -322,9 +331,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorEmail))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The email must be between 5 and 255 characters")))
+                .check(matches(withText(R.string.email_length)))
     }
 
+    
     @Test
     fun invalidRegister_emailTooLong() {
         onView(withId(R.id.etDateOfBirth))
@@ -344,9 +354,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorEmail))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The email must be between 5 and 255 characters")))
+                .check(matches(withText(R.string.email_length)))
     }
 
+    
     @Test
     fun invalidRegister_emailNotValid() {
         onView(withId(R.id.etDateOfBirth))
@@ -366,9 +377,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorEmail))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The email must be a valid email address")))
+                .check(matches(withText(R.string.email_valid_address)))
     }
 
+    
     @Test
     fun invalidRegister_dateOfBirthNotValid() {
         onView(withId(R.id.etPhonePrefix))
@@ -388,9 +400,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorDateOfBirth))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The date of birth must be of format DD.MM.YYYY")))
+                .check(matches(withText(R.string.dob_format)))
     }
 
+    
     @Test
     fun invalidRegister_phonePrefixContainsLetter() {
         onView(withId(R.id.etPostCode))
@@ -410,9 +423,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhonePrefix))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone prefix must only contain digits")))
+                .check(matches(withText(R.string.phone_prefix_digits)))
     }
 
+    
     @Test
     fun invalidRegister_phonePrefixTooShort() {
         onView(withId(R.id.etPostCode))
@@ -432,9 +446,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhonePrefix))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone prefix must be between 2 and 3 digits")))
+                .check(matches(withText(R.string.phone_prefix_length)))
     }
 
+    
     @Test
     fun invalidRegister_phonePrefixTooLong() {
         onView(withId(R.id.etPostCode))
@@ -454,9 +469,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhonePrefix))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone prefix must be between 2 and 3 digits")))
+                .check(matches(withText(R.string.phone_prefix_length)))
     }
 
+    
     @Test
     fun invalidRegister_phoneNumberContainsLetter() {
         onView(withId(R.id.etPostCode))
@@ -476,9 +492,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhoneNumber))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone number must only contain digits")))
+                .check(matches(withText(R.string.phone_number_digits)))
     }
 
+    
     @Test
     fun invalidRegister_phoneNumberTooShort() {
         onView(withId(R.id.etPostCode))
@@ -498,9 +515,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhoneNumber))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone number must be between 2 and 12 digits")))
+                .check(matches(withText(R.string.phone_number_length)))
     }
 
+    
     @Test
     fun invalidRegister_phoneNumberTooLong() {
         onView(withId(R.id.etPostCode))
@@ -520,9 +538,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPhoneNumber))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The phone number must be between 2 and 12 digits")))
+                .check(matches(withText(R.string.phone_number_length)))
     }
 
+    
     @Test
     fun invalidRegister_postCodeTooShort() {
         onView(withId(R.id.etStreet))
@@ -542,9 +561,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPostCode))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The post code must be between 4 and 10 characters")))
+                .check(matches(withText(R.string.post_code_length)))
     }
 
+    
     @Test
     fun invalidRegister_postCodeTooLong() {
         onView(withId(R.id.etStreet))
@@ -564,9 +584,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPostCode))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The post code must be between 4 and 10 characters")))
+                .check(matches(withText(R.string.post_code_length)))
     }
 
+    
     @Test
     fun invalidRegister_cityContainsNumber() {
         onView(withId(R.id.etStreet))
@@ -586,9 +607,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorCity))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The city must not contain numbers")))
+                .check(matches(withText(R.string.city_name_format)))
     }
 
+    
     @Test
     fun invalidRegister_cityTooShort() {
         onView(withId(R.id.etStreet))
@@ -608,9 +630,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorCity))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The city must be between 2 and 255 characters")))
+                .check(matches(withText(R.string.city_name_length)))
     }
 
+    
     @Test
     fun invalidRegister_cityTooLong() {
         onView(withId(R.id.etStreet))
@@ -630,9 +653,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorCity))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The city must be between 2 and 255 characters")))
+                .check(matches(withText(R.string.city_name_length)))
     }
 
+    
     @Test
     fun invalidRegister_streetDoesNotContainNumber() {
         onView(withId(R.id.etUsername))
@@ -652,9 +676,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The street must contain a street name and a street number")))
+                .check(matches(withText(R.string.street_name_format)))
     }
 
+    
     @Test
     fun invalidRegister_passwordTooShort() {
         onView(withId(R.id.btnRegistration))
@@ -674,9 +699,10 @@ class WorkerRegistrationTest {
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The password must have at least 8 characters")))
+                .check(matches(withText(R.string.pw_length)))
     }
 
+    
     @Test
     fun registerWithValidInputData() {
         // Error textviews should not be visible before clicking registration button

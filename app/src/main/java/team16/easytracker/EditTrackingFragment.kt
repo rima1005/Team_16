@@ -110,7 +110,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
         val day = c.get(Calendar.DAY_OF_MONTH)
 
         val dpd = DatePickerDialog(
-            activity!!,
+            requireActivity(),
             DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
                 editText.setText(
                     "" + (if (dayOfMonth >= 10) dayOfMonth else "0" + dayOfMonth) + "." +
@@ -180,8 +180,8 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
     private fun showSuccessDialog() {
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("Tracking edited")
-        builder.setMessage("The tracking has been edited!")
+        builder.setTitle(getString(R.string.tracking_edited))
+        builder.setMessage(getString(R.string.tracking_been_edited))
         builder.setCancelable(false)
 
         builder.setPositiveButton("OK") { dialog, which ->
@@ -193,14 +193,14 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
     private fun backToTrackings() {
         val trackings = Trackings()
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "EdiTrackingsFragment")
             .addToBackStack(null)
             .commit()
     }
 
     private fun validateStartDate(startDate: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingStartDate(startDate)
+        val errorStartDate = Validator.validateTrackingStartDate(startDate, resources)
         if (errorStartDate != "") {
             tvErrorStartDate.text = errorStartDate
             tvErrorStartDate.visibility = View.VISIBLE
@@ -210,7 +210,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
     }
 
     private fun validateStartTime(startTime: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingStartTime(startTime)
+        val errorStartDate = Validator.validateTrackingStartTime(startTime, resources)
         if (errorStartDate != "") {
             tvErrorStartTime.text = errorStartDate
             tvErrorStartTime.visibility = View.VISIBLE
@@ -220,7 +220,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
     }
 
     private fun validateEndDate(endDate: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingEndDate(endDate)
+        val errorStartDate = Validator.validateTrackingEndDate(endDate, resources)
         if (errorStartDate != "") {
             tvErrorEndDate.text = errorStartDate
             tvErrorEndDate.visibility = View.VISIBLE
@@ -230,7 +230,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
     }
 
     private fun validateEndTime(endTime: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingEndTime(endTime)
+        val errorStartDate = Validator.validateTrackingEndTime(endTime, resources)
         if (errorStartDate != "") {
             tvErrorEndTime.text = errorStartDate
             tvErrorEndTime.visibility = View.VISIBLE
@@ -240,7 +240,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
     }
 
     private fun validateTrackingName(trackingName: String) : Boolean {
-        val errorTrackingName = Validator.validateTrackingName(trackingName)
+        val errorTrackingName = Validator.validateTrackingName(trackingName, resources)
         if (errorTrackingName != "") {
             tvErrorTrackingName.text = errorTrackingName
             tvErrorTrackingName.visibility = View.VISIBLE

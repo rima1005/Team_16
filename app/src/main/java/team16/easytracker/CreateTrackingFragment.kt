@@ -183,8 +183,8 @@ class CreateTrackingFragment : Fragment() {
 
     private fun showSuccessDialog() {
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle("Tracking created")
-        builder.setMessage("The tracking has been created!")
+        builder.setTitle(getString(R.string.tracking_created))
+        builder.setMessage(getString(R.string.tracking_created))
         builder.setCancelable(false)
 
         builder.setPositiveButton("OK") { dialog, which ->
@@ -196,14 +196,14 @@ class CreateTrackingFragment : Fragment() {
 
     private fun backToTrackings() {
         val trackings = Trackings()
-        activity!!.supportFragmentManager.beginTransaction()
+        requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "TrackingsFragment")
             .addToBackStack(null)
             .commit()
     }
 
     private fun validateStartDate(startDate: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingStartDate(startDate)
+        val errorStartDate = Validator.validateTrackingStartDate(startDate, resources)
         if (errorStartDate != "") {
             tvErrorStartDate.text = errorStartDate
             tvErrorStartDate.visibility = VISIBLE
@@ -213,7 +213,7 @@ class CreateTrackingFragment : Fragment() {
     }
 
     private fun validateStartTime(startTime: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingStartTime(startTime)
+        val errorStartDate = Validator.validateTrackingStartTime(startTime, resources)
         if (errorStartDate != "") {
             tvErrorStartTime.text = errorStartDate
             tvErrorStartTime.visibility = VISIBLE
@@ -223,7 +223,7 @@ class CreateTrackingFragment : Fragment() {
     }
 
     private fun validateEndDate(endDate: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingEndDate(endDate)
+        val errorStartDate = Validator.validateTrackingEndDate(endDate, resources)
         if (errorStartDate != "") {
             tvErrorEndDate.text = errorStartDate
             tvErrorEndDate.visibility = VISIBLE
@@ -233,7 +233,7 @@ class CreateTrackingFragment : Fragment() {
     }
 
     private fun validateEndTime(endTime: String) : Boolean {
-        val errorStartDate = Validator.validateTrackingEndTime(endTime)
+        val errorStartDate = Validator.validateTrackingEndTime(endTime, resources)
         if (errorStartDate != "") {
             tvErrorEndTime.text = errorStartDate
             tvErrorEndTime.visibility = VISIBLE
@@ -243,7 +243,7 @@ class CreateTrackingFragment : Fragment() {
     }
 
     private fun validateTrackingName(trackingName: String) : Boolean {
-        val errorTrackingName = Validator.validateTrackingName(trackingName)
+        val errorTrackingName = Validator.validateTrackingName(trackingName, resources)
         if (errorTrackingName != "") {
             tvErrorTrackingName.text = errorTrackingName
             tvErrorTrackingName.visibility = VISIBLE

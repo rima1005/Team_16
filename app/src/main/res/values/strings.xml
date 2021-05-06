@@ -42,6 +42,7 @@
     <string name="add_worker">Add Employee</string>
     <string name="worker_email">Worker Email</string>
     <string name="employee_position">Employee Position</string>
+    <string name="invalid_employee_position">Invalid Employee Position</string>
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>
@@ -67,6 +68,50 @@
     <string name="some_notes">Some notes</string>
     <string name="work">Work</string>
     <string name="error_company_exists">Company with this name already exists</string>
+    <string name="no_number_title">The title must not contain numbers</string>
+    <string name="first_name_required">The first name is required</string>
+    <string name="first_name_length">The first name must be between 2 and 255 characters</string>
+    <string name="first_name_no_numbers">The first name must not contain numbers</string>
+    <string name="company_name_required">The company name is required</string>
+    <string name="company_name_length">The company name must be between 2 and 255 characters</string>
+    <string name="position_required">The position is required</string>
+    <string name="position_name_length">The position must be between 2 and 255 characters</string>
+    <string name="position_name_no_numbers">The position must not contain numbers</string>
+    <string name="last_name_required">The last name is required</string>
+    <string name="last_name_length">The last name must be between 2 and 255 characters</string>
+    <string name="last_name_no_numbers">The last name must not contain numbers</string>
+    <string name="email_length">The email must be between 5 and 255 characters</string>
+    <string name="email_valid_address">The email must be a valid email address</string>
+    <string name="dob_required">The date of birth is required</string>
+    <string name="dob_format">The date of birth must be of format DD.MM.YYYY</string>
+    <string name="phone_prefix_required">The phone prefix is required</string>
+    <string name="phone_prefix_digits">The phone prefix must only contain digits</string>
+    <string name="phone_prefix_length">The phone prefix must be between 2 and 3 digits</string>
+    <string name="phone_nr_required">The phone number is required</string>
+    <string name="phone_number_digits">The phone number must only contain digits</string>
+    <string name="phone_number_length">The phone number must be between 2 and 12 digits</string>
+    <string name="post_code_required">The post code is required</string>
+    <string name="post_code_length">The post code must be between 4 and 10 characters</string>
+    <string name="city_required">The city is required</string>
+    <string name="city_name_format">The city must not contain numbers</string>
+    <string name="city_name_length">The city must be between 2 and 255 characters</string>
+    <string name="street_required">The street is required</string>
+    <string name="street_name_format">The street must contain a street name and a street number</string>
+    <string name="username_required">The username is required</string>
+    <string name="pw_required">The password is required</string>
+    <string name="pw_length">The password must have at least 8 characters</string>
+    <string name="email_required">The email is required</string>
+    <string name="error_adding_employee">Could not add employee</string>
+    <string name="success_adding_employee">Employee has been added successfully</string>
+    <string name="error_invalid_start_date_format">The start date must be of format DD.MM.YYYY</string>
+    <string name="error_start_date_required">The start date is required</string>
+    <string name="error_invalid_end_date_format">The end date must be of format DD.MM.YYYY</string>
+    <string name="error_end_date_required">The end date is required</string>
+    <string name="error_start_time_required">The start time is required</string>
+    <string name="error_invalid_start_time">The start time must be of format H:mm</string>
+    <string name="error_end_time_required">The end time is required</string>
+    <string name="error_invalid_end_time">The end time must be of format H:mm</string>
+    <string name="error_tracking_name_required">The tracking name is required</string>
     <string name="stop_tracking">Stop Tracking</string>
     <string name="active_tracking">Active Tracking</string>
     <string name="stop_tracking_question">Stop Tracking?</string>
@@ -75,4 +120,9 @@
     <string name="success_delete_tracking">Tracking was successfully deleted!</string>
     <string name="fail_delete_tracking">There was an error deleting the tracking!</string>
     <string name="undo_delete_tracking">UNDO</string>
+    <string name="tracking_been_created">The tracking has been created!</string>
+    <string name="tracking_created">Tracking created</string>
+    <string name="tracking_edited">Tracking edited</string>
+    <string name="tracking_been_edited">The tracking has been edited!</string>
+
 </resources>

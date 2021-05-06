@@ -57,18 +57,18 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         var errorOccured = false
 
         val workerEmail = etWorkerEmail.text.toString()
-        val emailError = Validator.validateEmail(workerEmail)
+        val emailError = Validator.validateEmail(workerEmail, resources)
         if (emailError != "") {
             errorOccured = true
-            tvErrorEmail.text = "Invalid Email Address"
+            tvErrorEmail.text = emailError
             tvErrorEmail.visibility = View.VISIBLE
         }
 
         val companyPosition = etPosition.text.toString()
-        val positionError = Validator.validatePosition(companyPosition)
+        val positionError = Validator.validatePosition(companyPosition, resources)
         if (positionError != "") {
             errorOccured = true
-            tvErrorPosition.text = "Invalid Employee Position"
+            tvErrorPosition.text = positionError
             tvErrorPosition.visibility = View.VISIBLE
         }
 
@@ -78,7 +78,7 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         val worker = DbHelper.loadWorker(workerEmail)
         if(worker == null){
             tvErrorAddWorker.visibility = View.VISIBLE
-            tvErrorAddWorker.text = "Could not add employee"
+            tvErrorAddWorker.text = getString(R.string.error_adding_employee)
             return
         }
 
@@ -91,17 +91,17 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
             }
             catch(e: Exception){
                 tvErrorAddWorker.visibility = View.VISIBLE
-                tvErrorAddWorker.text = "Could not add employee"
+                tvErrorAddWorker.text = getString(R.string.error_adding_employee)
             }
             finally {
                 if(added){
                     tvErrorAddWorker.visibility = View.VISIBLE
                     tvErrorAddWorker.setTextColor(Color.GREEN)
-                    tvErrorAddWorker.text = "Employee has been added successfully"
+                    tvErrorAddWorker.text = getString(R.string.success_adding_employee)
                 }
                 else{
                     tvErrorAddWorker.visibility = View.VISIBLE
-                    tvErrorAddWorker.text = "Could not add employee"
+                    tvErrorAddWorker.text = getString(R.string.error_adding_employee)
                 }
             }
         }
