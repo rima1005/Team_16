@@ -66,13 +66,39 @@ class CreateTrackingTests {
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
 
+    private fun setupLoggedInWorker() {
+
+        val addressId = DbHelper.saveAddress("street", "1234", "city")
+
+        val email = "email@email.at";
+        val pw = "12345678"
+        val workerId = DbHelper.saveWorker(
+                "firstName",
+                "lastName",
+                LocalDate.now(),
+                "title",
+                email,
+                pw,
+                "12345678",
+                LocalDateTime.now().withNano(0),
+                addressId
+        )
+
+        DbHelper.loginWorker(email, pw)
+    }
+
     fun getCurrentActivity(): Activity? {
         var currentActivity: Activity? = null
         getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).elementAtOrNull(0) } }
         return currentActivity
     }
 
-    @Ignore
+    @Before
+    fun init()
+    {
+        setupLoggedInWorker()
+    }
+
     @Test
     fun invalidStartDateCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -115,7 +141,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The start date must be of format DD.MM.YYYY")))
     }
 
-    @Ignore
     @Test
     fun emptyStartDateCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -155,7 +180,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The start date is required")))
     }
 
-    @Ignore
     @Test
     fun invalidEndDateCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -198,7 +222,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The end date must be of format DD.MM.YYYY")))
     }
 
-    @Ignore
     @Test
     fun emptyEndDateCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -238,7 +261,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The end date is required")))
     }
 
-    @Ignore
     @Test
     fun invalidStartTimeCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -281,7 +303,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The start time must be of format H:mm")))
     }
 
-    @Ignore
     @Test
     fun emptyStartTimeCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -322,7 +343,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The start time is required")))
     }
 
-    @Ignore
     @Test
     fun invalidEndTimeCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -365,7 +385,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The end time must be of format H:mm")))
     }
 
-    @Ignore
     @Test
     fun emptyEndTimeCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -405,7 +424,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The end time is required")))
     }
 
-    @Ignore
     @Test
     fun emptyTrackingNameCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -445,7 +463,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The tracking name is required")))
     }
 
-    @Ignore
     @Test
     fun emptyInputCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
@@ -511,7 +528,6 @@ class CreateTrackingTests {
                 .check(matches(withText("The tracking name is required")))
     }
 
-    @Ignore
     @Test
     fun validCreateTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
