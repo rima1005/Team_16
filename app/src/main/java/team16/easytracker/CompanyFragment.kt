@@ -12,7 +12,7 @@ class CompanyFragment : Fragment(R.layout.fragment_company) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnCreateCompany = view.findViewById(R.id.btnCreateCompany)
+        btnCreateCompany = view.findViewById(R.id.btnCreateCompanyFragment)
         btnAddWorker = view.findViewById(R.id.btnAddWorker)
 
         if (MyApplication.loggedInWorker?.company == null) {

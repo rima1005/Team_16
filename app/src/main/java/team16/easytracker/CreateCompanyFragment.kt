@@ -52,6 +52,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         val zipCode = etZipCode.text.toString()
         val city = etCity.text.toString()
         val street = etCity.text.toString()
+        val createCompanyBtn = btnCreateCompany
 
         var errorOccured = false
         val errorCompanyName = Validator.validateCompanyName(companyName, resources)
@@ -96,9 +97,11 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
             tvErrorStreet.visibility = View.VISIBLE
         }
 
+
+
         if (errorOccured)
             return
-
+        createCompanyBtn.visibility = View.INVISIBLE
         // TODO: check for duplicate addresses?
         val worker = MyApplication.loggedInWorker!!
         val addressId = DbHelper.saveAddress(street, zipCode, city)

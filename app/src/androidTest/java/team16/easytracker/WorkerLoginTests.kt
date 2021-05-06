@@ -92,12 +92,12 @@ class WorkerLoginTests {
        // Most error textviews should now be visible
         onView(withId(R.id.tvErrorEmail))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The email is required")))
+                .check(matches(withText(R.string.email_required)))
 
 
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The password is required")))
+                .check(matches(withText(R.string.pw_required)))
 
         Thread.sleep(1000)
     }
@@ -114,7 +114,7 @@ class WorkerLoginTests {
 
         onView(withId(R.id.tvErrorEmail))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("The email must be a valid email address")))
+                .check(matches(withText(R.string.email_valid_address)))
     }
 
     @Test
@@ -156,7 +156,7 @@ class WorkerLoginTests {
 
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
-                .check(matches(withText("Invalid email or password")))
+                .check(matches(withText(R.string.invalid_employee_position)))
 
     }
 

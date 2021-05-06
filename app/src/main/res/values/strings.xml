@@ -42,6 +42,7 @@
     <string name="add_worker">Add Employee</string>
     <string name="worker_email">Worker Email</string>
     <string name="employee_position">Employee Position</string>
+    <string name="invalid_employee_position">Invalid Employee Position</string>
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>
@@ -73,7 +74,7 @@
     <string name="first_name_no_numbers">The first name must not contain numbers</string>
     <string name="company_name_required">The company name is required</string>
     <string name="company_name_length">The company name must be between 2 and 255 characters</string>
-    <string name="position_required">vThe position is required</string>
+    <string name="position_required">The position is required</string>
     <string name="position_name_length">The position must be between 2 and 255 characters</string>
     <string name="position_name_no_numbers">The position must not contain numbers</string>
     <string name="last_name_required">The last name is required</string>
