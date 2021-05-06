@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/flFragmentDashboard"
     tools:context=".DashboardFragment">
 
     <LinearLayout
@@ -48,6 +49,7 @@
             android:fontFamily="sans-serif-light"
             android:gravity="center"
             android:text=""
+            android:visibility="gone"
             android:textColor="#000"
             android:textSize="40sp" />
 

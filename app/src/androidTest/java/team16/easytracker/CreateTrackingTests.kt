@@ -29,40 +29,6 @@ import java.time.format.DateTimeFormatter
 
 @RunWith(AndroidJUnit4::class)
 class CreateTrackingTests {
-
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "email@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-                "firstName",
-                "lastName",
-                LocalDate.now(),
-                "title",
-                email,
-                pw,
-                "12345678",
-                LocalDateTime.now().withNano(0),
-                addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
-
-    @Before
-    fun init() {
-        if (MyApplication.loggedInWorker == null) {
-            setupLoggedInWorker()
-        }
-    }
-
-    @After
-    fun tearDown() {
-        //
-    }
-
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
 

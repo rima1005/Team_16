@@ -1,7 +1,6 @@
 package team16.easytracker
 
 import android.app.Activity
-import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -49,13 +48,16 @@ class TrackTimeTests {
         }
     }
 
-    @After
-    fun tearDown() {
-        //DbHelper.writableDatabase.endTransaction()
-    }
-
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
+
+    fun openFragment() {
+        val activity = getCurrentActivity() as HomeActivity
+        val transaction = activity.supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.flFragment, DashboardFragment())
+        transaction.disallowAddToBackStack()
+        transaction.commit()
+    }
 
     fun getCurrentActivity(): Activity {
         var currentActivity: Activity? = null
@@ -67,11 +69,56 @@ class TrackTimeTests {
         return currentActivity!!
     }
 
-    @Ignore
     @Test
-    fun testStartTracking(){
+    fun testOpenFragment() {
+        openFragment()
+        onView(withId(R.id.flFragmentDashboard)).check(matches((isDisplayed())))
+    }
+
+    @Test
+    fun validStartTracking(){
+        openFragment()
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(not(isDisplayed())))
+
         onView(withId(R.id.btnStartTracking))
-            .check(matches(isDisplayed()))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(withText(R.string.tracking_name))
+                .check(matches(isDisplayed()))
+
+        onView(withId(R.id.etActiveTrackingName))
+                .perform(typeText("Example tracking"), closeSoftKeyboard())
+
+        onView(withText(android.R.string.ok))
+                .perform(click())
+
+        onView(withId(R.id.btnStartTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+        onView(withText(android.R.string.ok))
+                .perform(click())
+
+        onView(withId(R.id.tvLabelActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.tvActiveTracking))
+                .check(matches(not(isDisplayed())))
+
+        onView(withId(R.id.btnStopTracking))
+                .check(matches(not(isDisplayed())))
     }
 
 }
