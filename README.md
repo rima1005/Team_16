@@ -20,14 +20,18 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 
 ### Implemented Features
 
-| Ticket                                | Finished  | 
-| :---                                  | :----:    |
-| EasyTracker-124 Worker Registration   | ✔️        |
-| EasyTracker-125 Company Login         | ✔️        |
-| EasyTracker-126 Worker Login          | ✔️        |
-| EasyTracker-127 New Tracking          | ✔️        |
-| EasyTracker-129 Edit Trackings        | ❌        |
-| EasyTracker-128 Add workers to company| ✔️        |
-| EasyTracker-123 Company Registration  | ✔️        |
-
+| Ticket                                                              | Finished  | 
+| :---                                                                | :----:    |
+| EasyTracker-124 Worker Registration                                 | ✔️        |
+| EasyTracker-125 Company Login                                       | ✔️        |
+| EasyTracker-126 Worker Login                                        | ✔️        |
+| EasyTracker-127 New Tracking                                        | ✔️        |
+| EasyTracker-129 Edit Trackings                                      | ✔️        |
+| EasyTracker-128 Add workers to company                              | ✔️        |
+| EasyTracker-123 Company Registration                                | ✔️        |
+| EasyTracker-145 Language Support                                    | ✔️        |
+| EasyTracker-131 Track Time                                          | ✔️        |
+| EasyTracker-130 Delete Trackings                                    | ✔️        |
+| EasyTracker-149 Use correct table columns in DbHelper               | ✔️        |
+| EasyTracker-146 Refactoring DB - Singleton & global worker variable | ✔️        |
 
