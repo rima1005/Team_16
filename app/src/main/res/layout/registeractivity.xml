@@ -286,7 +286,7 @@
                 android:text="@string/date_of_birth"
                 android:textColor="#000" />
 
-            <EditText
+            <!--<EditText
                 android:id="@+id/etDateOfBirth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -301,7 +301,40 @@
                 android:fontFamily="sans-serif-light"
                 android:hint="DD.MM.YYYY"
                 android:inputType="date"
-                android:padding="10dp" />
+                android:padding="10dp" />-->
+
+            <TextView
+                android:id="@+id/tvDateOfBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/custom_edit_text"
+                android:ems="10"
+                android:fontFamily="sans-serif-light"
+                android:inputType="none"
+                android:padding="10dp"/>
+
+            <Button
+                android:id="@+id/btnDateOfBirth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:background="#168AAD"
+                android:fontFamily="sans-serif-light"
+                android:minHeight="40dip"
+                android:text="@string/select"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="#168AAD" />
 
             <TextView
                 android:id="@+id/tvErrorDateOfBirth"
@@ -740,7 +773,6 @@
                 android:text="@string/log_in"
                 android:textColor="#168AAD"
                 android:textStyle="bold" />
-
         </LinearLayout>
 
     </ScrollView>
