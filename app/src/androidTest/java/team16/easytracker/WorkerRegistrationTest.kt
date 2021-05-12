@@ -1,5 +1,6 @@
 package team16.easytracker
 
+import android.widget.EditText
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -8,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.hamcrest.CoreMatchers.*
+import android.view.View
 import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +27,6 @@ class WorkerRegistrationTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(RegisterActivity::class.java)
 
-    
     @Test
     fun invalidRegisterWithEmptyInputData() {
         // Error textviews should not be visible before clicking registration button
@@ -383,6 +384,7 @@ class WorkerRegistrationTest {
     
     @Test
     fun invalidRegister_dateOfBirthNotValid() {
+
         onView(withId(R.id.etPhonePrefix))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorDateOfBirth))
@@ -403,7 +405,7 @@ class WorkerRegistrationTest {
                 .check(matches(withText(R.string.dob_format)))
     }
 
-    
+
     @Test
     fun invalidRegister_phonePrefixContainsLetter() {
         onView(withId(R.id.etPostCode))
