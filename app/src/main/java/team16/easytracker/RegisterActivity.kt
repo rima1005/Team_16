@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.thesimplycoder.simpledatepicker.DatePickerHelper
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.time.LocalDate
@@ -21,7 +22,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var etFirstName : EditText
     lateinit var etLastName : EditText
     lateinit var etEmail : EditText
-    lateinit var etDateOfBirth : EditText
+    lateinit var tvDateOfBirth : TextView
     lateinit var etPhonePrefix : EditText
     lateinit var etPhoneNumber : EditText
     lateinit var etPostCode : EditText
@@ -50,6 +51,8 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var btnDateOfBirth : Button
     lateinit var tvGoToLogin : TextView
 
+    lateinit var datePicker : DatePickerHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.registeractivity)
@@ -58,7 +61,7 @@ class RegisterActivity : AppCompatActivity() {
         etFirstName = findViewById(R.id.etFirstName)
         etLastName = findViewById(R.id.etLastName)
         etEmail = findViewById(R.id.etEmail)
-        etDateOfBirth = findViewById(R.id.etDateOfBirth)
+        tvDateOfBirth = findViewById(R.id.tvDateOfBirth)
         etPhonePrefix = findViewById(R.id.etPhonePrefix)
         etPhoneNumber = findViewById(R.id.etPhoneNumber)
         etPostCode = findViewById(R.id.etPostCode)
@@ -86,6 +89,8 @@ class RegisterActivity : AppCompatActivity() {
         btnDateOfBirth = findViewById(R.id.btnDateOfBirth)
         tvGoToLogin = findViewById(R.id.tvGoToLogin)
 
+        datePicker = DatePickerHelper(this, true)
+
         val genders = resources.getStringArray(R.array.genders)
         val adapter = ArrayAdapter(this,
                 android.R.layout.simple_spinner_dropdown_item, genders)
@@ -93,7 +98,7 @@ class RegisterActivity : AppCompatActivity() {
 
         btnRegistration.setOnClickListener { registerWorker() }
 
-        btnDateOfBirth.setOnClickListener { setDateOfBirth(etDateOfBirth) }
+        btnDateOfBirth.setOnClickListener { setDateOfBirth(tvDateOfBirth) }
 
         tvGoToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -101,20 +106,20 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    fun setDateOfBirth(dateofbirth: EditText) {
-        val c = Calendar.getInstance()
-        val mYear = c[Calendar.YEAR]
-        val mMonth = c[Calendar.MONTH]
-        val mDay = c[Calendar.DAY_OF_MONTH]
+    fun setDateOfBirth(dateofbirth: TextView) {
+        val cal = Calendar.getInstance()
+        val d = cal.get(Calendar.DAY_OF_MONTH)
+        val m = cal.get(Calendar.MONTH)
+        val y = cal.get(Calendar.YEAR)
 
-
-        val datePickerDialog = DatePickerDialog(this,
-            { view, year, monthOfYear, dayOfMonth -> dateofbirth.setText(dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year) },
-            mYear,
-            mMonth,
-            mDay
-        )
-        datePickerDialog.show()
+        datePicker.showDialog(d, m, y, object : DatePickerHelper.Callback {
+            override fun onDateSelected(dayofMonth: Int, month: Int, year: Int) {
+                val dayStr = if (dayofMonth < 10) "0${dayofMonth}" else "${dayofMonth}"
+                val mon = month + 1
+                val monthStr = if (mon < 10) "0${mon}" else "${mon}"
+                dateofbirth.text = "${dayStr}.${monthStr}.${year}"
+            }
+        })
     }
 
     fun registerWorker() {
@@ -125,7 +130,7 @@ class RegisterActivity : AppCompatActivity() {
         val firstName = etFirstName.text.toString()
         val lastName = etLastName.text.toString()
         val email = etEmail.text.toString()
-        val dateOfBirth = etDateOfBirth.text.toString()
+        val dateOfBirth = tvDateOfBirth.text.toString()
         val phonePrefix = etPhonePrefix.text.toString()
         val phoneNumber = etPhoneNumber.text.toString()
         val postCode = etPostCode.text.toString()
