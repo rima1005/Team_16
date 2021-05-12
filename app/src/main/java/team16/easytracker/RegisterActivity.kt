@@ -22,7 +22,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var etFirstName : EditText
     lateinit var etLastName : EditText
     lateinit var etEmail : EditText
-    lateinit var tvDateOfBirth : TextView
+    lateinit var etDateOfBirth : EditText
     lateinit var etPhonePrefix : EditText
     lateinit var etPhoneNumber : EditText
     lateinit var etPostCode : EditText
@@ -62,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
         etFirstName = findViewById(R.id.etFirstName)
         etLastName = findViewById(R.id.etLastName)
         etEmail = findViewById(R.id.etEmail)
-        tvDateOfBirth = findViewById(R.id.tvDateOfBirth)
+        etDateOfBirth = findViewById(R.id.etDateOfBirth)
         etPhonePrefix = findViewById(R.id.etPhonePrefix)
         etPhoneNumber = findViewById(R.id.etPhoneNumber)
         etPostCode = findViewById(R.id.etPostCode)
@@ -99,7 +99,7 @@ class RegisterActivity : AppCompatActivity() {
 
         btnRegistration.setOnClickListener { registerWorker() }
 
-        btnDateOfBirth.setOnClickListener { setDateOfBirth(tvDateOfBirth) }
+        btnDateOfBirth.setOnClickListener { setDateOfBirth(etDateOfBirth) }
 
         tvGoToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
@@ -107,7 +107,7 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    fun setDateOfBirth(dateofbirth: TextView) {
+    fun setDateOfBirth(dateofbirth: EditText) {
         val cal = Calendar.getInstance()
         val d = cal.get(Calendar.DAY_OF_MONTH)
         val m = cal.get(Calendar.MONTH)
@@ -118,9 +118,13 @@ class RegisterActivity : AppCompatActivity() {
                 val dayStr = if (dayofMonth < 10) "0${dayofMonth}" else "${dayofMonth}"
                 val mon = month + 1
                 val monthStr = if (mon < 10) "0${mon}" else "${mon}"
-                dateofbirth.text = "${dayStr}.${monthStr}.${year}"
+                val finalDate = "${dayStr}.${monthStr}.${year}"
+                dateofbirth.setText(finalDate)
             }
         })
+
+        //TODO: set the et field to non editable, but make it editable for test again
+        //      so they won't fail
     }
 
     fun registerWorker() {
@@ -131,7 +135,7 @@ class RegisterActivity : AppCompatActivity() {
         val firstName = etFirstName.text.toString()
         val lastName = etLastName.text.toString()
         val email = etEmail.text.toString()
-        val dateOfBirth = tvDateOfBirth.text.toString()
+        val dateOfBirth = etDateOfBirth.text.toString()
         val phonePrefix = etPhonePrefix.text.toString()
         val phoneNumber = etPhoneNumber.text.toString()
         val postCode = etPostCode.text.toString()
