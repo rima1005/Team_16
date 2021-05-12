@@ -1,5 +1,6 @@
 package team16.easytracker
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,8 @@ import team16.easytracker.utils.Validator
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -44,6 +47,7 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var spGender : Spinner
 
     lateinit var btnRegistration : Button
+    lateinit var btnDateOfBirth : Button
     lateinit var tvGoToLogin : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +83,7 @@ class RegisterActivity : AppCompatActivity() {
         tvErrorPassword = findViewById(R.id.tvErrorPassword)
 
         btnRegistration = findViewById(R.id.btnRegistration)
+        btnDateOfBirth = findViewById(R.id.btnDateOfBirth)
         tvGoToLogin = findViewById(R.id.tvGoToLogin)
 
         val genders = resources.getStringArray(R.array.genders)
@@ -88,10 +93,28 @@ class RegisterActivity : AppCompatActivity() {
 
         btnRegistration.setOnClickListener { registerWorker() }
 
+        btnDateOfBirth.setOnClickListener { setDateOfBirth(etDateOfBirth) }
+
         tvGoToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    fun setDateOfBirth(dateofbirth: EditText) {
+        val c = Calendar.getInstance()
+        val mYear = c[Calendar.YEAR]
+        val mMonth = c[Calendar.MONTH]
+        val mDay = c[Calendar.DAY_OF_MONTH]
+
+
+        val datePickerDialog = DatePickerDialog(this,
+            { view, year, monthOfYear, dayOfMonth -> dateofbirth.setText(dayOfMonth.toString() + "-" + (monthOfYear + 1) + "-" + year) },
+            mYear,
+            mMonth,
+            mDay
+        )
+        datePickerDialog.show()
     }
 
     fun registerWorker() {
