@@ -187,7 +187,7 @@ class CreateTrackingFragment : Fragment() {
         builder.setMessage(getString(R.string.tracking_created))
         builder.setCancelable(false)
 
-        builder.setPositiveButton("OK") { dialog, which ->
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
             backToTrackings()
         }
 
