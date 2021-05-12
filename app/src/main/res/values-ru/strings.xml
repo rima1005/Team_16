@@ -46,6 +46,10 @@
     <string name="worker_email">Электронная почта рабочего</string>
     <string name="employee_position">Должность сотрудника</string>
     <string name="invalid_employee_position">Неверная должность сотрудника</string>
+    <string name="language">Язык</string>
+    <string name="settings">Настройки</string>
+    <string name="save_changes">Сохранить изменения</string>
+    <string name="change_password">Измени пароль</string>
     <string-array name="genders">
         <item>Никто</item>
         <item>женский</item>
