@@ -1,7 +1,6 @@
 package team16.easytracker
 
 import android.app.Activity
-import androidx.fragment.app.Fragment
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -76,7 +75,7 @@ class DeleteTrackingTests {
         var trackingId = DbHelper.saveTracking("TestTracking", MyApplication.loggedInWorker?.getId()!!, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "description", "device")
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
                 .addToBackStack(null)
@@ -97,7 +96,7 @@ class DeleteTrackingTests {
         var tracking = DbHelper.loadTracking(trackingId)
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
                 .addToBackStack(null)

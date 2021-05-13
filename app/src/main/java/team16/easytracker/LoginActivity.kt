@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 
@@ -74,7 +75,9 @@ class LoginActivity : AppCompatActivity() {
                     Log.i("Login", "Worker: " + worker?.toString())
                     if (worker != null) {
                         val intent = Intent(this, HomeActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         startActivity(intent)
+                        ActivityCompat.finishAffinity(this)
                     } else {
                         tvErrorPassword.text = "Invalid email or password"
                         tvErrorPassword.visibility = View.VISIBLE
