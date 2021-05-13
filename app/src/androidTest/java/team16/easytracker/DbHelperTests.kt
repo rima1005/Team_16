@@ -28,6 +28,11 @@ class DbHelperTests {
     val DUMMY_EMAIL = "test1.test@test.at"
     val DUMMY_PASSWORD = "securePassword"
 
+    val DUMMY_MAC = "FF:FF:FF:FF:FF:FF"
+    val DUMMY_BLUETOOTH_DEVICE_NAME = "Test device"
+    val DUMMY_WORKER_ID = -1
+
+
     @Before
     fun init() {
         DbHelper.writableDatabase.beginTransaction()
@@ -62,6 +67,10 @@ class DbHelperTests {
         }
 
         return DbHelper.writableDatabase.insert(WorkerContract.TABLE_NAME, null, values)
+    }
+
+    fun insertDummyBluetoothDevice() {
+        DbHelper.saveBluetoothDevice(DUMMY_MAC, DUMMY_BLUETOOTH_DEVICE_NAME, DUMMY_WORKER_ID)
     }
 
     @Test
@@ -112,7 +121,7 @@ class DbHelperTests {
         val lockedbycurrent = DbHelper.writableDatabase.isDbLockedByCurrentThread()
         val isReadOnly = DbHelper.writableDatabase.isReadOnly()
 
-        DbHelper.executeSQLFile(inputStream)
+        DbHelper.executeSQLFile(DbHelper.writableDatabase, inputStream)
         val newRowId = insertDummyCompany()
         val query =
             "SELECT * FROM ${CompanyContract.TABLE_NAME} WHERE ${CompanyContract.COL_ID} = ?"
@@ -254,8 +263,7 @@ class DbHelperTests {
     }
 
     @Test
-    fun testdeleteTracking()
-    {
+    fun testDeleteTracking() {
         val dummyName = "TEST"
         val now = LocalDateTime.now()
         val id = DbHelper.saveTracking(dummyName, 1, now, now, "desc", "bluetooth")
@@ -264,5 +272,26 @@ class DbHelperTests {
         assert(tracking?.name == dummyName)
         val success = DbHelper.deleteTracking(id)
         assert(success == 1)
+    }
+
+    @Test
+    fun testSaveBluetoothDevice() {
+        val success = DbHelper.saveBluetoothDevice(DUMMY_MAC, DUMMY_BLUETOOTH_DEVICE_NAME, DUMMY_WORKER_ID)
+        assert(success)
+        val bluetoothDevice = DbHelper.loadBluetoothDevice(DUMMY_MAC)
+        assert(bluetoothDevice != null)
+        assert(bluetoothDevice!!.mac == DUMMY_MAC)
+        assert(bluetoothDevice.name == DUMMY_BLUETOOTH_DEVICE_NAME)
+        assert(bluetoothDevice.workerId == DUMMY_WORKER_ID)
+    }
+
+    @Test
+    fun testLoadBluetoothDevice() {
+        insertDummyBluetoothDevice()
+        val bluetoothDevice = DbHelper.loadBluetoothDevice(DUMMY_MAC)
+        assert(bluetoothDevice != null)
+        assert(bluetoothDevice!!.mac == DUMMY_MAC)
+        assert(bluetoothDevice.name == DUMMY_BLUETOOTH_DEVICE_NAME)
+        assert(bluetoothDevice.workerId == DUMMY_WORKER_ID)
     }
 }

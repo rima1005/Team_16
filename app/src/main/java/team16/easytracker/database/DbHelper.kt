@@ -13,6 +13,8 @@ import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
 import team16.easytracker.database.Contracts.CompanyWorker
 import team16.easytracker.database.Contracts.Tracking
+import team16.easytracker.database.Contracts.BluetoothDevice
+import team16.easytracker.model.WorkerBluetoothDevice
 
 import team16.easytracker.model.Address as AddressModel
 import team16.easytracker.model.Company as CompanyModel
@@ -76,9 +78,15 @@ private const val SQL_CREATE_WORKERS =
             "${Worker.COL_CREATED_AT} LONG," +
             "${Worker.COL_ADDRESS_ID} INTEGER)"
 
+private const val SQL_CREATE_BLUETOOTH_DEVICES =
+    "CREATE TABLE IF NOT EXISTS ${BluetoothDevice.TABLE_NAME} (" +
+            "${BluetoothDevice.COL_MAC} VARCHAR(64) PRIMARY KEY," +
+            "${BluetoothDevice.COL_NAME} VARCHAR(256)," +
+            "${BluetoothDevice.COL_WORKER_ID} INTEGER)"
+
 
 // If you change the database schema, you must increment the database version.
-private const val DATABASE_VERSION = 2
+private const val DATABASE_VERSION = 3
 private const val DATABASE_NAME = "EasyTracker.db"
 
 object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -92,7 +100,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         db.execSQL(SQL_CREATE_COMPANY_WORKER)
         db.execSQL(SQL_CREATE_TRACKING)
         db.execSQL(SQL_CREATE_WORKERS)
-        //db.execSQL(SQL_CREATE_WORKERS)
+        db.execSQL(SQL_CREATE_BLUETOOTH_DEVICES)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -101,7 +109,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
             for (i in oldVersion until newVersion) {
                 val fileName = "${i}-${i + 1}.sql"
                 val file = ctx.assets.open(fileName)
-                executeSQLFile(file)
+                executeSQLFile(db, file)
                 file.close()
             }
         } catch (e: IOException) {
@@ -116,14 +124,14 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     @Throws(SQLException::class)
-    fun executeSQLFile(inputStream: InputStream) {
+    fun executeSQLFile(db: SQLiteDatabase, inputStream: InputStream) {
         val reader = inputStream.bufferedReader()
         var line = reader.readLine()
         while (line != null) {
             if (!line.endsWith(";")) {
                 throw SQLException("Invalid .sql file!")
             }
-            writableDatabase.execSQL(line)
+            db.execSQL(line)
             line = reader.readLine()
         }
     }
@@ -474,14 +482,33 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return
     }
 
-    fun deleteTracking(trackingId: Int): Int
-    {
+    fun deleteTracking(trackingId: Int): Int {
         return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
-
     }
 
-    fun deleteCompanyWorker(workerId: Int, companyId: Int): Int
-    {
+    fun deleteCompanyWorker(workerId: Int, companyId: Int): Int {
         return writableDatabase.delete(CompanyWorker.TABLE_NAME, "${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?", arrayOf(workerId.toString(), companyId.toString()))
+    }
+
+    fun saveBluetoothDevice(mac: String, name: String, workerId: Int): Boolean {
+        val values = ContentValues().apply {
+            put(BluetoothDevice.COL_MAC, mac)
+            put(BluetoothDevice.COL_NAME, name)
+            put(BluetoothDevice.COL_WORKER_ID, workerId)
+        }
+        val insertId = writableDatabase.insert(BluetoothDevice.TABLE_NAME, null, values).toInt()
+        return insertId != -1
+    }
+
+    fun loadBluetoothDevice(mac: String) : WorkerBluetoothDevice? {
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_MAC} = ?",
+            arrayOf(mac)
+        )
+        if (!result.moveToFirst())
+            return null
+        val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+        val workerId = result.getInt(result.getColumnIndex(BluetoothDevice.COL_WORKER_ID))
+        return WorkerBluetoothDevice(mac, name, workerId)
     }
 }
