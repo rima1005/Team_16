@@ -2,7 +2,6 @@ package team16.easytracker
 
 import android.Manifest
 import android.app.AlertDialog
-import android.app.DownloadManager
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -13,11 +12,11 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import team16.easytracker.database.DbHelper
 
 /* Resources
  * https://www.youtube.com/watch?v=PtN6UTIu7yw
@@ -28,17 +27,38 @@ class BluetoothFragment :  Fragment(R.layout.fragment_bluetooth) {
 
     lateinit var btnAddBluetoothDevice: Button
 
+    lateinit var lvBluetoothDevices: ListView
+
     lateinit var bluetoothAdapter: BluetoothAdapter
 
     lateinit var bluetoothReceiver: BroadcastReceiver
+
+    lateinit var bluetoothDevicesAdapter: ArrayAdapter<String>
+
 
     val bluetoothDevices: MutableSet<BluetoothDevice> = mutableSetOf()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnAddBluetoothDevice = view.findViewById(R.id.btnAddBluetoothDevice)
+        btnAddBluetoothDevice = view.findViewById(R.id.btnSearchBluetoothDevices)
+        lvBluetoothDevices = view.findViewById(R.id.lvBluetoothDevices)
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        //val bluetoothDevicesAdapter = context?.let { TrackingsAdapter(it, trackingsList, activity!!) }
+        bluetoothDevicesAdapter = ArrayAdapter(context!!, R.layout.bluetooth_device)
+        lvBluetoothDevices.adapter = bluetoothDevicesAdapter
+
+        lvBluetoothDevices.setOnItemClickListener { _, _, index, _ ->
+            val bluetoothDevice = bluetoothAdapter.getRemoteDevice(bluetoothDevicesAdapter.getItem(index))
+            Log.d("Bluetooth", "lvBluetoothDevices.selectedItem = " + bluetoothDevice.address)
+            // TODO: Change worker id to logged in worker id
+            DbHelper.saveBluetoothDevice(bluetoothDevice.address, bluetoothDevice.name, /*MyApplication.loggedInWorker!!.getId()*/ -1)
+        }
+
+
+
+
         bluetoothReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent) {
                 val action = intent.action
@@ -49,12 +69,14 @@ class BluetoothFragment :  Fragment(R.layout.fragment_bluetooth) {
                     //discovery finishes, dismis progress dialog
                     Log.d("Bluetooth","DISCOVERY_FINISHED")
                     // TODO update list UI
+
                 } else if (BluetoothDevice.ACTION_FOUND == action) {
                     //bluetooth device found
                     val device = intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
                     bluetoothDevices.add(bluetoothAdapter.getRemoteDevice(device.address))
                     Log.d("Bluetooth","Found device: " + device.name)
                     Log.d("Bluetooth","Found device with address: " + device.address)
+                    bluetoothDevicesAdapter.add(device.address)
                 }
             }
         }
