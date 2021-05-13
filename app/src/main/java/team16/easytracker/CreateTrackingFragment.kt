@@ -195,7 +195,7 @@ class CreateTrackingFragment : Fragment() {
     }
 
     private fun backToTrackings() {
-        val trackings = Trackings()
+        val trackings = TrackingsFragment()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "TrackingsFragment")
             .addToBackStack(null)

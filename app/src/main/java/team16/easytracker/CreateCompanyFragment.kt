@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.material.navigation.NavigationView
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.time.LocalDateTime
@@ -109,6 +110,11 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         DbHelper.addWorkerToCompany(worker.getId(), companyId, position)
         DbHelper.setCompanyAdmin(worker.getId(), companyId, true)
 
+        val navigationView = activity?.findViewById<NavigationView>(R.id.navigationView)!!
+        navigationView.menu.findItem(R.id.itemAddEmployee).isVisible = true
+        navigationView.menu.findItem(R.id.itemOverview).isVisible = true
+        navigationView.menu.findItem(R.id.itemCreateCompany).isVisible = false
+        navigationView.menu.findItem(R.id.itemOverview).isChecked = true
         // update worker because he now has a company and is admin
         MyApplication.loggedInWorker = DbHelper.loadWorker(worker.getId())
 

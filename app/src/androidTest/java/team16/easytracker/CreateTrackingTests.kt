@@ -65,7 +65,7 @@ class CreateTrackingTests {
     fun invalidStartDateCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -107,7 +107,7 @@ class CreateTrackingTests {
     fun emptyStartDateCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -146,7 +146,7 @@ class CreateTrackingTests {
     fun invalidEndDateCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -188,7 +188,7 @@ class CreateTrackingTests {
     fun emptyEndDateCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -227,7 +227,7 @@ class CreateTrackingTests {
     fun invalidStartTimeCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -269,7 +269,7 @@ class CreateTrackingTests {
     fun emptyStartTimeCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -309,7 +309,7 @@ class CreateTrackingTests {
     fun invalidEndTimeCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -351,7 +351,7 @@ class CreateTrackingTests {
     fun emptyEndTimeCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -390,7 +390,7 @@ class CreateTrackingTests {
     fun emptyTrackingNameCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -429,7 +429,7 @@ class CreateTrackingTests {
     fun emptyInputCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
@@ -494,7 +494,7 @@ class CreateTrackingTests {
     fun validCreateTracking() {
         val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity.supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
             .addToBackStack(null)
