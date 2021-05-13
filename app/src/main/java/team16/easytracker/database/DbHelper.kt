@@ -479,4 +479,9 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
 
     }
+
+    fun deleteCompanyWorker(workerId: Int, companyId: Int): Int
+    {
+        return writableDatabase.delete(CompanyWorker.TABLE_NAME, "${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?", arrayOf(workerId.toString(), companyId.toString()))
+    }
 }

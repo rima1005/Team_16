@@ -38,7 +38,7 @@ class HomeActivity : AppCompatActivity() {
 
 
         supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment, dashboardFragment)
+            replace(R.id.flFragment, dashboardFragment, "TAG_DASHBOARD")
             commit()
         }
 
@@ -90,6 +90,7 @@ class HomeActivity : AppCompatActivity() {
             menuItems.findItem(R.id.itemAddEmployee).isVisible = false
             menuItems.findItem(R.id.itemOverview).isVisible = false
         } else {
+            menuItems.findItem(R.id.itemAddEmployee).isVisible = MyApplication.loggedInWorker?.admin!!
             menuItems.findItem(R.id.itemCreateCompany).isVisible = false
         }
         menuItems.findItem(R.id.itemDashboard).isChecked = true
