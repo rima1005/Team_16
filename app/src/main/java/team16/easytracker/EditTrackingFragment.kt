@@ -7,13 +7,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import team16.easytracker.R
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking
 import team16.easytracker.utils.Validator
@@ -192,7 +189,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
     }
 
     private fun backToTrackings() {
-        val trackings = Trackings()
+        val trackings = TrackingsFragment()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "EdiTrackingsFragment")
             .addToBackStack(null)

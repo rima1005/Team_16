@@ -125,5 +125,11 @@
     <string name="tracking_created">Tracking created</string>
     <string name="tracking_edited">Tracking edited</string>
     <string name="tracking_been_edited">The tracking has been edited!</string>
+    <string name="tracking">Trackings</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="company_overview">Company Overview</string>
+    <string name="logout">Logout</string>
+    <string name="openDrawer">open Drawer</string>
+    <string name="closeDrawer">close Drawer</string>
 
 </resources>
