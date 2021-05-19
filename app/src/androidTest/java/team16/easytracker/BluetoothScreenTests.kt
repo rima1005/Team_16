@@ -44,5 +44,5 @@ class BluetoothScreenTests {
             .check(ViewAssertions.matches((ViewMatchers.isDisplayed())))
     }
 
-    //@Test
+    //TODO: add tests after "add bluetooth" functionality is done
 }
