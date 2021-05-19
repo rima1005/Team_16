@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -16,14 +17,16 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import team16.easytracker.adapters.MapSpinnerAdapter
 import team16.easytracker.database.DbHelper
+import team16.easytracker.model.WorkerBluetoothDevice
 
 /* Resources
  * https://www.youtube.com/watch?v=PtN6UTIu7yw
  * http://www.londatiga.net/it/programming/android/how-to-programmatically-scan-or-discover-android-bluetooth-device/
  */
 
-class BluetoothFragment :  Fragment(R.layout.fragment_bluetooth) {
+class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
 
     lateinit var btnAddBluetoothDevice: Button
 
@@ -33,102 +36,191 @@ class BluetoothFragment :  Fragment(R.layout.fragment_bluetooth) {
 
     lateinit var bluetoothReceiver: BroadcastReceiver
 
-    lateinit var bluetoothDevicesAdapter: ArrayAdapter<String>
-
+    lateinit var deviceListAdapter: MapSpinnerAdapter
 
     val bluetoothDevices: MutableSet<BluetoothDevice> = mutableSetOf()
+    var workerDevices = arrayOf<WorkerBluetoothDevice>()
+    var workerMacs = listOf<String>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val currentWorker = MyApplication.loggedInWorker!!
+        requestPermissions()
+
         btnAddBluetoothDevice = view.findViewById(R.id.btnSearchBluetoothDevices)
         lvBluetoothDevices = view.findViewById(R.id.lvBluetoothDevices)
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-
-        //val bluetoothDevicesAdapter = context?.let { TrackingsAdapter(it, trackingsList, activity!!) }
-        bluetoothDevicesAdapter = ArrayAdapter(context!!, R.layout.bluetooth_device)
-        lvBluetoothDevices.adapter = bluetoothDevicesAdapter
-
-        lvBluetoothDevices.setOnItemClickListener { _, _, index, _ ->
-            val bluetoothDevice = bluetoothAdapter.getRemoteDevice(bluetoothDevicesAdapter.getItem(index))
-            Log.d("Bluetooth", "lvBluetoothDevices.selectedItem = " + bluetoothDevice.address)
-            // TODO: Change worker id to logged in worker id
-            DbHelper.saveBluetoothDevice(bluetoothDevice.address, bluetoothDevice.name, /*MyApplication.loggedInWorker!!.getId()*/ -1)
-        }
-
-
-
-
-        bluetoothReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent) {
-                val action = intent.action
-                if (BluetoothAdapter.ACTION_DISCOVERY_STARTED == action) {
-                    //discovery starts, we can show progress dialog or perform other tasks
-                    Log.d("Bluetooth","ACTION_DISCOVERY_STARTED")
-                } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED == action) {
-                    //discovery finishes, dismis progress dialog
-                    Log.d("Bluetooth","DISCOVERY_FINISHED")
-                    // TODO update list UI
-
-                } else if (BluetoothDevice.ACTION_FOUND == action) {
-                    //bluetooth device found
-                    val device = intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
-                    bluetoothDevices.add(bluetoothAdapter.getRemoteDevice(device.address))
-                    Log.d("Bluetooth","Found device: " + device.name)
-                    Log.d("Bluetooth","Found device with address: " + device.address)
-                    bluetoothDevicesAdapter.add(device.address)
-                }
-            }
-        }
-
         if (!bluetoothAdapter.isEnabled) {
-            // Bluetooth is not on
-            val builder = AlertDialog.Builder(activity)
-            builder.setTitle(getString(R.string.enable_bluetooth))
-            builder.setMessage(getString(R.string.bluetooth_required_message))
-            builder.setCancelable(false)
-
-            builder.setPositiveButton(getString(R.string.enable)) { _, _ ->
-                if (!bluetoothAdapter.enable()) {
-                    Log.e("Bluetooth", "Enabling Bluetooth failed");
-                    val failedBuilder = AlertDialog.Builder(activity)
-                    failedBuilder.setTitle(getString(R.string.error))
-                    failedBuilder.setMessage(getString(R.string.error_enable_bluetooth))
-                    failedBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                        // TODO back to user settings/profile
-                    }
-                }
-            }
-            builder.setNegativeButton(getString(R.string.keep_off)) { _, _ ->
-                // TODO back to user settings/profile
-            }
-            builder.show()
+            showBluetoothEnablePrompt()
         }
 
-        val filter = IntentFilter()
+        workerDevices = DbHelper.loadBluetoothDevicesForWorker(currentWorker.getId())
+        workerMacs = workerDevices.map { it.mac }
 
-        filter.addAction(BluetoothDevice.ACTION_FOUND)
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+        // paired devices already start in list
+        val pairedDevicesMap = mutableMapOf<String, String>()
+        Log.d("Bluetooth", "Bonded Devices Size: " + bluetoothAdapter.bondedDevices.size)
+        for (device in bluetoothAdapter.bondedDevices) {
+            if (!workerMacs.contains(device.address)) {
+                pairedDevicesMap[device.address] = device.name
+            }
+        }
 
-        requireActivity().registerReceiver(bluetoothReceiver, filter)
+        deviceListAdapter = MapSpinnerAdapter(context!!, R.layout.bluetooth_device, pairedDevicesMap)
+        lvBluetoothDevices.adapter = deviceListAdapter
 
-        ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),16)
+        lvBluetoothDevices.setOnItemClickListener { _, _, index, _ -> onBluetoothDeviceSelected(index) }
 
-        //bluetoothAdapter.getRemoteDevice("mac address")
+        initBluetoothDiscoveryReceiver()
 
         btnAddBluetoothDevice.setOnClickListener {
-            Log.d("Bluetooth", "ACCESS_COARSE_LOCATION: " + ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION))
-            Log.d("Bluetooth", "ACCESS_FINE_LOCATION: " + ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION))
-            Log.d("Bluetooth", "Start discovery state: " + bluetoothAdapter.state)
-            Log.d("Bluetooth", "Start discovery: " + bluetoothAdapter.startDiscovery())
+            if (!bluetoothAdapter.startDiscovery()) {
+                throw Exception("Failed to start Bluetooth discovery")
+            }
         }
-
     }
 
     override fun onDestroy() {
         requireActivity().unregisterReceiver(bluetoothReceiver)
         super.onDestroy()
+    }
+
+    private fun onBluetoothDeviceSelected(index: Int) {
+        val bluetoothDevice = bluetoothAdapter.getRemoteDevice(deviceListAdapter.getItem(index))
+        Log.d("Bluetooth", "lvBluetoothDevices.selectedItem = " + bluetoothDevice.address)
+        showDeviceNamePrompt(bluetoothDevice)
+    }
+
+    private fun showDeviceNamePrompt(device: BluetoothDevice) {
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle(getString(R.string.enter_device_name))
+        builder.setCancelable(true)
+
+        val promptView = layoutInflater.inflate(R.layout.alert_bluetooth_name, null)
+        val et = promptView.findViewById<EditText>(R.id.etBluetoothDeviceName)
+        et.setText(device.name)
+        builder.setView(promptView)
+
+        builder.setPositiveButton(getString(R.string.add_device)) { _, _ ->
+            val currentWorker = MyApplication.loggedInWorker!!
+            // TODO: error handling?
+            // allow same name?
+            val deviceName = et.text.toString()
+            val success = DbHelper.saveBluetoothDevice(
+                device.address,
+                deviceName,
+                currentWorker.getId()
+            )
+            if (success) {
+                Log.d("Bluetooth", "Added bluetooth device $deviceName")
+            }
+
+            workerDevices = DbHelper.loadBluetoothDevicesForWorker(currentWorker.getId())
+            workerMacs = workerDevices.map { it.mac }
+
+            deviceListAdapter.remove(device.address)
+        }
+
+        builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
+            Log.d("Bluetooth", "Cancel saving")
+        }
+
+        builder.show()
+    }
+
+    private fun initBluetoothDiscoveryReceiver() {
+
+        bluetoothReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent) {
+
+                when (intent.action) {
+                    BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
+                        //discovery starts, we can show progress dialog or perform other tasks
+                        Log.d("Bluetooth", "ACTION_DISCOVERY_STARTED")
+                        // TODO show loading animation?
+                    }
+
+                    BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                        //discovery finishes, dismiss progress dialog
+                        Log.d("Bluetooth", "DISCOVERY_FINISHED")
+                    }
+
+                    BluetoothDevice.ACTION_FOUND -> {
+                        //bluetooth device found
+                        val device =
+                            intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
+                        if (workerMacs.contains(device.address)) {
+                            // device already added to worker
+                            return
+                        }
+                        if (bluetoothDevices.map { it.address }.contains(device.address)) {
+                            // already in the list
+                            return
+                        }
+                        bluetoothDevices.add(bluetoothAdapter.getRemoteDevice(device.address))
+                        Log.d("Bluetooth", "Found device: " + device.name)
+                        Log.d("Bluetooth", "Found device with address: " + device.address)
+                        // TODO: remove mac address from display
+                        deviceListAdapter.add(device.address, "${device.name} - ${device.address}")
+                    }
+
+                }
+            }
+        }
+
+        val filter = IntentFilter()
+        filter.addAction(BluetoothDevice.ACTION_FOUND)
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+
+        requireActivity().registerReceiver(bluetoothReceiver, filter)
+    }
+
+    private fun showBluetoothEnablePrompt() {
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle(getString(R.string.enable_bluetooth))
+        builder.setMessage(getString(R.string.bluetooth_required_message))
+        builder.setCancelable(false)
+
+        builder.setPositiveButton(getString(R.string.enable)) { _, _ ->
+            if (!bluetoothAdapter.enable()) {
+                Log.e("Bluetooth", "Enabling Bluetooth failed");
+                val failedBuilder = AlertDialog.Builder(activity)
+                failedBuilder.setTitle(getString(R.string.error))
+                failedBuilder.setMessage(getString(R.string.error_enable_bluetooth))
+                failedBuilder.setPositiveButton(R.string.ok) { _, _ ->
+                    goBack()
+                }
+            }
+        }
+        builder.setNegativeButton(getString(R.string.keep_off)) { _, _ ->
+            goBack()
+        }
+        builder.show()
+    }
+
+    private fun requestPermissions() {
+        val permissionsRequired = arrayOf(
+            Manifest.permission.BLUETOOTH,
+            Manifest.permission.BLUETOOTH_ADMIN,
+            // needed for bluetooth discovery:
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
+
+        ActivityCompat.requestPermissions(requireActivity(), permissionsRequired, 16)
+
+        for (permission in permissionsRequired) {
+            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
+                goBack()
+                return
+            }
+        }
+    }
+
+    private fun goBack() {
+        // TODO: Implementation
     }
 }

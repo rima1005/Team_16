@@ -53,7 +53,7 @@ class MyApplication : Application() {
         fun initLanguageSpinner(spinner: Spinner, activity: Activity) {
             spinner.adapter = MapSpinnerAdapter(activity.applicationContext,
                 R.layout.simple_spinner_dropdown_item,
-                languageList
+                languageList.toMutableMap()
             )
 
             spinner.setSelection(languageList.keys.indexOf(currentLanguage))

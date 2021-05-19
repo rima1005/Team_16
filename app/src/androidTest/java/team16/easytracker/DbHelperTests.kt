@@ -278,7 +278,7 @@ class DbHelperTests {
     fun testSaveBluetoothDevice() {
         val success = DbHelper.saveBluetoothDevice(DUMMY_MAC, DUMMY_BLUETOOTH_DEVICE_NAME, DUMMY_WORKER_ID)
         assert(success)
-        val bluetoothDevice = DbHelper.loadBluetoothDevice(DUMMY_MAC)
+        val bluetoothDevice = DbHelper.loadBluetoothDevice(DUMMY_MAC, DUMMY_WORKER_ID)
         assert(bluetoothDevice != null)
         assert(bluetoothDevice!!.mac == DUMMY_MAC)
         assert(bluetoothDevice.name == DUMMY_BLUETOOTH_DEVICE_NAME)
@@ -288,10 +288,31 @@ class DbHelperTests {
     @Test
     fun testLoadBluetoothDevice() {
         insertDummyBluetoothDevice()
-        val bluetoothDevice = DbHelper.loadBluetoothDevice(DUMMY_MAC)
+        val bluetoothDevice = DbHelper.loadBluetoothDevice(DUMMY_MAC, DUMMY_WORKER_ID)
         assert(bluetoothDevice != null)
         assert(bluetoothDevice!!.mac == DUMMY_MAC)
         assert(bluetoothDevice.name == DUMMY_BLUETOOTH_DEVICE_NAME)
         assert(bluetoothDevice.workerId == DUMMY_WORKER_ID)
     }
+
+    @Test
+    fun testLoadBluetoothDevicesForWorker() {
+        val macs = arrayOf("FF:FF:FF:FF:FF:FD", "FF:FF:FF:FF:FF:FE", "FF:FF:FF:FF:FF:FF")
+        val names = arrayOf("a", "b", "c")
+
+        for (i in macs.indices) {
+            DbHelper.saveBluetoothDevice(macs[i], names[i], DUMMY_WORKER_ID)
+        }
+
+        val devices = DbHelper.loadBluetoothDevicesForWorker(DUMMY_WORKER_ID)
+        assert(devices.size == macs.size)
+
+        for (i in devices.indices) {
+            assert(devices[i].mac == macs[i])
+            assert(devices[i].name == names[i])
+            assert(devices[i].workerId == DUMMY_WORKER_ID)
+        }
+    }
+
+
 }

@@ -80,9 +80,10 @@ private const val SQL_CREATE_WORKERS =
 
 private const val SQL_CREATE_BLUETOOTH_DEVICES =
     "CREATE TABLE IF NOT EXISTS ${BluetoothDevice.TABLE_NAME} (" +
-            "${BluetoothDevice.COL_MAC} VARCHAR(64) PRIMARY KEY," +
+            "${BluetoothDevice.COL_MAC} VARCHAR(64)," +
             "${BluetoothDevice.COL_NAME} VARCHAR(256)," +
-            "${BluetoothDevice.COL_WORKER_ID} INTEGER)"
+            "${BluetoothDevice.COL_WORKER_ID} INTEGER," +
+            "PRIMARY KEY(${BluetoothDevice.COL_MAC}, ${BluetoothDevice.COL_WORKER_ID}))"
 
 
 // If you change the database schema, you must increment the database version.
@@ -500,15 +501,29 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return insertId != -1
     }
 
-    fun loadBluetoothDevice(mac: String) : WorkerBluetoothDevice? {
+    fun loadBluetoothDevice(mac: String, workerId: Int) : WorkerBluetoothDevice? {
         val result = readableDatabase.rawQuery(
-            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_MAC} = ?",
-            arrayOf(mac)
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(mac, workerId.toString())
         )
         if (!result.moveToFirst())
             return null
         val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
-        val workerId = result.getInt(result.getColumnIndex(BluetoothDevice.COL_WORKER_ID))
         return WorkerBluetoothDevice(mac, name, workerId)
+    }
+
+    fun loadBluetoothDevicesForWorker(workerId: Int) : Array<WorkerBluetoothDevice> {
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(workerId.toString())
+        )
+        val list = mutableListOf<WorkerBluetoothDevice>()     
+        while (result.moveToNext()) {
+            val mac = result.getString(result.getColumnIndex(BluetoothDevice.COL_MAC))
+            val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+            val device = WorkerBluetoothDevice(mac, name, workerId)
+            list.add(device)
+        }
+        return list.toTypedArray()
     }
 }
