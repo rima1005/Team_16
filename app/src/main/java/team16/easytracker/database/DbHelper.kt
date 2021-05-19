@@ -474,6 +474,64 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return
     }
 
+    fun updateWorker(
+        workerId: Int,
+        firstName: String,
+        lastName: String,
+        dateOfBirth: LocalDate,
+        title: String,
+        email: String,
+        phoneNumber: String,
+        createdAt: LocalDateTime,
+        addressId: Int,
+        ) {
+            val values = ContentValues().apply {
+                put(Worker.COL_FIRST_NAME, firstName)
+                put(Worker.COL_LAST_NAME, lastName)
+                put(Worker.COL_DATE_OF_BIRTH, dateOfBirth.toEpochDay())
+                put(Worker.COL_TITLE, title)
+                put(Worker.COL_EMAIL, email)
+                put(Worker.COL_PHONE_NUMBER, phoneNumber)
+                put(Worker.COL_CREATED_AT, createdAt.toEpochSecond(ZoneOffset.UTC))
+                put(Worker.COL_ADDRESS_ID, addressId)
+            }
+            writableDatabase.update(Worker.TABLE_NAME, values,
+                    "${Worker.COL_ID} = ?",
+                    arrayOf(workerId.toString()))
+        return
+    }
+
+    fun updateWorkerPassword(workerId: Int, oldPassword: String, newPassword: String) : Boolean
+    {
+        val result = readableDatabase.rawQuery(
+                "SELECT ${Worker.COL_ID} = ?, ${Worker.COL_PASSWORD} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_EMAIL}",
+                arrayOf(workerId.toString())
+        )
+
+        if (!result.moveToNext()) {
+            result.close()
+            return false;
+        }
+
+        //check old PW
+        val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
+        if (BCrypt.checkpw(oldPassword, passwordHash)) {
+            val newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            val values = ContentValues().apply {
+                put(Worker.COL_PASSWORD, passwordHash)
+            }
+            writableDatabase.update(Worker.TABLE_NAME, values,
+                    "${Worker.COL_ID} = ?",
+                    arrayOf(workerId.toString()))
+            result.close()
+            return true
+        }
+        else
+        {
+            return false
+        }
+    }
+
     fun deleteTracking(trackingId: Int): Int
     {
         return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
