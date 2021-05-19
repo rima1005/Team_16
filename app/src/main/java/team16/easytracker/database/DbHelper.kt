@@ -113,7 +113,11 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
     {
         if(databaseName != DATABASE_NAME_TEST)
             throw UnsupportedOperationException("You are about to delete a productive or non-existing Database! This should never happen!!!")
-        ctx.deleteDatabase(databaseName)
+        File("/data/user/0/team16.easytracker/databases/${databaseName}").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-journal").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-shm").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-wal").delete()
+
     }
 
     override fun onCreate(db: SQLiteDatabase) {
