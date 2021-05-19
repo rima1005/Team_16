@@ -28,7 +28,7 @@ import team16.easytracker.model.WorkerBluetoothDevice
 
 class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
 
-    lateinit var btnAddBluetoothDevice: Button
+    lateinit var btnDiscoverBluetoothDevices: Button
 
     lateinit var lvBluetoothDevices: ListView
 
@@ -48,7 +48,7 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
         val currentWorker = MyApplication.loggedInWorker!!
         requestPermissions()
 
-        btnAddBluetoothDevice = view.findViewById(R.id.btnSearchBluetoothDevices)
+        btnDiscoverBluetoothDevices = view.findViewById(R.id.btnDiscoverBluetoothDevices)
         lvBluetoothDevices = view.findViewById(R.id.lvBluetoothDevices)
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -75,7 +75,7 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
 
         initBluetoothDiscoveryReceiver()
 
-        btnAddBluetoothDevice.setOnClickListener {
+        btnDiscoverBluetoothDevices.setOnClickListener {
             if (!bluetoothAdapter.startDiscovery()) {
                 throw Exception("Failed to start Bluetooth discovery")
             }
