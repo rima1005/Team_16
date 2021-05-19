@@ -163,7 +163,7 @@ class CreateTrackingFragment : Fragment() {
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
             val workerId = MyApplication.loggedInWorker!!.getId() 
-            val trackingId = DbHelper.saveTracking(
+            val trackingId = DbHelper.getInstance().saveTracking(
                 trackingName,
                 workerId,
                 startDateTime,

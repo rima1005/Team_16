@@ -89,7 +89,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
         btnEditTrackingBack?.setOnClickListener { backToTrackings() }
 
-        val tracking : Tracking? = DbHelper.loadTracking(trackingId!!)
+        val tracking : Tracking? = DbHelper.getInstance().loadTracking(trackingId!!)
 
         etStartDate.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
         etStartTime.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("HH:mm")))
@@ -159,7 +159,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
             val workerId = MyApplication.loggedInWorker!!.getId()
-            DbHelper.updateTracking(
+            DbHelper.getInstance().updateTracking(
                 trackingId,
                 trackingName,
                 workerId,
