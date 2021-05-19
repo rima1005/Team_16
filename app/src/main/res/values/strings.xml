@@ -132,5 +132,18 @@
     <string name="openDrawer">open Drawer</string>
     <string name="closeDrawer">close Drawer</string>
     <string name="invalid_password_mail">Invalid email or password</string>
+    <string name="add_bluetooth_device">Add bluetooth device</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="enable_bluetooth">Enable Bluetooth</string>
+    <string name="bluetooth_required_message">Bluetooth is required. Would you like to enable?</string>
+    <string name="enable">Enable</string>
+    <string name="keep_off">Keep off</string>
+    <string name="error">Error</string>
+    <string name="error_enable_bluetooth">Enabling Bluetooth failed</string>
+    <string name="ok">OK</string>
+    <string name="search_devices">Search devices</string>
+    <string name="add_device">Add device</string>
+    <string name="cancel">Cancel</string>
+    <string name="enter_device_name">Enter device name</string>
 
 </resources>
