@@ -75,7 +75,7 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         if(errorOccured)
             return
 
-        val worker = DbHelper.loadWorker(workerEmail)
+        val worker = DbHelper.getInstance().loadWorker(workerEmail)
         if(worker == null){
             tvErrorAddWorker.visibility = View.VISIBLE
             tvErrorAddWorker.text = getString(R.string.error_adding_employee)
@@ -87,7 +87,7 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         if(companyId != null) {
             var added = false
             try {
-                added = DbHelper.addWorkerToCompany(worker.getId(), companyId, companyPosition)
+                added = DbHelper.getInstance().addWorkerToCompany(worker.getId(), companyId, companyPosition)
             }
             catch(e: Exception){
                 tvErrorAddWorker.visibility = View.VISIBLE

@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                     "Email: " + email + "," +
                     "Password: " + password + ",")
 
-                    val worker = DbHelper.loginWorker(email, password)
+                    val worker = DbHelper.getInstance().loginWorker(email, password)
                     Log.i("Login", "Worker: " + worker?.toString())
                     if (worker != null) {
                         val intent = Intent(this, HomeActivity::class.java)
