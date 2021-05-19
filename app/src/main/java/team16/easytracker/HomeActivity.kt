@@ -21,6 +21,7 @@ class HomeActivity : AppCompatActivity() {
 
     val dashboardFragment = DashboardFragment()
     val trackingsFragment = TrackingsFragment()
+    val bluetoothDevicesFragment = BluetoothDevicesFragment()
     val companyFragment = CompanyFragment()
     val profileFragment = ProfileFragment()
     val companyAdminFragment = CompanyAdminFragment()
@@ -75,6 +76,7 @@ class HomeActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.itemDashboard -> setCurrentFragment(dashboardFragment, "TAG_DASHBOARD")
                 R.id.itemTrackings -> setCurrentFragment(trackingsFragment, "TAG_TRACKINGS")
+                R.id.itemBluetoothDevices -> setCurrentFragment(bluetoothDevicesFragment, "TAG_BLUETOOTHDEVICES")
                 R.id.itemCreateCompany -> setCurrentFragment(createCompanyFragment, "TAG_CREATECOMPANY")
                 R.id.itemOverview -> setCurrentFragment(companyFragment, "TAG_OVERVIEW")
                 R.id.itemAddEmployee -> setCurrentFragment(companyAdminFragment, "TAG_ADDEMPLOYEE")
