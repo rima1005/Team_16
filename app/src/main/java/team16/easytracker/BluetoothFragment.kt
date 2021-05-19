@@ -191,12 +191,12 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                 failedBuilder.setTitle(getString(R.string.error))
                 failedBuilder.setMessage(getString(R.string.error_enable_bluetooth))
                 failedBuilder.setPositiveButton(R.string.ok) { _, _ ->
-                    goBack()
+                    closeFragment()
                 }
             }
         }
         builder.setNegativeButton(getString(R.string.keep_off)) { _, _ ->
-            goBack()
+            closeFragment()
         }
         builder.show()
     }
@@ -214,13 +214,14 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
 
         for (permission in permissionsRequired) {
             if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                goBack()
+                closeFragment()
                 return
             }
         }
     }
 
-    private fun goBack() {
-        // TODO: Implementation
+    private fun closeFragment() {
+        // go back
+        requireActivity().supportFragmentManager.popBackStackImmediate()
     }
 }
