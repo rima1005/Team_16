@@ -43,7 +43,7 @@ class BluetoothDevicesFragment : Fragment() {
         }
 
 
-        var mRecyclerView = view.findViewById(R.id.bluetooth_devices_list) as RecyclerView
+        var mRecyclerView = view.findViewById(R.id.rvBluetoothDevicesList) as RecyclerView
         mRecyclerView.addItemDecoration(
             DividerItemDecoration(
                 activity,
