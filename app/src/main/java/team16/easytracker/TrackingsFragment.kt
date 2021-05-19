@@ -34,7 +34,7 @@ class TrackingsFragment : Fragment() {
 
         //--------------------------------------------------------------------------
 
-        val trackingsList = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())?.toMutableList()
+        val trackingsList = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())?.toMutableList()
 
         if (trackingsList != null) {
             val adapter = context?.let { TrackingsAdapter(it, trackingsList, activity!!) }

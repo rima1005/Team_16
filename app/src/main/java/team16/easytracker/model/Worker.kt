@@ -21,17 +21,4 @@ class Worker(
         return id
     }
 
-    companion object {
-        fun load(id: Int): Worker {
-            throw NotImplementedError("Not Implemented!")
-        }
-
-        fun save(firstName: String): Int {
-            throw NotImplementedError("Not Implemented!")
-        }
-
-        fun login(email: String, password: String): Worker? {
-            throw NotImplementedError("Not Implemented!")
-        }
-    }
 }

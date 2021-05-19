@@ -79,12 +79,46 @@ private const val SQL_CREATE_WORKERS =
 
 // If you change the database schema, you must increment the database version.
 private const val DATABASE_VERSION = 2
-private const val DATABASE_NAME = "EasyTracker.db"
+private const val DATABASE_NAME_PROD = "EasyTracker.db"
+private const val DATABASE_NAME_TEST = "EasyTrackerTest.db"
 
-object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, DATABASE_VERSION) {
+class DbHelper private constructor(context: Context, databaseName: String = DATABASE_NAME_PROD) : SQLiteOpenHelper(context, databaseName, null, DATABASE_VERSION) {
 
-    val ctx = MyApplication.instance;
-    val tag = DbHelper::class.java.name;
+    val ctx = context
+    val tag = DbHelper::class.java.name
+
+    companion object {
+        private var _instance: DbHelper? = null
+
+        fun getInstance(context: Context = MyApplication.instance): DbHelper
+        {
+            if (_instance == null)
+            {
+                if (context != MyApplication.instance)
+                    _instance = DbHelper(context, DATABASE_NAME_TEST)
+                else
+                    _instance = DbHelper(MyApplication.instance, DATABASE_NAME_PROD)
+            }
+            return _instance!!
+        }
+    }
+
+    fun clearDbAndCreate(databaseName: String)
+    {
+        clearDb(databaseName)
+        onCreate(writableDatabase)
+    }
+
+    fun clearDb(databaseName: String)
+    {
+        if(databaseName != DATABASE_NAME_TEST)
+            throw UnsupportedOperationException("You are about to delete a productive or non-existing Database! This should never happen!!!")
+        File("/data/user/0/team16.easytracker/databases/${databaseName}").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-journal").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-shm").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-wal").delete()
+
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_COMPANY)
@@ -92,7 +126,6 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         db.execSQL(SQL_CREATE_COMPANY_WORKER)
         db.execSQL(SQL_CREATE_TRACKING)
         db.execSQL(SQL_CREATE_WORKERS)
-        //db.execSQL(SQL_CREATE_WORKERS)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -101,7 +134,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
             for (i in oldVersion until newVersion) {
                 val fileName = "${i}-${i + 1}.sql"
                 val file = ctx.assets.open(fileName)
-                executeSQLFile(file)
+                executeSQLFile(file, db)
                 file.close()
             }
         } catch (e: IOException) {
@@ -116,14 +149,14 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     @Throws(SQLException::class)
-    fun executeSQLFile(inputStream: InputStream) {
+    fun executeSQLFile(inputStream: InputStream, db: SQLiteDatabase) {
         val reader = inputStream.bufferedReader()
         var line = reader.readLine()
         while (line != null) {
             if (!line.endsWith(";")) {
                 throw SQLException("Invalid .sql file!")
             }
-            writableDatabase.execSQL(line)
+            db.execSQL(line)
             line = reader.readLine()
         }
     }
