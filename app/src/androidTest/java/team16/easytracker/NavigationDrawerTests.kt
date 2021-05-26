@@ -158,10 +158,24 @@ class NavigationDrawerTests : TestFramework() {
         assert(fragment?.isVisible!!)
     }
 
-    @Test //TODO: Finish this test if Bluetooth screen is available
+    @Test
     fun navigateToBluetooth()
     {
-        assert(true)
+        loginwithCompanyWorkerAdmin()
+        val companyID = insertDummyCompany("DummyCompany")
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
+        dbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, true)
+        var activity = getCurrentActivity() as HomeActivity
+        onView(withId(R.id.drawerLayout))
+            .check(matches(DrawerMatchers.isClosed(Gravity.LEFT)))// Left Drawer should be closed.
+            .perform(DrawerActions.open()) // Open Drawer
+
+        onView(withId(R.id.navigationView))
+            .perform(NavigationViewActions.navigateTo(R.id.itemBluetoothDevices))
+
+        Thread.sleep(1000)
+        var fragment = activity.supportFragmentManager.findFragmentByTag("TAG_BLUETOOTHDEVICES")
+        assert(fragment?.isVisible!!)
     }
 
     @Test
