@@ -665,7 +665,7 @@
 
 
             <Button
-                android:id="@+id/btnSaveChangesSettings"
+                android:id="@+id/btnSaveChangesSetting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
