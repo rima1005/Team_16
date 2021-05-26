@@ -4,15 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Profile">
-
-
+    tools:context=".ProfileFragment">
 
 
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,6 +63,44 @@
                 android:fontFamily="sans-serif-light"
                 android:padding="10dp"
                 android:textSize="18sp"  />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="#c0c0c0" />
+
+            <Button
+                android:id="@+id/btnBluetoothSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="#168AAD"
+                android:fontFamily="sans-serif-light"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="#168AAD"
+                android:text="@string/bluetooth"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.531"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spLanguage"
+                app:layout_constraintVertical_bias="0.279" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="20dp"
+                android:background="#c0c0c0" />
 
             <LinearLayout
                 android:layout_width="match_parent"

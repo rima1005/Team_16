@@ -22,54 +22,7 @@ import java.time.format.DateTimeFormatter
 
 
 @RunWith(AndroidJUnit4::class)
-class WorkerLoginTests {
-
-    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    lateinit var writableDb: SQLiteDatabase
-    lateinit var readable: SQLiteDatabase
-
-    val firstName = "Max"
-    val lastName = "Mustermann"
-    val email = "test.test@test.at"
-    val password = "securePassword"
-    val dateOfBirth = "11.06.1999"
-    val street = "straße 1"
-    val postCode = "0989"
-    val city = "graz"
-    val title = ""
-    val phoneNumber = "43660151625"
-    val phonePrefix = "43"
-
-    @Before
-    fun init() {
-        writableDb = DbHelper.writableDatabase
-        readable = DbHelper.readableDatabase
-        writableDb.beginTransaction()
-    }
-
-    @After
-    fun tearDown() {
-        writableDb.endTransaction()
-    }
-
-    private fun insertDummyWorker(): Int {
-
-        val addressId = DbHelper.saveAddress(street, postCode, city)
-
-        val workerId = DbHelper.saveWorker(
-                firstName,
-                lastName,
-                LocalDate.now(),
-                title,
-                email,
-                password,
-                phonePrefix + phoneNumber,
-                LocalDateTime.now().withNano(0),
-                1
-        )
-
-        return workerId
-    }
+class WorkerLoginTests : TestFramework() {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(LoginActivity::class.java)
@@ -119,10 +72,10 @@ class WorkerLoginTests {
 
     @Test
     fun validLogin_passwordAndMailValid() {
-        val newRowId = insertDummyWorker()
+        val dummyWorker = insertDummyWorker()
 
         onView(withId(R.id.etEmail))
-                .perform(typeText("john.doe@something.com"), closeSoftKeyboard())
+                .perform(typeText(dummyWorker.email), closeSoftKeyboard())
 
 
         onView(withId(R.id.etPassword))
@@ -133,10 +86,10 @@ class WorkerLoginTests {
                 .perform(click())*/
 
     }
-    @Ignore //TODO: This test stucks in a endless loop? Maybe some database problems!
+
     @Test
     fun invalidLogin_passwordNotValid() {
-        val newRowId = insertDummyWorker()
+        val dummyWorker = insertDummyWorker()
 
       // val worker = dbHelper.loginWorker("john@so.at", "123")
 
@@ -144,11 +97,11 @@ class WorkerLoginTests {
 
 
         onView(withId(R.id.etEmail))
-                .perform(typeText("john.doe@something.com"), closeSoftKeyboard())
+                .perform(typeText(dummyWorker.email), closeSoftKeyboard())
 
 
         onView(withId(R.id.etPassword))
-                .perform(typeText("123"), closeSoftKeyboard())
+                .perform(typeText("1231564684asdf"), closeSoftKeyboard())
 
         // Click Login button
         onView(withId(R.id.btnLogin))
@@ -156,20 +109,16 @@ class WorkerLoginTests {
 
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
-                .check(matches(withText(R.string.invalid_employee_position)))
+                .check(matches(withText(R.string.invalid_password_mail)))
 
     }
 
     @Test
     fun setGlobalWorkerAfterLogin()
     {
-        val result = insertDummyWorker()
-        DbHelper.loginWorker("test.test@test.at", "securePassword")
+        insertDummyWorker()
+        dbHelper.loginWorker(dummyWorker.email, "12345678")
         assert(MyApplication.loggedInWorker != null)
-        assert(MyApplication.loggedInWorker?.firstName == firstName)
+        assert(MyApplication.loggedInWorker?.firstName == dummyWorker.firstName)
     }
-
-//TODO Refactoring dbHelper singleton pattern
-
-
 }

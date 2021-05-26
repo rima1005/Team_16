@@ -7,13 +7,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import team16.easytracker.R
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking
 import team16.easytracker.utils.Validator
@@ -92,7 +89,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
         btnEditTrackingBack?.setOnClickListener { backToTrackings() }
 
-        val tracking : Tracking? = DbHelper.loadTracking(trackingId!!)
+        val tracking : Tracking? = DbHelper.getInstance().loadTracking(trackingId!!)
 
         etStartDate.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
         etStartTime.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("HH:mm")))
@@ -162,7 +159,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
             val workerId = MyApplication.loggedInWorker!!.getId()
-            DbHelper.updateTracking(
+            DbHelper.getInstance().updateTracking(
                 trackingId,
                 trackingName,
                 workerId,
@@ -192,7 +189,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
     }
 
     private fun backToTrackings() {
-        val trackings = Trackings()
+        val trackings = TrackingsFragment()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "EdiTrackingsFragment")
             .addToBackStack(null)

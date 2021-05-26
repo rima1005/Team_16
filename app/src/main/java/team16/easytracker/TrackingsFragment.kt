@@ -10,7 +10,7 @@ import android.widget.ListView
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.TrackingsAdapter
 
-class Trackings : Fragment() {
+class TrackingsFragment : Fragment() {
     lateinit var btnCreateTracking : Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,7 +34,7 @@ class Trackings : Fragment() {
 
         //--------------------------------------------------------------------------
 
-        val trackingsList = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())?.toMutableList()
+        val trackingsList = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())?.toMutableList()
 
         if (trackingsList != null) {
             val adapter = context?.let { TrackingsAdapter(it, trackingsList, activity!!) }

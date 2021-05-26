@@ -29,24 +29,9 @@ import java.time.format.DateTimeFormatter
 
 
 @RunWith(AndroidJUnit4::class)
-class EditTrackingTests {
+class EditTrackingTests : TestFramework() {
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
-
-    lateinit var writableDb: SQLiteDatabase
-    lateinit var readable: SQLiteDatabase
-
-    val firstName = "Max"
-    val lastName = "Mustermann"
-    val email = "test.test@test.at"
-    val password = "securePassword"
-    val dateOfBirth = "11.06.1999"
-    val street = "straße 1"
-    val postCode = "0989"
-    val city = "graz"
-    val title = ""
-    val phoneNumber = "43660151625"
-    val phonePrefix = "43"
 
     var trackingId = 0
 
@@ -57,42 +42,20 @@ class EditTrackingTests {
     val bluetoothDevice = ""
 
     private fun insertDummyTracking(): Int {
-
-        val addressId = DbHelper.saveAddress(street, postCode, city)
-
-        val workerId = DbHelper.saveWorker(
-                firstName,
-                lastName,
-                LocalDate.now(),
-                title,
-                email,
-                password,
-                phonePrefix + phoneNumber,
-                LocalDateTime.now().withNano(0),
-                addressId
-        )
-
-        val trackingId = DbHelper.saveTracking(trackingName, workerId, startTime, endTime, description, bluetoothDevice)
-        DbHelper.loginWorker(email, password)
+        val trackingId = dbHelper.saveTracking(trackingName, loggedInWorker.getId(), startTime, endTime, description, bluetoothDevice)
         return trackingId
-    }
-
-    @Before
-    fun init() {
-        /*writableDb = DbHelper.writableDatabase
-        readable = DbHelper.readableDatabase
-        writableDb.beginTransaction()*/
-    }
-
-    @After
-    fun tearDown() {
-        /*writableDb.endTransaction()*/
     }
 
     fun getCurrentActivity(): Activity? {
         var currentActivity: Activity? = null
         getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).elementAtOrNull(0) } }
         return currentActivity
+    }
+
+    @Before
+    override fun setup() {
+        super.setup()
+        setupLoggedInWorker()
     }
 
     @Test

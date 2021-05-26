@@ -1,16 +1,20 @@
 package team16.easytracker
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.thesimplycoder.simpledatepicker.DatePickerHelper
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -44,7 +48,10 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var spGender : Spinner
 
     lateinit var btnRegistration : Button
+    lateinit var btnDateOfBirth : Button
     lateinit var tvGoToLogin : TextView
+
+    lateinit var datePicker : DatePickerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +87,10 @@ class RegisterActivity : AppCompatActivity() {
         tvErrorPassword = findViewById(R.id.tvErrorPassword)
 
         btnRegistration = findViewById(R.id.btnRegistration)
+        btnDateOfBirth = findViewById(R.id.btnDateOfBirth)
         tvGoToLogin = findViewById(R.id.tvGoToLogin)
+
+        datePicker = DatePickerHelper(this, true)
 
         val genders = resources.getStringArray(R.array.genders)
         val adapter = ArrayAdapter(this,
@@ -89,10 +99,32 @@ class RegisterActivity : AppCompatActivity() {
 
         btnRegistration.setOnClickListener { registerWorker() }
 
+        btnDateOfBirth.setOnClickListener { setDateOfBirth(etDateOfBirth) }
+
         tvGoToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    fun setDateOfBirth(dateofbirth: EditText) {
+        val cal = Calendar.getInstance()
+        val d = cal.get(Calendar.DAY_OF_MONTH)
+        val m = cal.get(Calendar.MONTH)
+        val y = cal.get(Calendar.YEAR)
+
+        datePicker.showDialog(d, m, y, object : DatePickerHelper.Callback {
+            override fun onDateSelected(dayofMonth: Int, month: Int, year: Int) {
+                val dayStr = if (dayofMonth < 10) "0${dayofMonth}" else "${dayofMonth}"
+                val mon = month + 1
+                val monthStr = if (mon < 10) "0${mon}" else "${mon}"
+                val finalDate = "${dayStr}.${monthStr}.${year}"
+                dateofbirth.setText(finalDate)
+            }
+        })
+
+        //TODO: set the et field to non editable, but make it editable for test again
+        //      so they won't fail
     }
 
     fun registerWorker() {
@@ -146,10 +178,10 @@ class RegisterActivity : AppCompatActivity() {
             )
 
 
-            val addressId = DbHelper.saveAddress(street, postCode, city)
+            val addressId = DbHelper.getInstance().saveAddress(street, postCode, city)
 
             // TODO: no check for error! workerId is -1 if email is duplicate
-            val workerId = DbHelper.saveWorker(
+            val workerId = DbHelper.getInstance().saveWorker(
                     firstName,
                     lastName,
                     LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
