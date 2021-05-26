@@ -52,7 +52,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         val position = etPosition.text.toString()
         val zipCode = etZipCode.text.toString()
         val city = etCity.text.toString()
-        val street = etCity.text.toString()
+        val street = etStreet.text.toString()
         val createCompanyBtn = btnCreateCompany
 
         var errorOccured = false
