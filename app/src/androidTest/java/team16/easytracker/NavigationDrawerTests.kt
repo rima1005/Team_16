@@ -158,7 +158,7 @@ class NavigationDrawerTests : TestFramework() {
         assert(fragment?.isVisible!!)
     }
 
-    @Test //TODO: Finish this test if Bluetooth screen is available
+    @Test
     fun navigateToBluetooth()
     {
         loginwithCompanyWorkerAdmin()

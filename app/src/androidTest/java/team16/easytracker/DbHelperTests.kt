@@ -54,7 +54,8 @@ class DbHelperTests : TestFramework() {
         return dbHelper.writableDatabase.insert(WorkerContract.TABLE_NAME, null, values)
     }
 
-    fun insertDummyBluetoothDevice() {
+    @Override
+    override fun insertDummyBluetoothDevice() {
         dbHelper.saveBluetoothDevice(DUMMY_MAC, DUMMY_BLUETOOTH_DEVICE_NAME, DUMMY_WORKER_ID)
     }
 

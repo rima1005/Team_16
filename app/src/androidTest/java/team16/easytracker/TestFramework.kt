@@ -95,4 +95,9 @@ open class TestFramework {
         MyApplication.loggedInWorker = dbHelper.loadWorker(MyApplication.loggedInWorker!!.getId())
 
     }
+
+    open fun insertDummyBluetoothDevice()
+    {
+        dbHelper.saveBluetoothDevice("00:80:41:ae:fd:69", "TestDevice", loggedInWorker.getId())
+    }
 }
