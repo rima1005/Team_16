@@ -3,49 +3,28 @@ package team16.easytracker
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ListView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import team16.easytracker.database.DbHelper
 
 class CompanyFragment : Fragment(R.layout.fragment_company) {
 
-    lateinit var btnCreateCompany: Button
-    lateinit var btnAddWorker: Button
+    lateinit var tvCompanyName: TextView
+    lateinit var tvCompanyAddress: TextView
+    lateinit var lvCompanyWorkers: ListView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btnCreateCompany = view.findViewById(R.id.btnCreateCompanyFragment)
-        btnAddWorker = view.findViewById(R.id.btnAddWorker)
+        tvCompanyName = view.findViewById(R.id.tvCompanyName)
+        tvCompanyAddress = view.findViewById(R.id.tvCompanyAddress)
+        lvCompanyWorkers = view.findViewById(R.id.lvCompanyWorkers)
 
-        if (MyApplication.loggedInWorker?.company == null) {
-            btnAddWorker.isEnabled = false
-            btnCreateCompany.isEnabled = true
-            btnCreateCompany.setOnClickListener() {
-                startCreateCompany()
-            }
-        } else {
-            btnCreateCompany.isEnabled = false
-            if(MyApplication.loggedInWorker?.admin!!) {
-                btnAddWorker.isEnabled = true
-                btnAddWorker.setOnClickListener() {
-                    startAddWorker()
-                }
-            }
+        val company = MyApplication.loggedInWorker?.company!!
+        val address = DbHelper.getInstance().loadAddress(company.addressId)
+        tvCompanyName.text = company.name
+        tvCompanyAddress.text = address!!.street + "\n" + address!!.zipCode + " " + address!!.city
 
-            val company = MyApplication.loggedInWorker?.company!!
-            // TODO: show company data
-        }
-    }
-
-    private fun startCreateCompany() {
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flFragment, CreateCompanyFragment())
-        transaction.disallowAddToBackStack()
-        transaction.commit()
-    }
-
-    private fun startAddWorker() {
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flFragment, CompanyAdminFragment())
-        transaction.disallowAddToBackStack()
-        transaction.commit()
+        // TODO: show company data
     }
 }
