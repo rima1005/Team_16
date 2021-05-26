@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.recyclerview.widget.*
 import team16.easytracker.placeholder.PlaceholderContent
 import team16.easytracker.utils.BluetoothDeviceRecyclerViewAdapter
@@ -15,6 +16,8 @@ import team16.easytracker.utils.BluetoothDeviceRecyclerViewAdapter
 class BluetoothDevicesFragment : Fragment() {
 
     private var columnCount = 1
+
+    lateinit var btnBluetoothSettings: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +33,18 @@ class BluetoothDevicesFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_bluetooth_devices_list, container, false)
 
+        btnBluetoothSettings = view.findViewById(R.id.btnAddBluetoothDevice)
+        btnBluetoothSettings.setOnClickListener {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, BluetoothFragment(), "BluetoothFragment")
+                .addToBackStack(null)
+                .commit()
+        }
+
         // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
+        val rvBluetoothDevices = view.findViewById<RecyclerView>(R.id.rvBluetoothDevicesList)
+        if (rvBluetoothDevices is RecyclerView) {
+            with(rvBluetoothDevices) {
                 layoutManager = when {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
