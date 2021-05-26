@@ -25,35 +25,15 @@ import com.google.android.material.internal.NavigationMenuItemView
 
 
 @RunWith(AndroidJUnit4::class)
-class NavigationDrawerTests {
+class NavigationDrawerTests : TestFramework() {
 
     private var company : Company? = null
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "email1@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-                "firstName",
-                "lastName",
-                LocalDate.now(),
-                "title",
-                email,
-                pw,
-                "12345678",
-                LocalDateTime.now().withNano(0),
-                addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
 
     private fun insertDummyCompany(companyName: String): Int {
         if (company == null)
         {
-            val companyId = DbHelper.saveCompany(companyName, 1)
-            company = DbHelper.loadCompany(companyId)!!
+            val companyId = dbHelper.saveCompany(companyName, 1)
+            company = dbHelper.loadCompany(companyId)!!
         }
         return company!!.getId()
     }
@@ -61,29 +41,18 @@ class NavigationDrawerTests {
 
 
     @Before
-    fun init() {
-        // TODO: this doesn't work because further reads (e.g.: in fragment) don't work if transaction is open
-        // DbHelper.writableDatabase.beginTransaction()
-        if (MyApplication.loggedInWorker == null) {
-            setupLoggedInWorker()
-        }
-
-    }
-
-    @After
-    fun tearDown() {
-        if(MyApplication.loggedInWorker?.company != null)
-            DbHelper.deleteCompanyWorker(MyApplication.loggedInWorker?.getId()!!, MyApplication.loggedInWorker?.company?.getId()!!)
-        //DbHelper.writableDatabase.endTransaction()
+    override fun setup() {
+        super.setup()
+        setupLoggedInWorker()
     }
 
     fun loginwithCompanyWorker()
     {
-        val companyID = insertDummyCompany("DummyCompany")
-        DbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
-        DbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, false)
+        val company = insertDummyCompany()
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, company.getId(), "Test")
+        dbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, company.getId(), false)
         var activity = getCurrentActivity() as LoginActivity
-        onView(withId(R.id.etEmail)).perform(typeText("email1@email.at"))
+        onView(withId(R.id.etEmail)).perform(typeText(loggedInWorker.email))
         closeSoftKeyboard()
         onView(withId(R.id.etPassword)).perform(typeText("12345678"))
         closeSoftKeyboard()
@@ -92,10 +61,8 @@ class NavigationDrawerTests {
 
     fun loginWithNoCompanyWorker()
     {
-        if(MyApplication.loggedInWorker?.company != null)
-            DbHelper.deleteCompanyWorker(MyApplication.loggedInWorker?.getId()!!, MyApplication.loggedInWorker?.company?.getId()!!)
         var activity = getCurrentActivity() as LoginActivity
-        onView(withId(R.id.etEmail)).perform(typeText("email1@email.at"))
+        onView(withId(R.id.etEmail)).perform(typeText(loggedInWorker.email))
         closeSoftKeyboard()
         onView(withId(R.id.etPassword)).perform(typeText("12345678"))
         closeSoftKeyboard()
@@ -104,11 +71,11 @@ class NavigationDrawerTests {
 
     fun loginwithCompanyWorkerAdmin()
     {
-        val companyID = insertDummyCompany("DummyCompany")
-        DbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
-        DbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, true)
+        val company = insertDummyCompany()
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, company.getId(), "Test")
+        dbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, company.getId(), true)
         var activity = getCurrentActivity() as LoginActivity
-        onView(withId(R.id.etEmail)).perform(typeText("email1@email.at"))
+        onView(withId(R.id.etEmail)).perform(typeText(loggedInWorker.email))
         closeSoftKeyboard()
         onView(withId(R.id.etPassword)).perform(typeText("12345678"))
         closeSoftKeyboard()
@@ -216,8 +183,8 @@ class NavigationDrawerTests {
     {
         loginwithCompanyWorkerAdmin()
         val companyID = insertDummyCompany("DummyCompany")
-        DbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
-        DbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, true)
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
+        dbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, true)
         var activity = getCurrentActivity() as HomeActivity
         onView(withId(R.id.drawerLayout))
                 .check(matches(DrawerMatchers.isClosed(Gravity.LEFT)))// Left Drawer should be closed.
@@ -237,7 +204,7 @@ class NavigationDrawerTests {
     {
         loginwithCompanyWorker()
         val companyID = insertDummyCompany("DummyCompany")
-        DbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
         var activity = getCurrentActivity() as HomeActivity
         onView(withId(R.id.drawerLayout))
                 .check(matches(DrawerMatchers.isClosed(Gravity.LEFT)))// Left Drawer should be closed.
