@@ -289,10 +289,6 @@ class CreateCompanyTests : TestFramework() {
         val company = MyApplication.loggedInWorker!!.company
         assert(company != null)
         assert(MyApplication.loggedInWorker!!.company!!.name == dummyCompanyName)
-
-        // check for correct redirect + company create button should now be gone
-        onView(withId(R.id.flFragmentCompany)).check(matches(isDisplayed()))
-        onView(withId(R.id.btnCreateCompanyFragment)).check(matches(not(isEnabled())))
     }
 
 }

@@ -10,8 +10,11 @@ class Address(
     val city: String
 ) {
 
-    fun getId() : Int
-    {
+    fun getId() : Int {
         return id;
+    }
+
+    override fun toString(): String {
+        return "$street\n$zipCode $city"
     }
 }

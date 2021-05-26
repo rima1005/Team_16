@@ -44,7 +44,7 @@
                 android:textSize="16dp"
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium"
-                android:text="Employees:" />
+                android:text="@string/employees" />
 
             <ListView
                 android:id="@+id/lvCompanyWorkers"

@@ -24,7 +24,7 @@ class CompanyFragment : Fragment(R.layout.fragment_company) {
         val company = MyApplication.loggedInWorker?.company!!
         val companyAddress = DbHelper.getInstance().loadAddress(company.addressId)
         tvCompanyName.text = company.name
-        tvCompanyAddress.text = companyAddress!!.street + "\n" + companyAddress!!.zipCode + " " + companyAddress!!.city
+        tvCompanyAddress.text = companyAddress.toString()
 
         val workers = DbHelper.getInstance().loadCompanyWorkers(company)
 

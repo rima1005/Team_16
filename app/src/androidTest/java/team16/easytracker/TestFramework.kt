@@ -66,7 +66,8 @@ open class TestFramework {
 
     open fun insertDummyCompany(name: String = "DummyCompany", addressId: Int = 1) : Company
     {
-        var companyId = dbHelper.saveCompany(name, addressId)
+        insertDummyAddress()
+        var companyId = dbHelper.saveCompany(name, dummyAddress.getId())
         dummyCompany = dbHelper.loadCompany(companyId)!!
         return dummyCompany
     }
