@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -20,6 +22,7 @@ import androidx.fragment.app.Fragment
 import team16.easytracker.adapters.MapSpinnerAdapter
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.WorkerBluetoothDevice
+import java.util.*
 
 /* Resources
  * https://www.youtube.com/watch?v=PtN6UTIu7yw
@@ -37,6 +40,11 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
     lateinit var bluetoothReceiver: BroadcastReceiver
 
     lateinit var deviceListAdapter: MapSpinnerAdapter
+
+    var readyToConnect = false
+
+    var uuid : UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+    var bluetoothSocket : BluetoothSocket? = null
 
     val bluetoothDevices: MutableSet<BluetoothDevice> = mutableSetOf()
     var workerDevices = arrayOf<WorkerBluetoothDevice>()
@@ -114,6 +122,9 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                 currentWorker.getId()
             )
             if (success) {
+                bluetoothSocket = device.createInsecureRfcommSocketToServiceRecord(uuid)
+                readyToConnect = true
+                bluetoothAdapter.cancelDiscovery()
                 Log.d("Bluetooth", "Added bluetooth device $deviceName")
             }
 
@@ -145,6 +156,11 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                     BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                         //discovery finishes, dismiss progress dialog
                         Log.d("Bluetooth", "DISCOVERY_FINISHED")
+                        if(!bluetoothAdapter.isDiscovering && readyToConnect && bluetoothSocket != null && !bluetoothSocket!!.isConnected)
+                        {
+                            Log.d("Bluetooth", "Trying to connect to a new device!")
+                            bluetoothSocket!!.connect()
+                        }
                     }
 
                     BluetoothDevice.ACTION_FOUND -> {
@@ -164,6 +180,16 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                         Log.d("Bluetooth", "Found device with address: " + device.address)
                         // TODO: remove mac address from display
                         deviceListAdapter.add(device.address, "${device.name} - ${device.address}")
+                    }
+
+                    BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                        val device =
+                            intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
+                        Log.d("Bluetooth", "Bond stage changed to: ${device.bondState}")
+                    }
+
+                    BluetoothDevice.ACTION_ACL_CONNECTED -> {
+                        Log.d("Bluetooth", "Connected a bluetooth device!")
                     }
 
                 }

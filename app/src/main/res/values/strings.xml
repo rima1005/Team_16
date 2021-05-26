@@ -157,7 +157,8 @@
     <string name="error_enable_bluetooth">Enabling Bluetooth failed</string>
     <string name="ok">OK</string>
     <string name="search_devices">Search devices</string>
-    <string name="add_device">Add device</string>
+    <string name="add_device">Add device and pair</string>
+    <string name="cancel">Cancel</string>
     <string name="enter_device_name">Enter device name</string>
     <string name="employees">Employees:</string>
 

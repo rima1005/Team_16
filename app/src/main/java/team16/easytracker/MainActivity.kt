@@ -6,6 +6,10 @@ import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import org.mindrot.jbcrypt.BCrypt
+import team16.easytracker.database.DbHelper
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 class MainActivity : AppCompatActivity() {
@@ -28,5 +32,14 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
+        val worker = DbHelper.getInstance().loadWorker("dev@dev.at")
+        if(worker == null)
+        {
+            val addressId = DbHelper.getInstance().saveAddress("DEVSTREET 10", "0000", "DEVCITY")
+            DbHelper.getInstance().saveWorker("DEV", "DEV", LocalDate.now(),"DEV","dev@dev.at","dev12345","4355546456",
+                LocalDateTime.now(),addressId)
+        }
+
     }
 }
