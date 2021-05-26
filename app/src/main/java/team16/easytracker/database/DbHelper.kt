@@ -560,4 +560,35 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         }
         return list.toTypedArray()
     }
+
+    fun loadCompanyWorkers(company: CompanyModel): Array<WorkerModel> {
+        val result = readableDatabase.rawQuery(
+                "SELECT * FROM ${CompanyWorker.TABLE_NAME} cw " +
+                        "INNER JOIN ${Worker.TABLE_NAME} w " +
+                            "ON cw.${CompanyWorker.COL_WORKER_ID} = w.${Worker.COL_ID} " +
+                        "WHERE ${CompanyWorker.COL_COMPANY_ID} = ? " +
+                        "ORDER BY w.${Worker.COL_LAST_NAME} ASC",
+                arrayOf(company.getId().toString())
+        )
+        val list = mutableListOf<WorkerModel>()
+        while (result.moveToNext()) {
+            val id = result.getInt(result.getColumnIndex(Worker.COL_ID))
+            val title = result.getString(result.getColumnIndex(Worker.COL_TITLE))
+            val firstName = result.getString(result.getColumnIndex(Worker.COL_FIRST_NAME))
+            val lastName = result.getString(result.getColumnIndex(Worker.COL_LAST_NAME))
+            val dateOfBirth = LocalDate.ofEpochDay(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)))
+            val email = result.getString(result.getColumnIndex(Worker.COL_EMAIL))
+            val addressId = result.getInt(result.getColumnIndex(Worker.COL_ADDRESS_ID))
+            val phoneNumber = result.getString(result.getColumnIndex(Worker.COL_PHONE_NUMBER))
+            val createdAt = LocalDateTime.ofEpochSecond(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)), 0, ZoneOffset.UTC)
+            val admin = result.getInt(result.getColumnIndex(CompanyWorker.COL_ADMIN))
+            val position = result.getString(result.getColumnIndex(CompanyWorker.COL_POSITION))
+
+            val worker = WorkerModel(id, firstName, lastName, dateOfBirth, title, email, phoneNumber,
+                                     createdAt, addressId, admin == 1, position, company)
+
+            list.add(worker)
+        }
+        return list.toTypedArray()
+    }
 }

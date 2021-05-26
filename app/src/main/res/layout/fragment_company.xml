@@ -34,6 +34,18 @@
                 android:textSize="24dp"
                 android:fontFamily="sans-serif-light" />
 
+            <TextView
+                android:id="@+id/tvEmployees"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5pt"
+                android:layout_marginRight="5pt"
+                android:layout_marginTop="5pt"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:text="Employees:" />
+
             <ListView
                 android:id="@+id/lvCompanyWorkers"
                 android:layout_width="match_parent"

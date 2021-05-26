@@ -2,7 +2,7 @@ package team16.easytracker
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
+import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -14,6 +14,7 @@ class CompanyFragment : Fragment(R.layout.fragment_company) {
     lateinit var tvCompanyAddress: TextView
     lateinit var lvCompanyWorkers: ListView
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         tvCompanyName = view.findViewById(R.id.tvCompanyName)
@@ -21,10 +22,19 @@ class CompanyFragment : Fragment(R.layout.fragment_company) {
         lvCompanyWorkers = view.findViewById(R.id.lvCompanyWorkers)
 
         val company = MyApplication.loggedInWorker?.company!!
-        val address = DbHelper.getInstance().loadAddress(company.addressId)
+        val companyAddress = DbHelper.getInstance().loadAddress(company.addressId)
         tvCompanyName.text = company.name
-        tvCompanyAddress.text = address!!.street + "\n" + address!!.zipCode + " " + address!!.city
+        tvCompanyAddress.text = companyAddress!!.street + "\n" + companyAddress!!.zipCode + " " + companyAddress!!.city
 
-        // TODO: show company data
+        val workers = DbHelper.getInstance().loadCompanyWorkers(company)
+
+        val workerStrings: MutableList<String> = mutableListOf()
+
+        for (worker in workers) {
+            workerStrings.add(worker.toString())
+        }
+
+        val arrayAdapter = ArrayAdapter(context!!, R.layout.company_worker, workerStrings)
+        lvCompanyWorkers.adapter = arrayAdapter
     }
 }
