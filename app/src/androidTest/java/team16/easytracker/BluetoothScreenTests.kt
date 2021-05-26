@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class BluetoothScreenTests {
+class BluetoothScreenTests : TestFramework(){
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
 

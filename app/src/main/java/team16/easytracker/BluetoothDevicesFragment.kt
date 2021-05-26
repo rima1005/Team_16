@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.*
+import team16.easytracker.database.DbHelper
 import team16.easytracker.placeholder.PlaceholderContent
 import team16.easytracker.utils.BluetoothDeviceRecyclerViewAdapter
 
@@ -33,6 +34,8 @@ class BluetoothDevicesFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_bluetooth_devices_list, container, false)
 
+        val currentWorker = MyApplication.loggedInWorker!!
+
         btnBluetoothSettings = view.findViewById(R.id.btnAddBluetoothDevice)
         btnBluetoothSettings.setOnClickListener {
             requireActivity().supportFragmentManager.beginTransaction()
@@ -49,8 +52,8 @@ class BluetoothDevicesFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                // TODO: Fetch bluetooth devices from DB and pass it to BluetoothDeviceRecyclerViewAdapter instead of PlaceholderItems
-                adapter = BluetoothDeviceRecyclerViewAdapter(PlaceholderContent.ITEMS)
+                val workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(currentWorker.getId())
+                adapter = BluetoothDeviceRecyclerViewAdapter(workerDevices)
             }
         }
 

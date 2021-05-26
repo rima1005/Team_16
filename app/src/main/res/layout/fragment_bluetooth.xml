@@ -16,13 +16,16 @@
 
         <Button
             android:id="@+id/btnDiscoverBluetoothDevices"
-            android:layout_width="250dp"
-            android:layout_height="50dp"
             android:text="@string/search_devices"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#168AAD"
+            android:fontFamily="sans-serif-light"
+            android:textColor="#FFFFFF"/>
 
         <ListView
             android:id="@+id/lvBluetoothDevices"

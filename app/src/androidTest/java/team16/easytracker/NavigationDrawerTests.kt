@@ -163,8 +163,8 @@ class NavigationDrawerTests : TestFramework() {
     {
         loginwithCompanyWorkerAdmin()
         val companyID = insertDummyCompany("DummyCompany")
-        DbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
-        DbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, true)
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyID, "Test")
+        dbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyID, true)
         var activity = getCurrentActivity() as HomeActivity
         onView(withId(R.id.drawerLayout))
             .check(matches(DrawerMatchers.isClosed(Gravity.LEFT)))// Left Drawer should be closed.

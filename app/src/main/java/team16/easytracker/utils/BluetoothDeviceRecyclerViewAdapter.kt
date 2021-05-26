@@ -8,14 +8,14 @@ import android.widget.TextView
 import android.widget.Toast
 
 import team16.easytracker.placeholder.PlaceholderContent.PlaceholderItem
-import team16.easytracker.databinding.FragmentBluetoothDevicesBinding
+import team16.easytracker.databinding.FragmentBluetoothDeviceItemBinding
+import team16.easytracker.model.WorkerBluetoothDevice
 
 /**
- * [RecyclerView.Adapter] that can display a [PlaceholderItem].
- * TODO: Replace the implementation with code for data [BluetoothDevice].
+ * [RecyclerView.Adapter] that can display a worker's bluetooth devices.
  */
 class BluetoothDeviceRecyclerViewAdapter(
-    private val values: List<PlaceholderItem>
+    private val values: Array <WorkerBluetoothDevice>
 ) : RecyclerView.Adapter<BluetoothDeviceRecyclerViewAdapter.ViewHolder>() {
 
     private lateinit var context: Context
@@ -23,7 +23,7 @@ class BluetoothDeviceRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         context = parent.context
         return ViewHolder(
-            FragmentBluetoothDevicesBinding.inflate(
+            FragmentBluetoothDeviceItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -46,7 +46,7 @@ class BluetoothDeviceRecyclerViewAdapter(
 
     override fun getItemCount(): Int = values.size
 
-    inner class ViewHolder(binding: FragmentBluetoothDevicesBinding) :
+    inner class ViewHolder(binding: FragmentBluetoothDeviceItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val tvBluetoothDeviceName: TextView = binding.tvBluetoothDeviceName
         val tvBluetoothDeviceMAC: TextView = binding.tvBluetoothDeviceMAC
