@@ -18,34 +18,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RunWith(AndroidJUnit4::class)
-class TrackTimeTests {
-
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "email@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-            "firstName",
-            "lastName",
-            LocalDate.now(),
-            "title",
-            email,
-            pw,
-            "12345678",
-            LocalDateTime.now().withNano(0),
-            addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
+class TrackTimeTests : TestFramework() {
 
     @Before
-    fun init() {
-        if (MyApplication.loggedInWorker == null) {
-            setupLoggedInWorker()
-        }
+    override fun setup() {
+        super.setup()
+        setupLoggedInWorker()
     }
 
     @get:Rule

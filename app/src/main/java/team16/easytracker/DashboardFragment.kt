@@ -48,7 +48,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         ) { dialog, which ->
             dialog.dismiss()
             val activeTrackingName = input.text.toString()
-            DbHelper.saveTracking(
+            DbHelper.getInstance().saveTracking(
                     activeTrackingName,
                     MyApplication.loggedInWorker!!.getId(),
                     LocalDateTime.now(),
@@ -65,7 +65,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     }
 
     private fun stopTracking() {
-        val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+        val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
         val activeTracking = workerTrackings!!.elementAt(workerTrackings.size - 1)
 
         if (activeTracking.endTime == LocalDateTime.MIN) {
@@ -75,7 +75,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             builder.setCancelable(true)
 
             builder.setPositiveButton(android.R.string.ok) { dialog, which ->
-                DbHelper.updateTracking(
+                DbHelper.getInstance().updateTracking(
                         activeTracking.id,
                         activeTracking.name,
                         activeTracking.workerId,
@@ -101,7 +101,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         if (MyApplication.loggedInWorker == null)
             return
 
-        val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+        val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
 
         if (workerTrackings.isNullOrEmpty())
             return

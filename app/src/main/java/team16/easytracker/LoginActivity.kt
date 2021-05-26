@@ -71,7 +71,7 @@ class LoginActivity : AppCompatActivity() {
                     "Email: " + email + "," +
                     "Password: " + password + ",")
 
-                    val worker = DbHelper.loginWorker(email, password)
+                    val worker = DbHelper.getInstance().loginWorker(email, password)
                     Log.i("Login", "Worker: " + worker?.toString())
                     if (worker != null) {
                         val intent = Intent(this, HomeActivity::class.java)
@@ -79,7 +79,7 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)
                         ActivityCompat.finishAffinity(this)
                     } else {
-                        tvErrorPassword.text = "Invalid email or password"
+                        tvErrorPassword.text = getString(R.string.invalid_password_mail)
                         tvErrorPassword.visibility = View.VISIBLE
                     }
                 } else {

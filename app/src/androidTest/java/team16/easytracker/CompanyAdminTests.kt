@@ -26,80 +26,24 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RunWith(AndroidJUnit4::class)
-class CompanyAdminTests {
-
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "email@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-            "firstName",
-            "lastName",
-            LocalDate.now(),
-            "title",
-            email,
-            pw,
-            "12345678",
-            LocalDateTime.now().withNano(0),
-            addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
-
-    val firstName = "Max"
-    val lastName = "Mustermann"
-    val email = "test.test@test.at"
-    val password = "securePassword"
-    val dateOfBirth = "11.06.1999"
-    val street = "straße 1"
-    val postCode = "0989"
-    val city = "graz"
-    val title = ""
-    val phoneNumber = "43660151625"
-    val phonePrefix = "43"
-
-    private fun insertDummyWorker(): Int {
-
-        val addressId = DbHelper.saveAddress(street, postCode, city)
-
-        val workerId = DbHelper.saveWorker(
-            firstName,
-            lastName,
-            LocalDate.now(),
-            title,
-            email,
-            password,
-            phonePrefix + phoneNumber,
-            LocalDateTime.now().withNano(0),
-            1
-        )
-
-        return workerId
-    }
-
-    private fun insertDummyCompany(companyName: String): Int {
-        return DbHelper.saveCompany(companyName, 1);
-    }
+class CompanyAdminTests : TestFramework() {
 
     @Before
-    fun init() {
-        // TODO: this doesn't work because further reads (e.g.: in fragment) don't work if transaction is open
-        // DbHelper.writableDatabase.beginTransaction()
-        if (MyApplication.loggedInWorker == null) {
-            setupLoggedInWorker()
-            val companyId = insertDummyCompany("TestCompany")
-            DbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, companyId, "")
-            DbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, companyId, true)
-        }
+    override fun setup() {
+        super.setup()
+        setupLoggedInWorker()
+        val company = insertDummyCompany()
+        dbHelper.addWorkerToCompany(MyApplication.loggedInWorker?.getId()!!, company.getId(), "")
+        dbHelper.setCompanyAdmin(MyApplication.loggedInWorker?.getId()!!, company.getId(), true)
+
     }
 
     @After
-    fun tearDown() {
-        //DbHelper.writableDatabase.endTransaction()
+    override fun teardown() {
+        super.teardown()
+        MyApplication.loggedInWorker = null
     }
+
 
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
@@ -166,11 +110,12 @@ class CompanyAdminTests {
     fun validInputData() {
 
         insertDummyWorker()
+        addloggedInWorkerToCompany()
 
         openFragment()
 
         onView(withId(R.id.etEmail))
-            .perform(typeText(email))
+            .perform(typeText(dummyWorker.email))
 
         onView(withId(R.id.etCompanyPosition))
             .perform(typeText("boss"))
