@@ -60,4 +60,8 @@ class MapSpinnerAdapter (
         map.remove(key)
         super.remove(key)
     }
+
+    fun contains(key: String) : Boolean {
+        return map.contains(key)
+    }
 }
