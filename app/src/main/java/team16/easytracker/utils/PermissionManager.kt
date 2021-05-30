@@ -6,6 +6,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 
+/* Resources
+ * https://medium.com/programming-lite/runtime-permissions-in-android-7496a5f3de55
+ */
+
 class PermissionManager(private var context: Context) {
     var sessionManager = SessionManager(context)
 

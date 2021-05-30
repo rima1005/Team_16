@@ -4,6 +4,10 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 
+/* Resources
+ * https://medium.com/programming-lite/runtime-permissions-in-android-7496a5f3de55
+ */
+
 class SessionManager(context: Context) {
     val MY_PREF : String = "my_preferences"
     var sharedPreferences : SharedPreferences = context.getSharedPreferences(MY_PREF, MODE_PRIVATE)
