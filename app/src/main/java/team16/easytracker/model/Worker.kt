@@ -21,17 +21,16 @@ class Worker(
         return id
     }
 
-    companion object {
-        fun load(id: Int): Worker {
-            throw NotImplementedError("Not Implemented!")
+    override fun toString(): String {
+        if (title.isEmpty()) {
+            return lastName + " " +
+                    firstName + " - " +
+                    position
         }
-
-        fun save(firstName: String): Int {
-            throw NotImplementedError("Not Implemented!")
-        }
-
-        fun login(email: String, password: String): Worker? {
-            throw NotImplementedError("Not Implemented!")
-        }
+        return lastName + " " +
+               firstName + ", " +
+               title + " - " +
+               position
     }
+
 }

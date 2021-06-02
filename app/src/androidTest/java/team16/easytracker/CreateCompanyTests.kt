@@ -19,46 +19,15 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RunWith(AndroidJUnit4::class)
-class CreateCompanyTests {
+class CreateCompanyTests : TestFramework() {
 
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "email@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-            "firstName",
-            "lastName",
-            LocalDate.now(),
-            "title",
-            email,
-            pw,
-            "12345678",
-            LocalDateTime.now().withNano(0),
-            addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
-
-    private fun insertDummyCompany(companyName: String) {
-        DbHelper.saveCompany(companyName, 1);
-    }
 
     @Before
-    fun init() {
-        // TODO: this doesn't work because further reads (e.g.: in fragment) don't work if transaction is open
-        // DbHelper.writableDatabase.beginTransaction()
-        if (MyApplication.loggedInWorker == null) {
-            setupLoggedInWorker()
-        }
+    override fun setup() {
+        super.setup()
+        setupLoggedInWorker()
     }
 
-    @After
-    fun tearDown() {
-        //DbHelper.writableDatabase.endTransaction()
-    }
 
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
@@ -309,6 +278,7 @@ class CreateCompanyTests {
             .perform(scrollTo(), typeText("Street 1"))
 
         closeSoftKeyboard()
+        Thread.sleep(1000)
 
         // Click registration button
         val btn = withId(R.id.btnCreateCompany)
@@ -319,10 +289,6 @@ class CreateCompanyTests {
         val company = MyApplication.loggedInWorker!!.company
         assert(company != null)
         assert(MyApplication.loggedInWorker!!.company!!.name == dummyCompanyName)
-
-        // check for correct redirect + company create button should now be gone
-        onView(withId(R.id.flFragmentCompany)).check(matches(isDisplayed()))
-        onView(withId(R.id.btnCreateCompanyFragment)).check(matches(not(isEnabled())))
     }
 
 }

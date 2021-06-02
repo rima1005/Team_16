@@ -163,7 +163,7 @@ class CreateTrackingFragment : Fragment() {
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
 
             val workerId = MyApplication.loggedInWorker!!.getId() 
-            val trackingId = DbHelper.saveTracking(
+            val trackingId = DbHelper.getInstance().saveTracking(
                 trackingName,
                 workerId,
                 startDateTime,
@@ -187,7 +187,7 @@ class CreateTrackingFragment : Fragment() {
         builder.setMessage(getString(R.string.tracking_created))
         builder.setCancelable(false)
 
-        builder.setPositiveButton("OK") { dialog, which ->
+        builder.setPositiveButton(getString(R.string.ok)) { dialog, which ->
             backToTrackings()
         }
 
@@ -195,7 +195,7 @@ class CreateTrackingFragment : Fragment() {
     }
 
     private fun backToTrackings() {
-        val trackings = Trackings()
+        val trackings = TrackingsFragment()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "TrackingsFragment")
             .addToBackStack(null)

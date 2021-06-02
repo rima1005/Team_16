@@ -9,13 +9,12 @@ class Address(
     val zipCode: String,
     val city: String
 ) {
-    companion object {
-        fun load(id: Int, dbHelper: DbHelper): Address? {
-            return DbHelper.loadAddress(id)
-        }
 
-        fun save(street: String, zipCode: String, city: String, dbHelper: DbHelper): Int {
-            return DbHelper.saveAddress(street, zipCode, city)
-        }
+    fun getId() : Int {
+        return id;
+    }
+
+    override fun toString(): String {
+        return "$street\n$zipCode $city"
     }
 }

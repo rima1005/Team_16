@@ -13,6 +13,8 @@ import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
 import team16.easytracker.database.Contracts.CompanyWorker
 import team16.easytracker.database.Contracts.Tracking
+import team16.easytracker.database.Contracts.BluetoothDevice
+import team16.easytracker.model.WorkerBluetoothDevice
 
 import team16.easytracker.model.Address as AddressModel
 import team16.easytracker.model.Company as CompanyModel
@@ -76,15 +78,56 @@ private const val SQL_CREATE_WORKERS =
             "${Worker.COL_CREATED_AT} LONG," +
             "${Worker.COL_ADDRESS_ID} INTEGER)"
 
+private const val SQL_CREATE_BLUETOOTH_DEVICES =
+    "CREATE TABLE IF NOT EXISTS ${BluetoothDevice.TABLE_NAME} (" +
+            "${BluetoothDevice.COL_MAC} VARCHAR(64)," +
+            "${BluetoothDevice.COL_NAME} VARCHAR(256)," +
+            "${BluetoothDevice.COL_WORKER_ID} INTEGER," +
+            "PRIMARY KEY(${BluetoothDevice.COL_MAC}, ${BluetoothDevice.COL_WORKER_ID}))"
+
 
 // If you change the database schema, you must increment the database version.
-private const val DATABASE_VERSION = 2
-private const val DATABASE_NAME = "EasyTracker.db"
+private const val DATABASE_VERSION = 3
+private const val DATABASE_NAME_PROD = "EasyTracker.db"
+private const val DATABASE_NAME_TEST = "EasyTrackerTest.db"
 
-object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, DATABASE_VERSION) {
+class DbHelper private constructor(context: Context, databaseName: String = DATABASE_NAME_PROD) : SQLiteOpenHelper(context, databaseName, null, DATABASE_VERSION) {
 
-    val ctx = MyApplication.instance;
-    val tag = DbHelper::class.java.name;
+    val ctx = context
+    val tag = DbHelper::class.java.name
+
+    companion object {
+        private var _instance: DbHelper? = null
+
+        fun getInstance(context: Context = MyApplication.instance): DbHelper
+        {
+            if (_instance == null)
+            {
+                if (context != MyApplication.instance)
+                    _instance = DbHelper(context, DATABASE_NAME_TEST)
+                else
+                    _instance = DbHelper(MyApplication.instance, DATABASE_NAME_PROD)
+            }
+            return _instance!!
+        }
+    }
+
+    fun clearDbAndCreate(databaseName: String)
+    {
+        clearDb(databaseName)
+        onCreate(writableDatabase)
+    }
+
+    fun clearDb(databaseName: String)
+    {
+        if(databaseName != DATABASE_NAME_TEST)
+            throw UnsupportedOperationException("You are about to delete a productive or non-existing Database! This should never happen!!!")
+        File("/data/user/0/team16.easytracker/databases/${databaseName}").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-journal").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-shm").delete()
+        File("/data/user/0/team16.easytracker/databases/${databaseName}-wal").delete()
+
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_COMPANY)
@@ -92,7 +135,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         db.execSQL(SQL_CREATE_COMPANY_WORKER)
         db.execSQL(SQL_CREATE_TRACKING)
         db.execSQL(SQL_CREATE_WORKERS)
-        //db.execSQL(SQL_CREATE_WORKERS)
+        db.execSQL(SQL_CREATE_BLUETOOTH_DEVICES)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -101,7 +144,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
             for (i in oldVersion until newVersion) {
                 val fileName = "${i}-${i + 1}.sql"
                 val file = ctx.assets.open(fileName)
-                executeSQLFile(file)
+                executeSQLFile(file, db)
                 file.close()
             }
         } catch (e: IOException) {
@@ -116,14 +159,14 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     @Throws(SQLException::class)
-    fun executeSQLFile(inputStream: InputStream) {
+    fun executeSQLFile(inputStream: InputStream, db: SQLiteDatabase) {
         val reader = inputStream.bufferedReader()
         var line = reader.readLine()
         while (line != null) {
             if (!line.endsWith(";")) {
                 throw SQLException("Invalid .sql file!")
             }
-            writableDatabase.execSQL(line)
+            db.execSQL(line)
             line = reader.readLine()
         }
     }
@@ -474,9 +517,78 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return
     }
 
-    fun deleteTracking(trackingId: Int): Int
-    {
+    fun deleteTracking(trackingId: Int): Int {
         return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
+    }
 
+    fun deleteCompanyWorker(workerId: Int, companyId: Int): Int {
+        return writableDatabase.delete(CompanyWorker.TABLE_NAME, "${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?", arrayOf(workerId.toString(), companyId.toString()))
+    }
+
+    fun saveBluetoothDevice(mac: String, name: String, workerId: Int): Boolean {
+        val values = ContentValues().apply {
+            put(BluetoothDevice.COL_MAC, mac)
+            put(BluetoothDevice.COL_NAME, name)
+            put(BluetoothDevice.COL_WORKER_ID, workerId)
+        }
+        val insertId = writableDatabase.insert(BluetoothDevice.TABLE_NAME, null, values).toInt()
+        return insertId != -1
+    }
+
+    fun loadBluetoothDevice(mac: String, workerId: Int) : WorkerBluetoothDevice? {
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(mac, workerId.toString())
+        )
+        if (!result.moveToFirst())
+            return null
+        val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+        return WorkerBluetoothDevice(mac, name, workerId)
+    }
+
+    fun loadBluetoothDevicesForWorker(workerId: Int) : Array<WorkerBluetoothDevice> {
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(workerId.toString())
+        )
+        val list = mutableListOf<WorkerBluetoothDevice>()
+        while (result.moveToNext()) {
+            val mac = result.getString(result.getColumnIndex(BluetoothDevice.COL_MAC))
+            val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+            val device = WorkerBluetoothDevice(mac, name, workerId)
+            list.add(device)
+        }
+        return list.toTypedArray()
+    }
+
+    fun loadCompanyWorkers(company: CompanyModel): Array<WorkerModel> {
+        val result = readableDatabase.rawQuery(
+                "SELECT * FROM ${CompanyWorker.TABLE_NAME} cw " +
+                        "INNER JOIN ${Worker.TABLE_NAME} w " +
+                            "ON cw.${CompanyWorker.COL_WORKER_ID} = w.${Worker.COL_ID} " +
+                        "WHERE ${CompanyWorker.COL_COMPANY_ID} = ? " +
+                        "ORDER BY w.${Worker.COL_LAST_NAME} ASC",
+                arrayOf(company.getId().toString())
+        )
+        val list = mutableListOf<WorkerModel>()
+        while (result.moveToNext()) {
+            val id = result.getInt(result.getColumnIndex(Worker.COL_ID))
+            val title = result.getString(result.getColumnIndex(Worker.COL_TITLE))
+            val firstName = result.getString(result.getColumnIndex(Worker.COL_FIRST_NAME))
+            val lastName = result.getString(result.getColumnIndex(Worker.COL_LAST_NAME))
+            val dateOfBirth = LocalDate.ofEpochDay(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)))
+            val email = result.getString(result.getColumnIndex(Worker.COL_EMAIL))
+            val addressId = result.getInt(result.getColumnIndex(Worker.COL_ADDRESS_ID))
+            val phoneNumber = result.getString(result.getColumnIndex(Worker.COL_PHONE_NUMBER))
+            val createdAt = LocalDateTime.ofEpochSecond(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)), 0, ZoneOffset.UTC)
+            val admin = result.getInt(result.getColumnIndex(CompanyWorker.COL_ADMIN))
+            val position = result.getString(result.getColumnIndex(CompanyWorker.COL_POSITION))
+
+            val worker = WorkerModel(id, firstName, lastName, dateOfBirth, title, email, phoneNumber,
+                                     createdAt, addressId, admin == 1, position, company)
+
+            list.add(worker)
+        }
+        return list.toTypedArray()
     }
 }

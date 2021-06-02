@@ -1,7 +1,6 @@
 package team16.easytracker
 
 import android.app.Activity
-import androidx.fragment.app.Fragment
 import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -24,59 +23,30 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @RunWith(AndroidJUnit4::class)
-class DeleteTrackingTests {
+class DeleteTrackingTests : TestFramework() {
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
 
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "emailtester1@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-                "firstName",
-                "lastName",
-                LocalDate.now(),
-                "title",
-                email,
-                pw,
-                "12345678",
-                LocalDateTime.now().withNano(0),
-                addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
-
-    fun getCurrentActivity(): Activity? {
+     fun getCurrentActivity(): Activity? {
         var currentActivity: Activity? = null
         InstrumentationRegistry.getInstrumentation().runOnMainSync { run { currentActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).elementAtOrNull(0) } }
         return currentActivity
 
     }
 
-
     @Before
-    fun init()
-    {
-        //DbHelper.writableDatabase.beginTransaction()
+    override fun setup() {
+        super.setup()
         setupLoggedInWorker()
-    }
-
-    @After
-    fun teardown()
-    {
-        //DbHelper.writableDatabase.endTransaction()
     }
 
     @Test
     fun testDeleteTracking()
     {
-        var trackingId = DbHelper.saveTracking("TestTracking", MyApplication.loggedInWorker?.getId()!!, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "description", "device")
+        var trackingId = dbHelper.saveTracking("TestTracking", MyApplication.loggedInWorker?.getId()!!, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "description", "device")
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
                 .addToBackStack(null)
@@ -93,11 +63,11 @@ class DeleteTrackingTests {
     @Test
     fun testUndoDeleteTracking()
     {
-        var trackingId = DbHelper.saveTracking("TESTTRACKING", MyApplication.loggedInWorker?.getId()!!, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "description", "device")
-        var tracking = DbHelper.loadTracking(trackingId)
+        var trackingId = dbHelper.saveTracking("TESTTRACKING", MyApplication.loggedInWorker?.getId()!!, LocalDateTime.now(), LocalDateTime.now().plusHours(1), "description", "device")
+        var tracking = dbHelper.loadTracking(trackingId)
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
+        val createTrackingFragment = TrackingsFragment()
         currentActivity!!.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
                 .addToBackStack(null)

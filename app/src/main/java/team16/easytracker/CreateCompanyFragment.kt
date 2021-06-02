@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.material.navigation.NavigationView
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.time.LocalDateTime
@@ -51,7 +52,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         val position = etPosition.text.toString()
         val zipCode = etZipCode.text.toString()
         val city = etCity.text.toString()
-        val street = etCity.text.toString()
+        val street = etStreet.text.toString()
         val createCompanyBtn = btnCreateCompany
 
         var errorOccured = false
@@ -62,7 +63,7 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
             tvErrorCompanyName.visibility = View.VISIBLE
         }
 
-        val duplicate = DbHelper.companyExists(companyName)
+        val duplicate = DbHelper.getInstance().companyExists(companyName)
         if (duplicate) {
             errorOccured = true
             tvErrorCompanyName.text = getString(R.string.error_company_exists)
@@ -104,13 +105,18 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         createCompanyBtn.visibility = View.INVISIBLE
         // TODO: check for duplicate addresses?
         val worker = MyApplication.loggedInWorker!!
-        val addressId = DbHelper.saveAddress(street, zipCode, city)
-        val companyId = DbHelper.saveCompany(companyName, addressId)
-        DbHelper.addWorkerToCompany(worker.getId(), companyId, position)
-        DbHelper.setCompanyAdmin(worker.getId(), companyId, true)
+        val addressId = DbHelper.getInstance().saveAddress(street, zipCode, city)
+        val companyId = DbHelper.getInstance().saveCompany(companyName, addressId)
+        DbHelper.getInstance().addWorkerToCompany(worker.getId(), companyId, position)
+        DbHelper.getInstance().setCompanyAdmin(worker.getId(), companyId, true)
 
+        val navigationView = activity?.findViewById<NavigationView>(R.id.navigationView)!!
+        navigationView.menu.findItem(R.id.itemAddEmployee).isVisible = true
+        navigationView.menu.findItem(R.id.itemOverview).isVisible = true
+        navigationView.menu.findItem(R.id.itemCreateCompany).isVisible = false
+        navigationView.menu.findItem(R.id.itemOverview).isChecked = true
         // update worker because he now has a company and is admin
-        MyApplication.loggedInWorker = DbHelper.loadWorker(worker.getId())
+        MyApplication.loggedInWorker = DbHelper.getInstance().loadWorker(worker.getId())
 
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.flFragment, CompanyFragment())

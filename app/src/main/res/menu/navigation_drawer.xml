@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/grpUser"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemDashboard"
+            android:title="@string/dashboard"
+            android:checked="true" />
+        <item
+            android:id="@+id/itemTrackings"
+            android:title="@string/tracking" />
+        <item
+            android:id="@+id/itemBluetoothDevices"
+            android:title="@string/bluetooth_device" />
+    </group>
+    <group
+        android:id="@+id/grpCompany"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemCreateCompany"
+            android:title="@string/create_company"
+            android:checked="true" />
+        <item
+            android:id="@+id/itemOverview"
+            android:title="@string/company_overview" />
+        <item
+            android:id="@+id/itemAddEmployee"
+            android:title="@string/add_worker" />
+    </group>
+    <group
+        android:id="@+id/grpLogout"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/itemLogout"
+            android:title="@string/logout"
+            android:checked="true" />
+
+    </group>
+</menu>
