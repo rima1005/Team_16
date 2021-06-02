@@ -535,6 +535,18 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         return insertId != -1
     }
 
+    fun updateBluetoothDevice(mac: String, name: String, workerId: Int) {
+        val values = ContentValues().apply {
+            put(BluetoothDevice.COL_MAC, mac)
+            put(BluetoothDevice.COL_NAME, name)
+            put(BluetoothDevice.COL_WORKER_ID, workerId)
+        }
+        writableDatabase.update(BluetoothDevice.TABLE_NAME, values,
+            "${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(mac, workerId.toString()))
+        return
+    }
+
     fun loadBluetoothDevice(mac: String, workerId: Int) : WorkerBluetoothDevice? {
         val result = readableDatabase.rawQuery(
             "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
