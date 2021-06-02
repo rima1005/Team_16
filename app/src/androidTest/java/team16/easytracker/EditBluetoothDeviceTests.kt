@@ -122,4 +122,26 @@ class EditBluetoothDeviceTests : TestFramework() {
             .check(matches(isDisplayed()))
     }
 
+    @Test
+    fun validEditBluetoothDeviceNameCancel() {
+        openFragment()
+
+        insertDummyBluetoothDevice()
+
+        onView(withText("TestDevice"))
+            .check(matches(isDisplayed()))
+
+        onView(withText(R.string.edit))
+            .perform(click())
+
+        onView(withId(R.id.etBluetoothDeviceName))
+            .perform(clearText())
+            .perform(typeText("Edited BT device name"), closeSoftKeyboard())
+
+        onView(withText(R.string.cancel))
+            .perform(click())
+
+        onView(withText("TestDevice"))
+            .check(matches(isDisplayed()))
+    }
 }
