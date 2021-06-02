@@ -52,6 +52,10 @@
     <string name="change_password">Измени пароль</string>
     <string name="oldPassword">Прежний пароль</string>
     <string name="newPassword">Новый пароль</string>
+    <string name="failed_update_password">сука блять</string>
+    <string name="update_settings_succeeded">Профиль успешно обновлен</string>
+    <string name="update_password_succeeded">Пароль успешно обновлен</string>
+
     <string-array name="genders">
         <item>Никто</item>
         <item>женский</item>

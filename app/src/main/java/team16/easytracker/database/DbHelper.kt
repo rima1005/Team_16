@@ -6,8 +6,11 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import org.mindrot.jbcrypt.BCrypt
 import team16.easytracker.MyApplication
+import team16.easytracker.R
 import team16.easytracker.database.Contracts.Company
 import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
@@ -527,7 +530,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
             phoneNumber: String,
             createdAt: LocalDateTime,
             addressId: Int,
-    ) {
+    ) : Boolean {
         val values = ContentValues().apply {
             put(Worker.COL_FIRST_NAME, firstName)
             put(Worker.COL_LAST_NAME, lastName)
@@ -538,16 +541,16 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
             put(Worker.COL_CREATED_AT, createdAt.toEpochSecond(ZoneOffset.UTC))
             put(Worker.COL_ADDRESS_ID, addressId)
         }
-        writableDatabase.update(Worker.TABLE_NAME, values,
+        val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
                 "${Worker.COL_ID} = ?",
                 arrayOf(workerId.toString()))
-        return
+        return modRows == 1
     }
 
     fun updateWorkerPassword(workerId: Int, oldPassword: String, newPassword: String) : Boolean
     {
         val result = readableDatabase.rawQuery(
-                "SELECT ${Worker.COL_ID} = ?, ${Worker.COL_PASSWORD} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_EMAIL}",
+                "SELECT ${Worker.COL_ID} , ${Worker.COL_PASSWORD} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_ID} = ?",
                 arrayOf(workerId.toString())
         )
 
@@ -561,13 +564,13 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         if (BCrypt.checkpw(oldPassword, passwordHash)) {
             val newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
             val values = ContentValues().apply {
-                put(Worker.COL_PASSWORD, passwordHash)
+                put(Worker.COL_PASSWORD, newPasswordHash)
             }
-            writableDatabase.update(Worker.TABLE_NAME, values,
+            val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
                     "${Worker.COL_ID} = ?",
                     arrayOf(workerId.toString()))
             result.close()
-            return true
+            return modRows == 1
         }
         else
         {

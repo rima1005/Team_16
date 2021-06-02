@@ -50,6 +50,9 @@
     <string name="change_password">Change Password</string>
     <string name="oldPassword">Old Password</string>
     <string name="newPassword">New Password</string>
+    <string name="failed_update_password">Update Password failed! Try again!</string>
+    <string name="update_settings_succeeded">Profile successfully updated</string>
+    <string name="update_password_succeeded">Password successfully updated</string>
 
 
 

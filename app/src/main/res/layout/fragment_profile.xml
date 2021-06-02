@@ -6,15 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ProfileFragment">
 
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,62 +58,11 @@
                 android:padding="10dp"
                 android:textSize="18sp"  />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="20dp"
-                android:background="#c0c0c0" />
-
-            <Button
-                android:id="@+id/btnBluetoothSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="#168AAD"
-                android:fontFamily="sans-serif-light"
-                android:textColor="#FFFFFF"
-                app:backgroundTint="#168AAD"
-                android:text="@string/bluetooth"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.531"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/spLanguage"
-                app:layout_constraintVertical_bias="0.279" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="20dp"
-                android:background="#c0c0c0" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvLabelGenderSetting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    android:fontFamily="sans-serif"
-                    android:text="@string/gender"
-                    android:textColor="#000" />
 
                 <TextView
                     android:id="@+id/tvLabelTitleSetting"
@@ -141,22 +84,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <Spinner
-                    android:id="@+id/spGenderSetting"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/custom_edit_text"
-                    android:fontFamily="sans-serif-light"
-                    android:padding="10dp"
-                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/etTitleSetting"
@@ -310,20 +237,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvLabelPhonePrefixSetting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="3"
-                    android:fontFamily="sans-serif"
-                    android:text="@string/prefix"
-                    android:textColor="#000" />
-
-                <TextView
                     android:id="@+id/tvLabelPhoneNumberSetting"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -343,24 +256,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/etPhonePrefixSetting"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="3"
-                    android:background="@drawable/custom_edit_text"
-                    android:ems="10"
-                    android:fontFamily="sans-serif-light"
-                    android:hint="43"
-                    android:inputType="textPersonName"
-                    android:padding="10dp" />
 
                 <EditText
                     android:id="@+id/etPhoneNumberSetting"
@@ -587,45 +482,6 @@
                 android:textColor="#ff0000"
                 android:visibility="gone" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="20dp"
-                android:background="#c0c0c0" />
-
-            <TextView
-                android:id="@+id/tvLabelUsernameSetting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/username"
-                android:textColor="#000" />
-
-            <EditText
-                android:id="@+id/etUsernameSetting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/custom_edit_text"
-                android:ems="10"
-                android:fontFamily="sans-serif-light"
-                android:hint="john.doe"
-                android:inputType="textPersonName"
-                android:padding="10dp" />
-
             <TextView
                 android:id="@+id/tvErrorUsernameSetting"
                 android:layout_width="match_parent"
@@ -660,7 +516,6 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginBottom="20dp"
                 android:background="#c0c0c0" />
 
 

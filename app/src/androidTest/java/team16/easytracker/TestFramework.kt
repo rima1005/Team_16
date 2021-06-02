@@ -72,7 +72,7 @@ open class TestFramework {
         return dummyCompany
     }
 
-    open fun insertDummyAddress(street : String = "DummyStreet", zipCode: String = "8010", city: String = "Graz") : Address
+    open fun insertDummyAddress(street : String = "DummyStreet 1", zipCode: String = "8010", city: String = "Graz") : Address
     {
         var addressId = dbHelper.saveAddress(street, zipCode, city)
         dummyAddress = dbHelper.loadAddress(addressId)!!
@@ -81,8 +81,8 @@ open class TestFramework {
 
     open fun setupLoggedInWorker() : Worker
     {
-        //var address = insertDummyAddress()
-        dbHelper.saveWorker("LoggedInFirstName", "LoggedInLastName", LocalDate.now(), "DummyTitle", "loggedIn@email.com", "12345678", "43660551122", LocalDateTime.now().withNano(0), 1)
+        var address = insertDummyAddress()
+        dbHelper.saveWorker("LoggedInFirstName", "LoggedInLastName", LocalDate.now(), "DummyTitle", "loggedIn@email.com", "12345678", "43660551122", LocalDateTime.now().withNano(0), address.getId())
         dbHelper.loginWorker("loggedIn@email.com", "12345678")
         loggedInWorker = MyApplication.loggedInWorker!!
         return MyApplication.loggedInWorker!!
