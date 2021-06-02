@@ -41,5 +41,5 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 | EasyTracker-137 Bluetooth Screen                                    | ✔️        |
 | EasyTracker-142 Company Overview                                    | ✔️        |
 | EasyTracker-140 Export Timesheet                                    |           |
-| EasyTracker-141 Automatic Tracking #19                              |           |
+| EasyTracker-141 Automatic Tracking                                  |           |
 
