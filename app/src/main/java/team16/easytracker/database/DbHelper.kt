@@ -6,8 +6,11 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import org.mindrot.jbcrypt.BCrypt
 import team16.easytracker.MyApplication
+import team16.easytracker.R
 import team16.easytracker.database.Contracts.Company
 import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
@@ -517,7 +520,66 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         return
     }
 
-    fun deleteTracking(trackingId: Int): Int {
+    fun updateWorker(
+            workerId: Int,
+            firstName: String,
+            lastName: String,
+            dateOfBirth: LocalDate,
+            title: String,
+            email: String,
+            phoneNumber: String,
+            createdAt: LocalDateTime,
+            addressId: Int,
+    ) : Boolean {
+        val values = ContentValues().apply {
+            put(Worker.COL_FIRST_NAME, firstName)
+            put(Worker.COL_LAST_NAME, lastName)
+            put(Worker.COL_DATE_OF_BIRTH, dateOfBirth.toEpochDay())
+            put(Worker.COL_TITLE, title)
+            put(Worker.COL_EMAIL, email)
+            put(Worker.COL_PHONE_NUMBER, phoneNumber)
+            put(Worker.COL_CREATED_AT, createdAt.toEpochSecond(ZoneOffset.UTC))
+            put(Worker.COL_ADDRESS_ID, addressId)
+        }
+        val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
+                "${Worker.COL_ID} = ?",
+                arrayOf(workerId.toString()))
+        return modRows == 1
+    }
+
+    fun updateWorkerPassword(workerId: Int, oldPassword: String, newPassword: String) : Boolean
+    {
+        val result = readableDatabase.rawQuery(
+                "SELECT ${Worker.COL_ID} , ${Worker.COL_PASSWORD} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_ID} = ?",
+                arrayOf(workerId.toString())
+        )
+
+        if (!result.moveToNext()) {
+            result.close()
+            return false;
+        }
+
+        //check old PW
+        val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
+        if (BCrypt.checkpw(oldPassword, passwordHash)) {
+            val newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            val values = ContentValues().apply {
+                put(Worker.COL_PASSWORD, newPasswordHash)
+            }
+            val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
+                    "${Worker.COL_ID} = ?",
+                    arrayOf(workerId.toString()))
+            result.close()
+            return modRows == 1
+        }
+        else
+        {
+            return false
+        }
+    }
+
+    fun deleteTracking(trackingId: Int): Int
+    {
         return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
     }
 

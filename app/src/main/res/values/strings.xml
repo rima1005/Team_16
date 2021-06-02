@@ -44,6 +44,19 @@
     <string name="worker_email">Worker Email</string>
     <string name="employee_position">Employee Position</string>
     <string name="invalid_employee_position">Invalid Employee Position</string>
+    <string name="language">Language</string>
+    <string name="settings">Settings</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="change_password">Change Password</string>
+    <string name="oldPassword">Old Password</string>
+    <string name="newPassword">New Password</string>
+    <string name="failed_update_password">Update Password failed! Try again!</string>
+    <string name="update_settings_succeeded">Profile successfully updated</string>
+    <string name="update_password_succeeded">Password successfully updated</string>
+
+
+
+
     <string-array name="genders">
         <item>None</item>
         <item>Female</item>
@@ -54,6 +67,8 @@
     <!-- TrackingsAdapter -->
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="select">Select</string>
@@ -143,7 +158,6 @@
     <string name="ok">OK</string>
     <string name="search_devices">Search devices</string>
     <string name="add_device">Add device</string>
-    <string name="cancel">Cancel</string>
     <string name="enter_device_name">Enter device name</string>
     <string name="employees">Employees:</string>
 
