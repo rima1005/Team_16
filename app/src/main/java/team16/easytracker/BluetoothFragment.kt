@@ -45,8 +45,6 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
 
     lateinit var deviceListAdapter: MapSpinnerAdapter
 
-    lateinit var deviceName : String
-
     val MY_PERMISSIONS_REQUEST_CODE : Int = 1
 
     var uuid : UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
@@ -175,8 +173,15 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
             val currentWorker = MyApplication.loggedInWorker!!
             // TODO: error handling?
             // allow same name?
-            deviceName = et.text.toString()
+            val deviceName = et.text.toString()
+            val mac = device.address
+            MyApplication.pendingDeviceNames[mac] = deviceName
+
             if(device.bondState == BOND_NONE) {
+
+                // TODO: show progress, because this takes LOOONG
+
+                MyApplication.discoveryCancelled = true
                 bluetoothAdapter.cancelDiscovery()
                 if(!device.createBond())
                     Log.e("Bluetooth", "Bonding Failed!")
@@ -232,11 +237,11 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                             intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
 
                         var success = false
-                        if(device.bondState == BOND_BONDED)
+                        if(device.bondState == BOND_BONDED && MyApplication.pendingDeviceNames.containsKey(device.address))
                         {
                             success = DbHelper.getInstance().saveBluetoothDevice(
                                 device.address,
-                                deviceName,
+                                MyApplication.pendingDeviceNames[device.address]!!,
                                 MyApplication.loggedInWorker!!.getId())
 
                             if(success)
@@ -247,6 +252,10 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                                 deviceListAdapter.remove(device.address)
                             }
                             Log.d("Bluetooth", "Bond stage changed to: ${device.bondState}")
+
+                            // start again for automatic tracking
+                            MyApplication.discoveryCancelled = false
+                            bluetoothAdapter.startDiscovery()
                         }
                     }
                 }
