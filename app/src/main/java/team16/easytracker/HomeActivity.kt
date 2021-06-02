@@ -6,6 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +18,7 @@ import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
+import team16.easytracker.utils.FileUtility
 import java.io.File
 
 
@@ -105,6 +108,16 @@ class HomeActivity : AppCompatActivity() {
             menuItems.findItem(R.id.itemCreateCompany).isVisible = false
         }
         menuItems.findItem(R.id.itemDashboard).isChecked = true
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        MyApplication.menu = menu
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onOptionsItemSelected(item)
+        return currentFragment.onOptionsItemSelected(item)
     }
 
     private fun setCurrentFragment(fragment: Fragment, tag: String = "") {

@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
@@ -22,6 +23,7 @@ class MyApplication : Application() {
 
     companion object {
         var loggedInWorker : Worker? = null
+        var menu : Menu? = null
         val languageList = mapOf(
             "en" to "English",
             "ru" to "Russian"

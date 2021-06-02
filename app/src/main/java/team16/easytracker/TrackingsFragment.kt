@@ -1,10 +1,12 @@
 package team16.easytracker
 
+import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -21,46 +23,46 @@ class TrackingsFragment : Fragment() {
 
     val REQUEST_CODE_CREATE_FILE = 69;
 
-    lateinit var btnCreateTracking : Button
-    lateinit var btnExportTimesheet: Button
+    lateinit var btnCreateTracking : MenuItem
+    lateinit var btnExportTimesheet: MenuItem
     lateinit var trackings: List<Tracking>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+        MyApplication.menu?.clear()
+        activity!!.menuInflater.inflate(R.menu.menu_trackings,MyApplication.menu)
         return inflater.inflate(R.layout.fragment_trackings, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btnExportTimesheet = view.findViewById(R.id.btnCreateFile)
-        btnCreateTracking = view.findViewById(R.id.btnCreateTracking)
-
-        btnCreateTracking?.setOnClickListener {
-            val createTrackingFragment = CreateTrackingFragment()
-            activity!!.supportFragmentManager.beginTransaction()
-                    .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-                    .addToBackStack(null)
-                    .commit()
-        }
-
         //--------------------------------------------------------------------------
 
         trackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
-
-        if (trackings.isEmpty()) {
-            btnExportTimesheet.isClickable = false
-            // TODO: color?
-        } else {
-            btnExportTimesheet.setOnClickListener {
-                FileUtility.openCreateFileActivity(Uri.parse("."), activity!!, REQUEST_CODE_CREATE_FILE)
-            }
-        }
 
         val listView : ListView = view.findViewById(R.id.lvTrackings)
         val adapter = context?.let { TrackingsAdapter(it, trackings.toMutableList(), activity!!) }
         listView.adapter = adapter
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId){
+        R.id.itemCreateTracking -> {
+            val createTrackingFragment = CreateTrackingFragment()
+            activity!!.supportFragmentManager.beginTransaction()
+                .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
+                .addToBackStack(null)
+                .commit()
+            true
+        }
+        R.id.itemExportTimesheet -> {
+            FileUtility.openCreateFileActivity(Uri.parse("."), activity!!, REQUEST_CODE_CREATE_FILE)
+            true
+        }
+        else -> {
+            super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -83,5 +85,10 @@ class TrackingsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        MyApplication.menu?.clear()
+        super.onDestroyView()
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/itemCreateTracking"
+        android:title="@string/create_tracking" />
+    <item
+        android:id="@+id/itemExportTimesheet"
+        android:title="@string/export_timesheet" />
+
+</menu>
