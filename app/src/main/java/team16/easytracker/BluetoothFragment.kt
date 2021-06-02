@@ -186,6 +186,21 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                 if(!device.createBond())
                     Log.e("Bluetooth", "Bonding Failed!")
             }
+            if(device.bondState == BOND_BONDED)
+            {
+                var success = DbHelper.getInstance().saveBluetoothDevice(
+                    device.address,
+                    MyApplication.pendingDeviceNames[device.address]!!,
+                    MyApplication.loggedInWorker!!.getId())
+
+                if(success)
+                {
+                    workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId())
+                    workerMacs = workerDevices.map { it.mac }
+
+                    deviceListAdapter.remove(device.address)
+                }
+            }
         }
 
         builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
