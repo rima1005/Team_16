@@ -62,12 +62,10 @@ class BluetoothDevicesFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                val workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId())
+                val workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId()).toMutableList()
                 adapter = BluetoothDeviceRecyclerViewAdapter(workerDevices, this@BluetoothDevicesFragment)
-
             }
         }
-
 
         var mRecyclerView = viewBT.findViewById(R.id.rvBluetoothDevicesList) as RecyclerView
         mRecyclerView.addItemDecoration(

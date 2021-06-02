@@ -665,4 +665,10 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         }
         return list.toTypedArray()
     }
+
+    fun deleteBluetoothDeviceOfWorker(mac: String, workerId: Int) : Int {
+        return writableDatabase.delete(BluetoothDevice.TABLE_NAME,
+                          "${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+                                       arrayOf(mac, workerId.toString()))
+    }
 }

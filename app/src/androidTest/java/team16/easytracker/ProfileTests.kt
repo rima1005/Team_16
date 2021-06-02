@@ -29,7 +29,7 @@ import org.junit.runner.RunWith
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @RunWith(AndroidJUnit4::class)
-class ProfileTest : TestFramework() {
+class ProfileTests : TestFramework() {
 
     fun getCurrentActivity(): Activity? {
         var currentActivity: Activity? = null
