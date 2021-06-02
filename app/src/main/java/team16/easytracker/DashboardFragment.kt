@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import team16.easytracker.database.DbHelper
+import java.lang.IllegalStateException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -66,7 +67,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private fun stopTracking() {
         val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
-        val activeTracking = workerTrackings!!.elementAt(workerTrackings.size - 1)
+
+        if (workerTrackings.isEmpty()) {
+            throw IllegalStateException("stopTracking() called with no existing Trackings!")
+        }
+
+        val activeTracking = workerTrackings.elementAt(workerTrackings.size - 1)
+
+        if (activeTracking.endTime != LocalDateTime.MIN) {
+            throw IllegalStateException("stopTracking() called with no ACTIVE Tracking!")
+        }
 
         if (activeTracking.endTime == LocalDateTime.MIN) {
             val builder = AlertDialog.Builder(activity)
@@ -103,7 +113,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
         val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
 
-        if (workerTrackings.isNullOrEmpty())
+        if (workerTrackings.isEmpty())
             return
 
         else if (workerTrackings.elementAt(workerTrackings.size - 1).endTime == LocalDateTime.MIN) {
