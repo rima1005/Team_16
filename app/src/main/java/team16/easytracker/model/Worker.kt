@@ -21,4 +21,16 @@ class Worker(
         return id
     }
 
+    override fun toString(): String {
+        if (title.isEmpty()) {
+            return lastName + " " +
+                    firstName + " - " +
+                    position
+        }
+        return lastName + " " +
+               firstName + ", " +
+               title + " - " +
+               position
+    }
+
 }

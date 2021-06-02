@@ -66,7 +66,8 @@ open class TestFramework {
 
     open fun insertDummyCompany(name: String = "DummyCompany", addressId: Int = 1) : Company
     {
-        var companyId = dbHelper.saveCompany(name, addressId)
+        insertDummyAddress()
+        var companyId = dbHelper.saveCompany(name, dummyAddress.getId())
         dummyCompany = dbHelper.loadCompany(companyId)!!
         return dummyCompany
     }
@@ -94,5 +95,10 @@ open class TestFramework {
         dbHelper.setCompanyAdmin(loggedInWorker.getId(), dummyCompany.getId(), true)
         MyApplication.loggedInWorker = dbHelper.loadWorker(MyApplication.loggedInWorker!!.getId())
 
+    }
+
+    open fun insertDummyBluetoothDevice()
+    {
+        dbHelper.saveBluetoothDevice("00:80:41:ae:fd:69", "TestDevice", loggedInWorker.getId())
     }
 }

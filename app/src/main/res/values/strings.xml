@@ -156,5 +156,6 @@
     <string name="search_devices">Search devices</string>
     <string name="add_device">Add device</string>
     <string name="enter_device_name">Enter device name</string>
+    <string name="employees">Employees:</string>
 
 </resources>

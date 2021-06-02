@@ -10,13 +10,13 @@ Dev 8: Mattia Zoggia
 
 | Syntax      | Dev 1   	  | Dev 2   	  | Dev 3   	  | Dev 4   	  | Dev 5   	  | Dev 6   	  | Dev 7   	  | Dev 8   	  |
 | :---        |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |    :----:   |
-| **Dev 1**       | X           | 16:00       | 08:00       | HH:MM       | 08:00       | 12:00       | 06:00       | HH:MM       |
-| **Dev 2**       | 16:00       | X           | 08:00       | 11:00       | HH:MM       | HH:MM       | HH:MM       | 04:00       |
-| **Dev 3**       | 08:00       | 08:00       | X           | 09:00       | HH:MM       | HH:MM       | 11:00       | 10:00       |
-| **Dev 4**       | HH:MM       | 11:00       | 09:00       | X           | 22:00       | HH:MM       | HH:MM       | 10:00       |
-| **Dev 5**       | 08:00       | HH:MM       | HH:MM       | 22:00       | X           | 06:00       | 08:00       | 06:00       |
-| **Dev 6**       | 12:00       | HH:MM       | HH:MM       | HH:MM       | 06:00       | X           | 17:00       | 07:00       |
-| **Dev 7**       | 06:00       | HH:MM       | 11:00       | HH:MM       | 08:00       | 17:00       | X           | HH:MM       |
+| **Dev 1**       | X           | 16:00       | 08:00       | 02:00       | 08:00       | 13:00       | 06:00       | HH:MM       |
+| **Dev 2**       | 16:00       | X           | 08:00       | 11:00       | 03:00       | HH:MM       | HH:MM       | 04:00       |
+| **Dev 3**       | 08:00       | 08:00       | X           | 09:00       | HH:MM       | HH:MM       | 14:00       | 10:00       |
+| **Dev 4**       | 02:00       | 11:00       | 09:00       | X           | 22:00       | HH:MM       | HH:MM       | 10:00       |
+| **Dev 5**       | 08:00       | 03:00       | HH:MM       | 22:00       | X           | 06:00       | 08:00       | 06:00       |
+| **Dev 6**       | 13:00       | HH:MM       | HH:MM       | HH:MM       | 06:00       | X           | 17:00       | 07:00       |
+| **Dev 7**       | 06:00       | HH:MM       | 14:00       | HH:MM       | 08:00       | 17:00       | X           | HH:MM       |
 | **Dev 8**       | HH:MM       | 04:00       | 10:00       | 10:00       | 06:00       | 07:00       | HH:MM       | X           |
 
 **Remark after Sprint 1:** Some of the user stories required more effort than estimated and pairs had to spend\
