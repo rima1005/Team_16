@@ -6,16 +6,13 @@ import android.net.Uri
 import android.provider.DocumentsContract
 import team16.easytracker.MyApplication
 
-object FileWriter {
-    fun write(fileName: String, contents: String) {
-        // TODO: Implement
-    }
+object FileUtility {
 
-    // Request code for creating a PDF document.
-    const val CREATE_FILE = 32
-
-    // https://developer.android.com/training/data-storage/shared/documents-files#create-file
-    fun createFile(pickerInitialUri: Uri, currentActivity: Activity) {
+    /**
+     * Opens Android File Activity.
+     * adapted from https://developer.android.com/training/data-storage/shared/documents-files#create-file
+     */
+    fun openCreateFileActivity(pickerInitialUri: Uri, currentActivity: Activity, requestCode: Int) {
         val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "text/csv"
@@ -25,6 +22,6 @@ object FileWriter {
             // the system file picker before your app creates the document.
             putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri)
         }
-        currentActivity.startActivityForResult(intent, CREATE_FILE)
+        currentActivity.startActivityForResult(intent, requestCode)
     }
 }

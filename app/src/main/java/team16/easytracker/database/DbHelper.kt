@@ -245,7 +245,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         return TrackingModel(id, name, workerId, startTime, endTime, description, bluetoothDevice)
     }
 
-    fun loadWorkerTrackings(workerId: Int): List<TrackingModel>? {
+    fun loadWorkerTrackings(workerId: Int): List<TrackingModel> {
         val result = readableDatabase.rawQuery(
                 "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ?",
                 arrayOf(workerId.toString())

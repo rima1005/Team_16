@@ -26,6 +26,18 @@
             android:textColor="#FFFFFF"
             app:backgroundTint="#168AAD" />
 
+        <Button
+            android:id="@+id/btnCreateFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#168AAD"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/export_timesheet"
+            android:textColor="#FFFFFF"
+            app:backgroundTint="#168AAD" />
+
         <ListView
             android:id="@+id/lvTrackings"
             android:layout_width="match_parent"

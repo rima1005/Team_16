@@ -145,5 +145,6 @@
     <string name="add_device">Add device</string>
     <string name="cancel">Cancel</string>
     <string name="enter_device_name">Enter device name</string>
+    <string name="export_timesheet">Export Timesheet</string>
 
 </resources>
