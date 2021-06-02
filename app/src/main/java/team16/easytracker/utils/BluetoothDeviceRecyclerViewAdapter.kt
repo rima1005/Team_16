@@ -8,13 +8,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import team16.easytracker.BluetoothDevicesFragment
 import team16.easytracker.MyApplication
 import team16.easytracker.R
 import team16.easytracker.database.DbHelper
-
-
 import team16.easytracker.databinding.FragmentBluetoothDeviceItemBinding
 import team16.easytracker.model.WorkerBluetoothDevice
 
@@ -22,7 +19,7 @@ import team16.easytracker.model.WorkerBluetoothDevice
  * [RecyclerView.Adapter] that can display a worker's bluetooth devices.
  */
 class BluetoothDeviceRecyclerViewAdapter(
-    private val values: Array <WorkerBluetoothDevice>, private val bluetoothDevicesFragment: BluetoothDevicesFragment
+    private val values: MutableList <WorkerBluetoothDevice>, private val bluetoothDevicesFragment: BluetoothDevicesFragment
 ) : RecyclerView.Adapter<BluetoothDeviceRecyclerViewAdapter.ViewHolder>() {
 
     private lateinit var context: Context
@@ -48,7 +45,17 @@ class BluetoothDeviceRecyclerViewAdapter(
             showDeviceNamePromptBluetooth(bluetoothDevice)
         }
         holder.btnDeleteBluetoothDevice.setOnClickListener {
-            Toast.makeText(context, "TODO: Delete Bluetooth Device " + position.toString(), Toast.LENGTH_LONG).show()
+            val mac = values[position].mac
+            val workerId = MyApplication.loggedInWorker!!.getId()
+            val success = DbHelper.getInstance().deleteBluetoothDeviceOfWorker(mac, workerId)
+            if (success == 1) {
+                values.removeAt(position)
+                notifyDataSetChanged()
+            }
+            else {
+                Log.e("Delete BluetoothDevice", "Delete bluetooth device failed")
+            }
+
         }
     }
 

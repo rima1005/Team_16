@@ -55,7 +55,7 @@ class DbHelperTests : TestFramework() {
     }
 
     @Override
-    override fun insertDummyBluetoothDevice() {
+    override fun insertDummyBluetoothDevice(mac: String, device: String) {
         dbHelper.saveBluetoothDevice(DUMMY_MAC, DUMMY_BLUETOOTH_DEVICE_NAME, DUMMY_WORKER_ID)
     }
 
@@ -307,6 +307,14 @@ class DbHelperTests : TestFramework() {
         assert(bluetoothDevice!!.mac == DUMMY_MAC)
         assert(bluetoothDevice.name == updatedBTDeviceName)
         assert(bluetoothDevice.workerId == DUMMY_WORKER_ID)
+    }
+
+    @Test
+    fun testDeleteBluetoothDevice()
+    {
+        insertDummyBluetoothDevice()
+        val success = dbHelper.deleteBluetoothDeviceOfWorker(DUMMY_MAC, DUMMY_WORKER_ID)
+        assert(success == 1)
     }
 
 }
