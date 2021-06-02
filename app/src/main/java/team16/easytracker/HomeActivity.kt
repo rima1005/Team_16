@@ -135,6 +135,13 @@ class HomeActivity : AppCompatActivity() {
             header.findViewById<TextView>(R.id.tvNavHeaderName).setTextColor(Color.parseColor(R.color.colorPrimary.toString()))
         }
 
+    }
 
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

@@ -1,6 +1,7 @@
 package team16.easytracker.utils
 
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +15,7 @@ import team16.easytracker.R
 import team16.easytracker.database.DbHelper
 import team16.easytracker.databinding.FragmentBluetoothDeviceItemBinding
 import team16.easytracker.model.WorkerBluetoothDevice
+import java.lang.Exception
 
 /**
  * [RecyclerView.Adapter] that can display a worker's bluetooth devices.
