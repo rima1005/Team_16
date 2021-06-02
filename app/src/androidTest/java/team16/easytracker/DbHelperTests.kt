@@ -297,5 +297,16 @@ class DbHelperTests : TestFramework() {
         }
     }
 
+    @Test
+    fun testUpdateBluetoothDevice() {
+        insertDummyBluetoothDevice()
+        val updatedBTDeviceName = "Updated BT device name"
+        dbHelper.updateBluetoothDevice(DUMMY_MAC, updatedBTDeviceName, DUMMY_WORKER_ID)
+        val bluetoothDevice = dbHelper.loadBluetoothDevice(DUMMY_MAC, DUMMY_WORKER_ID)
+        assert(bluetoothDevice != null)
+        assert(bluetoothDevice!!.mac == DUMMY_MAC)
+        assert(bluetoothDevice.name == updatedBTDeviceName)
+        assert(bluetoothDevice.workerId == DUMMY_WORKER_ID)
+    }
 
 }
