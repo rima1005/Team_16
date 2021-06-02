@@ -52,7 +52,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -94,7 +94,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartTime))
@@ -133,7 +133,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -175,7 +175,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -214,7 +214,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -256,7 +256,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -296,7 +296,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -338,7 +338,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -377,7 +377,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))
@@ -416,7 +416,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.tvErrorTrackingStartDate))
@@ -481,7 +481,7 @@ class CreateTrackingTests : TestFramework() {
             .addToBackStack(null)
             .commit()
 
-        onView(withId(R.id.btnCreateTracking))
+        onView(withId(R.id.itemCreateTracking))
             .perform(click())
 
         onView(withId(R.id.etTrackingStartDate))

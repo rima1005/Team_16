@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking
@@ -23,8 +24,6 @@ class TrackingsFragment : Fragment() {
 
     val REQUEST_CODE_CREATE_FILE = 69;
 
-    lateinit var btnCreateTracking : MenuItem
-    lateinit var btnExportTimesheet: MenuItem
     lateinit var trackings: List<Tracking>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -36,8 +35,6 @@ class TrackingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //--------------------------------------------------------------------------
 
         trackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
 
@@ -57,7 +54,12 @@ class TrackingsFragment : Fragment() {
             true
         }
         R.id.itemExportTimesheet -> {
-            FileUtility.openCreateFileActivity(Uri.parse("."), activity!!, REQUEST_CODE_CREATE_FILE)
+            trackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+            if(trackings.isEmpty())
+                //TODO: make toast into snake bar
+                Toast.makeText(context, R.string.error_export, Toast.LENGTH_SHORT).show()
+            else
+                FileUtility.openCreateFileActivity(Uri.parse("."), activity!!, REQUEST_CODE_CREATE_FILE)
             true
         }
         else -> {

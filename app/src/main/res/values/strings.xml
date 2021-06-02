@@ -146,5 +146,6 @@
     <string name="cancel">Cancel</string>
     <string name="enter_device_name">Enter device name</string>
     <string name="export_timesheet">Export Timesheet</string>
+    <string name="error_export">No trackings to export!</string>
 
 </resources>
