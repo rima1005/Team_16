@@ -1,24 +1,22 @@
 package team16.easytracker
 
-import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking
 import team16.easytracker.utils.CSVConverter
 import team16.easytracker.utils.FileUtility
 import team16.easytracker.utils.TrackingsAdapter
-import java.lang.Exception
 
 class TrackingsFragment : Fragment() {
 
@@ -56,8 +54,7 @@ class TrackingsFragment : Fragment() {
         R.id.itemExportTimesheet -> {
             trackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
             if(trackings.isEmpty())
-                //TODO: make toast into snake bar
-                Toast.makeText(context, R.string.error_export, Toast.LENGTH_SHORT).show()
+                Snackbar.make(view!!, R.string.error_export, BaseTransientBottomBar.LENGTH_SHORT).show()
             else
                 FileUtility.openCreateFileActivity(Uri.parse("."), activity!!, REQUEST_CODE_CREATE_FILE)
             true

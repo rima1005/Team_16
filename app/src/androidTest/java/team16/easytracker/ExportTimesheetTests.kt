@@ -12,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.not
 import org.junit.Before
@@ -62,14 +63,15 @@ class ExportTimesheetTests: TestFramework() {
     }
 
     fun openFragment(enableBluetooth: Boolean = true) {
+        val fragment = TrackingsFragment()
         activity.supportFragmentManager.beginTransaction().apply {
-            replace(R.id.flFragment, TrackingsFragment(), "Trackings Fragment")
+            replace(R.id.flFragment, fragment, "Trackings Fragment")
             addToBackStack(null)
             commit()
         }
+        activity.currentFragment = fragment
     }
 
-    @Ignore("doesn't work yet")
     @Test
     fun exportTimesheetNotVisibleIfListEmpty() {
         openFragment()
@@ -81,9 +83,9 @@ class ExportTimesheetTests: TestFramework() {
         onView(withText(R.string.export_timesheet))
             .perform(click())
 
-        onView(withText(R.string.error_export))
-            .inRoot(withDecorView(not(`is`(activity.window.decorView))))
-            .check(matches(isDisplayed()))
+        // check for error message displayed as snackbar
+        onView(CoreMatchers.allOf(withId(com.google.android.material.R.id.snackbar_text)))
+            .check(matches(withText(R.string.error_export)))
     }
 
     @Ignore("testing external activities is hard")
@@ -98,8 +100,11 @@ class ExportTimesheetTests: TestFramework() {
         onView(withText(R.string.export_timesheet))
             .perform(click())
 
-        //Sorry guys and gals
-        //this one's not possible
+        // no error message should be shown
+        onView(CoreMatchers.allOf(withId(com.google.android.material.R.id.snackbar_text)))
+            .check(matches(not(isDisplayed())))
+
+       // No idea how to click save on external android activity :(
         onView(withText("SAVE"))
             .perform(click())
     }
