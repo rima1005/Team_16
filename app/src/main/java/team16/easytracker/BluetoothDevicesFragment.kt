@@ -52,7 +52,7 @@ class BluetoothDevicesFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                val workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(currentWorker.getId())
+                val workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(currentWorker.getId()).toMutableList()
                 adapter = BluetoothDeviceRecyclerViewAdapter(workerDevices)
             }
         }
