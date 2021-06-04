@@ -1,5 +1,6 @@
 package team16.easytracker
 
+import android.bluetooth.BluetoothAdapter
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -62,7 +63,16 @@ class BluetoothDevicesFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                val workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId()).toMutableList()
+                var workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId()).toMutableList()
+                val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+                for (device in workerDevices)
+                {
+                    if(!bluetoothAdapter.bondedDevices.any { it.address == device.mac })
+                    {
+                        DbHelper.getInstance().deleteBluetoothDeviceOfWorker(device.mac, MyApplication.loggedInWorker!!.getId())
+                    }
+                }
+                workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId()).toMutableList()
                 adapter = BluetoothDeviceRecyclerViewAdapter(workerDevices, this@BluetoothDevicesFragment)
             }
         }

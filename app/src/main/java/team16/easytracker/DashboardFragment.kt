@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -66,7 +67,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     private fun stopTracking() {
         val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
-        val activeTracking = workerTrackings!!.elementAt(workerTrackings.size - 1)
+        val activeTracking = workerTrackings.elementAt(workerTrackings.size - 1)
 
         if (activeTracking.endTime == LocalDateTime.MIN) {
             val builder = AlertDialog.Builder(activity)
@@ -74,7 +75,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             builder.setMessage(getString(R.string.do_you_really_want_to_stop_the_tracking_question))
             builder.setCancelable(true)
 
-            builder.setPositiveButton(android.R.string.ok) { dialog, which ->
+            builder.setPositiveButton(android.R.string.ok) { _, _ ->
                 DbHelper.getInstance().updateTracking(
                         activeTracking.id,
                         activeTracking.name,
@@ -88,15 +89,24 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 tvActiveTracking.visibility = View.GONE
                 tvLabelActiveTracking.visibility = View.GONE
                 btnStartTracking.visibility = View.VISIBLE
+
+                MyApplication.currentTracking = null
             }
-            builder.setNegativeButton(android.R.string.cancel) { dialog, which ->
+            builder.setNegativeButton(android.R.string.cancel) { _, _ ->
                 // Don't stop the tracking by doing nothing here
             }
 
             builder.show()
+        } else {
+            Snackbar.make(view!!, "Tracking has already ended automatically", Snackbar.LENGTH_SHORT).show()
+            btnStopTracking.visibility = View.GONE
+            tvActiveTracking.visibility = View.GONE
+            tvLabelActiveTracking.visibility = View.GONE
+            btnStartTracking.visibility = View.VISIBLE
         }
     }
 
+    // TODO: call this periodically
     private fun checkActiveTracking() {
         if (MyApplication.loggedInWorker == null)
             return

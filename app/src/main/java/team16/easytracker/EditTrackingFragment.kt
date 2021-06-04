@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
-    private var trackingId: Int? = null
+    var trackingId: Int = -1
 
     lateinit var etStartDate : EditText
     lateinit var etStartTime : EditText
@@ -48,9 +48,7 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            trackingId = it.getInt("id")
-        }
+        trackingId = arguments!!.getInt("id")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,9 +85,9 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
 
         btnUpdateTracking.setOnClickListener { updateTracking() }
 
-        btnEditTrackingBack?.setOnClickListener { backToTrackings() }
+        btnEditTrackingBack.setOnClickListener { backToTrackings() }
 
-        val tracking : Tracking? = DbHelper.getInstance().loadTracking(trackingId!!)
+        val tracking : Tracking? = DbHelper.getInstance().loadTracking(trackingId)
 
         etStartDate.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")))
         etStartTime.text = Editable.Factory.getInstance().newEditable(tracking?.startTime?.format(DateTimeFormatter.ofPattern("HH:mm")))

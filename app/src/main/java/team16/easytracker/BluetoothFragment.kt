@@ -4,13 +4,17 @@ import android.Manifest
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothDevice.BOND_BONDED
+import android.bluetooth.BluetoothDevice.BOND_NONE
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -20,6 +24,9 @@ import androidx.fragment.app.Fragment
 import team16.easytracker.adapters.MapSpinnerAdapter
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.WorkerBluetoothDevice
+import team16.easytracker.utils.PermissionManager
+import java.util.*
+
 
 /* Resources
  * https://www.youtube.com/watch?v=PtN6UTIu7yw
@@ -38,15 +45,20 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
 
     lateinit var deviceListAdapter: MapSpinnerAdapter
 
+    val MY_PERMISSIONS_REQUEST_CODE : Int = 1
+
+    var uuid : UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+
     val bluetoothDevices: MutableSet<BluetoothDevice> = mutableSetOf()
     var workerDevices = arrayOf<WorkerBluetoothDevice>()
     var workerMacs = listOf<String>()
+
+    lateinit var permissionManager : PermissionManager
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val currentWorker = MyApplication.loggedInWorker!!
-        requestPermissions()
 
         btnDiscoverBluetoothDevices = view.findViewById(R.id.btnDiscoverBluetoothDevices)
         lvBluetoothDevices = view.findViewById(R.id.lvBluetoothDevices)
@@ -68,7 +80,7 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
             }
         }
 
-        deviceListAdapter = MapSpinnerAdapter(context!!, R.layout.bluetooth_device, pairedDevicesMap)
+        deviceListAdapter = MapSpinnerAdapter(requireContext(), R.layout.bluetooth_device, pairedDevicesMap)
         lvBluetoothDevices.adapter = deviceListAdapter
 
         lvBluetoothDevices.setOnItemClickListener { _, _, index, _ -> onBluetoothDeviceSelected(index) }
@@ -76,10 +88,64 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
         initBluetoothDiscoveryReceiver()
 
         btnDiscoverBluetoothDevices.setOnClickListener {
-            if (!bluetoothAdapter.startDiscovery()) {
-                throw Exception("Failed to start Bluetooth discovery")
-            }
+            permissionManager = PermissionManager(context!!)
+            permissionManager.checkPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION, object :PermissionManager.PermissionAskListener {
+                override fun onNeedPermission() {
+                    requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), MY_PERMISSIONS_REQUEST_CODE )
+                }
+
+                override fun onPermissionPreviouslyDenied() {
+                    showCoarseLocationRationale()
+                }
+
+                override fun onPermissionPreviouslyDeniedWithNeverAskAgain() {
+                    dialogForSettings("Permission Denied", "You must allow the access from settings!");
+                }
+
+                override fun onPermissionGranted() {
+                    if(!bluetoothAdapter.startDiscovery())
+                        throw Exception("Device Discovery failed!")
+                }
+            })
         }
+    }
+
+    private fun showCoarseLocationRationale() {
+        AlertDialog.Builder(context).setTitle("Permission Denied")
+            .setMessage("Without this permission this app is unable to search for Bluetooth devices. Are you sure you want to deny this permission.")
+            .setCancelable(false)
+            .setNegativeButton(
+                "I'M SURE"
+            ) { dialog, which -> dialog.dismiss() }
+            .setPositiveButton("RETRY") { dialog, which ->
+                requestPermissions(
+                    arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+                    MY_PERMISSIONS_REQUEST_CODE
+                )
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun dialogForSettings(title: String, msg: String) {
+        AlertDialog.Builder(context).setTitle(title).setMessage(msg)
+            .setCancelable(false)
+            .setNegativeButton(
+                "NOT NOW"
+            ) { dialog, which -> dialog.dismiss() }
+            .setPositiveButton(
+                "SETTINGS"
+            ) { dialog, which ->
+                goToSettings()
+                dialog.dismiss()
+            }.show()
+    }
+
+    private fun goToSettings() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri: Uri = Uri.parse("package:" + context!!.packageName)
+        intent.data = uri
+        startActivity(intent)
     }
 
     override fun onDestroy() {
@@ -108,19 +174,33 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
             // TODO: error handling?
             // allow same name?
             val deviceName = et.text.toString()
-            val success = DbHelper.getInstance().saveBluetoothDevice(
-                device.address,
-                deviceName,
-                currentWorker.getId()
-            )
-            if (success) {
-                Log.d("Bluetooth", "Added bluetooth device $deviceName")
+            val mac = device.address
+            MyApplication.pendingDeviceNames[mac] = deviceName
+
+            if(device.bondState == BOND_NONE) {
+
+                // TODO: show progress, because this takes LOOONG
+
+                MyApplication.discoveryCancelled = true
+                bluetoothAdapter.cancelDiscovery()
+                if(!device.createBond())
+                    Log.e("Bluetooth", "Bonding Failed!")
             }
+            if(device.bondState == BOND_BONDED)
+            {
+                var success = DbHelper.getInstance().saveBluetoothDevice(
+                    device.address,
+                    MyApplication.pendingDeviceNames[device.address]!!,
+                    MyApplication.loggedInWorker!!.getId())
 
-            workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(currentWorker.getId())
-            workerMacs = workerDevices.map { it.mac }
+                if(success)
+                {
+                    workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId())
+                    workerMacs = workerDevices.map { it.mac }
 
-            deviceListAdapter.remove(device.address)
+                    deviceListAdapter.remove(device.address)
+                }
+            }
         }
 
         builder.setNegativeButton(getString(R.string.cancel)) { _, _ ->
@@ -163,17 +243,44 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                         Log.d("Bluetooth", "Found device: " + device.name)
                         Log.d("Bluetooth", "Found device with address: " + device.address)
                         // TODO: remove mac address from display
+                        if(!deviceListAdapter.contains(device.address))
                         deviceListAdapter.add(device.address, "${device.name} - ${device.address}")
                     }
 
+                    BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                        val device =
+                            intent.getParcelableExtra<Parcelable>(BluetoothDevice.EXTRA_DEVICE) as BluetoothDevice
+
+                        var success = false
+                        if(device.bondState == BOND_BONDED && MyApplication.pendingDeviceNames.containsKey(device.address))
+                        {
+                            success = DbHelper.getInstance().saveBluetoothDevice(
+                                device.address,
+                                MyApplication.pendingDeviceNames[device.address]!!,
+                                MyApplication.loggedInWorker!!.getId())
+
+                            if(success)
+                            {
+                                workerDevices = DbHelper.getInstance().loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId())
+                                workerMacs = workerDevices.map { it.mac }
+
+                                deviceListAdapter.remove(device.address)
+                            }
+                            Log.d("Bluetooth", "Bond stage changed to: ${device.bondState}")
+
+                            // start again for automatic tracking
+                            MyApplication.discoveryCancelled = false
+                            bluetoothAdapter.startDiscovery()
+                        }
+                    }
                 }
             }
         }
-
         val filter = IntentFilter()
         filter.addAction(BluetoothDevice.ACTION_FOUND)
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
 
         requireActivity().registerReceiver(bluetoothReceiver, filter)
     }
@@ -201,27 +308,26 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
         builder.show()
     }
 
-    private fun requestPermissions() {
-        val permissionsRequired = arrayOf(
-            Manifest.permission.BLUETOOTH,
-            Manifest.permission.BLUETOOTH_ADMIN,
-            // needed for bluetooth discovery:
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        )
-
-        ActivityCompat.requestPermissions(requireActivity(), permissionsRequired, 16)
-
-        for (permission in permissionsRequired) {
-            if (ContextCompat.checkSelfPermission(requireContext(), permission) != PackageManager.PERMISSION_GRANTED) {
-                closeFragment()
-                return
-            }
-        }
-    }
-
     private fun closeFragment() {
         // go back
         requireActivity().supportFragmentManager.popBackStackImmediate()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode)
+        {
+            MY_PERMISSIONS_REQUEST_CODE ->
+                if(grantResults.isNotEmpty() && grantResults.all { p -> p == PackageManager.PERMISSION_GRANTED })
+                {
+                    if(!bluetoothAdapter.startDiscovery())
+                        throw Exception("Device Discovery failed!")
+                }
+            else -> Toast.makeText(requireContext(), "Permissions not granted!", Toast.LENGTH_SHORT).show()
+        }
+
     }
 }
