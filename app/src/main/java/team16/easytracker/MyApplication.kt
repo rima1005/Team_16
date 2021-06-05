@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Parcelable
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
@@ -31,6 +32,7 @@ class MyApplication : Application() {
     }
 
     companion object {
+        var menu : Menu? = null
         var loggedInWorker: Worker? = null
             set(value) {
                 if(value != null) {

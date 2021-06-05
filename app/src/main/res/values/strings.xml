@@ -160,5 +160,7 @@
     <string name="add_device">Add device and pair</string>
     <string name="enter_device_name">Enter device name</string>
     <string name="employees">Employees:</string>
+    <string name="export_timesheet">Export Timesheet</string>
+    <string name="error_export">No trackings to export!</string>
 
 </resources>
