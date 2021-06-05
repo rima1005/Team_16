@@ -103,8 +103,9 @@ class BluetoothFragment : Fragment(R.layout.fragment_bluetooth) {
                 }
 
                 override fun onPermissionGranted() {
-                    if(!bluetoothAdapter.startDiscovery())
-                        throw Exception("Device Discovery failed!")
+                    if(!bluetoothAdapter.isDiscovering)
+                        if(!bluetoothAdapter.startDiscovery())
+                            throw Exception("Device Discovery failed!")
                 }
             })
         }

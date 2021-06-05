@@ -2,9 +2,8 @@ package team16.easytracker
 
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
@@ -18,8 +17,6 @@ import androidx.core.view.forEach
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
-import team16.easytracker.utils.FileUtility
-import java.io.File
 
 
 class HomeActivity : AppCompatActivity() {
@@ -40,10 +37,7 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.homeactivity)
 
-
         MyApplication.updateResources(this)
-
-
 
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, dashboardFragment, "TAG_DASHBOARD")
@@ -91,7 +85,7 @@ class HomeActivity : AppCompatActivity() {
                 R.id.itemDashboard -> setCurrentFragment(dashboardFragment, "TAG_DASHBOARD")
                 R.id.itemTrackings -> setCurrentFragment(trackingsFragment, "TAG_TRACKINGS")
                 R.id.itemBluetoothDevices -> setCurrentFragment(bluetoothDevicesFragment, "TAG_BLUETOOTHDEVICES")
-                R.id.itemCreateCompany -> setCurrentFragment(createCompanyFragment, "TAG_CREATECOMPANY")
+                R.id.itemCreateCompany -> setCurrentFragment(createCompanyFragment, "TAG_CREATECOMPANY", false)
                 R.id.itemOverview -> setCurrentFragment(companyFragment, "TAG_OVERVIEW")
                 R.id.itemAddEmployee -> setCurrentFragment(companyAdminFragment, "TAG_ADDEMPLOYEE")
                 R.id.itemLogout -> logout()
@@ -122,10 +116,11 @@ class HomeActivity : AppCompatActivity() {
         return currentFragment.onOptionsItemSelected(item)
     }
 
-    private fun setCurrentFragment(fragment: Fragment, tag: String = "") {
+    private fun setCurrentFragment(fragment: Fragment, tag: String = "", addToBackStack: Boolean = true) {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.flFragment, fragment, tag)
-            addToBackStack(null)
+            if(addToBackStack)
+                addToBackStack(tag)
             commit()
         }
         currentFragment = fragment
@@ -140,26 +135,44 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
+    var doubleBackToExit = false
+    @Suppress("DEPRECATION") //Handler should not be used anymore
     @Override
     override fun onBackPressed() {
-        super.onBackPressed()
-        val header = navigationView.getHeaderView(0)
-        header.findViewById<TextView>(R.id.tvNavHeaderName).setTextColor(Color.BLACK)
-        if(dashboardFragment.isVisible)
-            navigationView.menu.findItem(R.id.itemDashboard).isChecked = true
-        if(trackingsFragment.isVisible)
-            navigationView.menu.findItem(R.id.itemTrackings).isChecked = true
-        if(companyFragment.isVisible)
-            navigationView.menu.findItem(R.id.itemOverview).isChecked = true
-        if(companyAdminFragment.isVisible)
-            navigationView.menu.findItem(R.id.itemAddEmployee).isChecked = true
-        if(createCompanyFragment.isVisible)
-            navigationView.menu.findItem(R.id.itemCreateCompany).isChecked = true
-        if(profileFragment.isVisible)
+
+        if(supportFragmentManager.backStackEntryCount == 0)
         {
-            navigationView.menu.forEach { menuItem -> menuItem.isChecked = false }
-            header.findViewById<TextView>(R.id.tvNavHeaderName).setTextColor(Color.parseColor(R.color.colorPrimary.toString()))
+            if (doubleBackToExit)
+            {
+                super.onBackPressed()
+                return
+            }
+            doubleBackToExit = true
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({ doubleBackToExit = false }, 2000)
         }
+        else
+        {
+            val header = navigationView.getHeaderView(0)
+            header.findViewById<TextView>(R.id.tvNavHeaderName).setTextColor(Color.BLACK)
+            if(dashboardFragment.isVisible)
+                navigationView.menu.findItem(R.id.itemDashboard).isChecked = true
+            if(trackingsFragment.isVisible)
+                navigationView.menu.findItem(R.id.itemTrackings).isChecked = true
+            if(companyFragment.isVisible)
+                navigationView.menu.findItem(R.id.itemOverview).isChecked = true
+            if(companyAdminFragment.isVisible)
+                navigationView.menu.findItem(R.id.itemAddEmployee).isChecked = true
+            if(createCompanyFragment.isVisible)
+                navigationView.menu.findItem(R.id.itemCreateCompany).isChecked = true
+            if(profileFragment.isVisible)
+            {
+                navigationView.menu.forEach { menuItem -> menuItem.isChecked = false }
+                header.findViewById<TextView>(R.id.tvNavHeaderName).setTextColor(Color.parseColor(R.color.colorPrimary.toString()))
+            }
+            super.onBackPressed()
+        }
+
 
     }
 
