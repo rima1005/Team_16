@@ -2,9 +2,9 @@ package team16.easytracker.model
 
 class Company(private val id : Int, val name : String, val addressId : Int) {
 
-    val address : Address? = null;
+    var address : Address? = null
 
-    public fun getId() : Int {
-        return id;
+    fun getId() : Int {
+        return id
     }
 }

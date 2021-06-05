@@ -1,29 +1,19 @@
 package team16.easytracker
 
 import android.app.Activity
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.Espresso.onData
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
-import com.google.android.material.internal.NavigationMenu
-import com.google.android.material.internal.NavigationMenuItemView
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 import org.junit.runner.RunWith
-import team16.easytracker.database.Contracts
-import team16.easytracker.database.DbHelper
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -35,15 +25,20 @@ class EditTrackingTests : TestFramework() {
 
     var trackingId = 0
 
-    val startTime = LocalDateTime.parse("05.05.2021 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-    val endTime = LocalDateTime.parse("05.05.2021 18:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
-    val trackingName = "Work ASD"
-    val description = ""
-    val bluetoothDevice = ""
+    private val startTime = LocalDateTime.parse("05.05.2021 12:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+    private val endTime = LocalDateTime.parse("05.05.2021 18:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+    private val trackingName = "Work ASD"
+    private val description = ""
+    private val bluetoothDevice = ""
 
     private fun insertDummyTracking(): Int {
-        val trackingId = dbHelper.saveTracking(trackingName, loggedInWorker.getId(), startTime, endTime, description, bluetoothDevice)
-        return trackingId
+        return dbHelper.saveTracking(
+            trackingName, loggedInWorker.getId(),
+            startTime,
+            endTime,
+            description,
+            bluetoothDevice
+        )
     }
 
     fun getCurrentActivity(): Activity? {
@@ -62,11 +57,11 @@ class EditTrackingTests : TestFramework() {
     fun invalidStartDateEditTracking() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -105,11 +100,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -148,11 +143,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -191,11 +186,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -234,11 +229,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -277,11 +272,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -321,11 +316,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -364,11 +359,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -407,11 +402,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -450,11 +445,11 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
@@ -534,29 +529,34 @@ class EditTrackingTests : TestFramework() {
         val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
 
         trackingId = insertDummyTracking()
-        val bundle: Bundle = Bundle()
+        val bundle = Bundle()
         bundle.putInt("id", trackingId)
         val editTrackingFragment = EditTrackingFragment()
         editTrackingFragment.arguments = bundle
-        currentActivity!!.supportFragmentManager.beginTransaction()
+        currentActivity.supportFragmentManager.beginTransaction()
                 .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
                 .addToBackStack(null)
                 .commit()
 
+        val newStartDate = "28.04.2021"
         onView(withId(R.id.etTrackingStartDateEdit))
-                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
+                .perform(replaceText(newStartDate), closeSoftKeyboard())
 
+        val newStartTime = "10:00"
         onView(withId(R.id.etTrackingStartTimeEdit))
-                .perform(replaceText("10:00"), closeSoftKeyboard())
+                .perform(replaceText(newStartTime), closeSoftKeyboard())
 
+        val newEndDate = "28.04.2021"
         onView(withId(R.id.etTrackingEndDateEdit))
-                .perform(replaceText("28.04.2021"), closeSoftKeyboard())
+                .perform(replaceText(newEndDate), closeSoftKeyboard())
 
+        val newEndTime = "14:00"
         onView(withId(R.id.etTrackingEndTimeEdit))
-                .perform(replaceText("14:00"), closeSoftKeyboard())
+                .perform(replaceText(newEndTime), closeSoftKeyboard())
 
+        val newName = "Some example tracking"
         onView(withId(R.id.etTrackingNameEdit))
-                .perform(replaceText("Some example tracking"), closeSoftKeyboard())
+                .perform(replaceText(newName), closeSoftKeyboard())
 
         onView(withId(R.id.btnEditTrackingBack))
                 .perform(scrollTo())
@@ -564,6 +564,10 @@ class EditTrackingTests : TestFramework() {
         onView(withId(R.id.btnUpdateTracking))
                 .perform(click())
 
-        // TODO: check if successful???
+        val updatedTracking = dbHelper.loadTracking(trackingId)!!
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        assert(updatedTracking.startTime == LocalDateTime.parse("$newStartDate $newStartTime", formatter))
+        assert(updatedTracking.endTime == LocalDateTime.parse("$newEndDate $newEndTime", formatter))
+        assert(updatedTracking.name == newName)
     }
 }

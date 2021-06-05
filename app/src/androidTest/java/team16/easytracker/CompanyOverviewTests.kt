@@ -1,8 +1,8 @@
 package team16.easytracker
 
 import android.app.Activity
-import androidx.test.espresso.Espresso.*
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.Espresso.onData
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -10,15 +10,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.anything
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.collection.IsMapContaining
-import org.junit.*
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-import team16.easytracker.database.DbHelper
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 @RunWith(AndroidJUnit4::class)
 class CompanyOverviewTests : TestFramework() {
@@ -54,6 +50,7 @@ class CompanyOverviewTests : TestFramework() {
 
     @Test
     fun testOpenFragment() {
+        addloggedInWorkerToCompany()
         openFragment()
         onView(withId(R.id.flFragmentCompany)).check(matches((isDisplayed())))
     }

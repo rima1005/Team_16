@@ -10,8 +10,6 @@ import java.time.format.DateTimeParseException
 
 class Validator {
 
-    //TODO: Export error stings to strings.xml
-
     companion object {
         var numberRegex = Regex(".*\\d.*")
         var digitRegex = Regex("[0-9]+")

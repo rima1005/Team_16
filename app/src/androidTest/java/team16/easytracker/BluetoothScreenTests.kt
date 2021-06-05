@@ -14,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -60,10 +61,13 @@ class BluetoothScreenTests : TestFramework(){
             .check(matches(isDisplayed()))
     }
 
+    @Ignore("Pairing is not yet mocked")
     @Test
     fun checkBluetoothItems(){
-        openFragment()
         insertDummyBluetoothDevice()
+        // TODO: pair with device
+
+        openFragment()
 
         onView(withId(R.id.btnAddBluetoothDevice))
             .check(matches(isDisplayed()))

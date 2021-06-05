@@ -6,11 +6,8 @@ import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 import org.mindrot.jbcrypt.BCrypt
 import team16.easytracker.MyApplication
-import team16.easytracker.R
 import team16.easytracker.database.Contracts.Company
 import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
@@ -25,11 +22,9 @@ import team16.easytracker.model.Tracking as TrackingModel
 import team16.easytracker.model.Worker as WorkerModel
 import java.io.*
 import java.time.*
-import java.time.format.DateTimeFormatter
 import kotlin.IllegalArgumentException
 
-/*
-    TODO: USAGE:
+/**
     In order to update the database schema increment DATABASE_VERSION by 1
     Create a .sql file in assets with naming oldversion-newversion.sql (e.g. 1-2.sql) which
     contains your SQL Statement.
@@ -50,7 +45,6 @@ private const val SQL_CREATE_ADDRESS =
             "${Address.COL_ZIP_CODE} VARCHAR(16)," +
             "${Address.COL_CITY} VARCHAR(64))"
 
-// TODO: pending flag until worker accepts?
 private const val SQL_CREATE_COMPANY_WORKER =
     "CREATE TABLE IF NOT EXISTS ${CompanyWorker.TABLE_NAME} (" +
             "${CompanyWorker.COL_COMPANY_ID} INTEGER," +
@@ -96,8 +90,7 @@ private const val DATABASE_NAME_TEST = "EasyTrackerTest.db"
 
 class DbHelper private constructor(context: Context, databaseName: String = DATABASE_NAME_PROD) : SQLiteOpenHelper(context, databaseName, null, DATABASE_VERSION) {
 
-    val ctx = context
-    val tag = DbHelper::class.java.name
+    private val tag = DbHelper::class.java.name
 
     companion object {
         private var _instance: DbHelper? = null
@@ -115,21 +108,16 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         }
     }
 
-    fun clearDbAndCreate(databaseName: String)
-    {
-        clearDb(databaseName)
-        onCreate(writableDatabase)
-    }
-
     fun clearDb(databaseName: String)
     {
         if(databaseName != DATABASE_NAME_TEST)
             throw UnsupportedOperationException("You are about to delete a productive or non-existing Database! This should never happen!!!")
-        File("/data/user/0/team16.easytracker/databases/${databaseName}").delete()
-        File("/data/user/0/team16.easytracker/databases/${databaseName}-journal").delete()
-        File("/data/user/0/team16.easytracker/databases/${databaseName}-shm").delete()
-        File("/data/user/0/team16.easytracker/databases/${databaseName}-wal").delete()
-
+        val dbFile = MyApplication.instance.applicationContext.getDatabasePath(databaseName)
+        val dbPath = dbFile.path
+        dbFile.delete()
+        File("${dbPath}-journal").delete()
+        File("${dbPath}-shm").delete()
+        File("${dbPath}-wal").delete()
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -146,7 +134,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         try {
             for (i in oldVersion until newVersion) {
                 val fileName = "${i}-${i + 1}.sql"
-                val file = ctx.assets.open(fileName)
+                val file = MyApplication.instance.applicationContext.assets.open(fileName)
                 executeSQLFile(file, db)
                 file.close()
             }
@@ -184,7 +172,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         val street = result.getString(result.getColumnIndex(Address.COL_STREET))
         val zipCode = result.getString(result.getColumnIndex(Address.COL_ZIP_CODE))
         val city = result.getString(result.getColumnIndex(Address.COL_CITY))
-        result.close();
+        result.close()
         return AddressModel(id, street, zipCode, city)
     }
 
@@ -197,7 +185,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         return writableDatabase.insert(Address.TABLE_NAME, null, values).toInt()
     }
 
-    fun loadCompany(id: Int): CompanyModel? {
+    fun loadCompany(id: Int, loadAddress: Boolean = false): CompanyModel? {
         val result = readableDatabase.rawQuery(
             "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_ID} = ?",
             arrayOf(id.toString())
@@ -207,11 +195,13 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
 
         val name = result.getString(result.getColumnIndex(Company.COL_NAME))
         val addressId = result.getInt(result.getColumnIndex(Company.COL_ADDRESS_ID))
-
-        // TODO: set address object of company
-
         result.close()
-        return CompanyModel(id, name, addressId)
+
+        val company = CompanyModel(id, name, addressId)
+        if (loadAddress) {
+            company.address = loadAddress(addressId)
+        }
+        return company
     }
 
     fun saveCompany(name: String, addressId: Int): Int {
@@ -253,7 +243,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
                 "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ?",
                 arrayOf(workerId.toString())
         )
-        var trackings: List<TrackingModel> = ArrayList<TrackingModel>()
+        var trackings: List<TrackingModel> = ArrayList()
         if (result == null || !result.moveToFirst())
             return trackings
         do {
@@ -322,7 +312,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         var company: CompanyModel? = null
         var position: String? = null
         var admin = false
-        result.close();
+        result.close()
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ?",
             arrayOf(id.toString())
@@ -352,7 +342,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
             admin,
             position,
             company
-        );
+        )
     }
 
     fun saveWorker(
@@ -365,7 +355,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         createdAt: LocalDateTime,
         addressId: Int,
     ): Int {
-        val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+        val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
         val values = ContentValues().apply {
             put(Worker.COL_FIRST_NAME, firstName)
             put(Worker.COL_LAST_NAME, lastName)
@@ -388,14 +378,14 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
 
         if (!result.moveToNext()) {
             result.close()
-            return null;
+            return null
         }
 
         val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
 
         if (!BCrypt.checkpw(password, passwordHash)) {
             result.close()
-            return null;
+            return null
         }
 
         val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
@@ -406,10 +396,8 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
     }
 
     fun addWorkerToCompany(workerId: Int, companyId: Int, position: String): Boolean {
-        val company = loadCompany(companyId)
-            ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
-        val worker = loadWorker(workerId)
-            ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
+        loadCompany(companyId) ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
+        loadWorker(workerId) ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
 
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
@@ -420,7 +408,7 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         resultCompanyWorker.close()
 
         if (alreadyExists)
-            return true // TODO: should this fail?
+            return true
 
         val values = ContentValues().apply {
             put(CompanyWorker.COL_WORKER_ID, workerId)
@@ -437,7 +425,6 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
     }
 
     fun companyExists(companyName: String): Boolean {
-        // TODO: case sensitive?
         val result = readableDatabase.rawQuery(
             "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_NAME} = ?",
             arrayOf(companyName)
@@ -448,10 +435,8 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
     }
 
     fun setCompanyAdmin(workerId: Int, companyId: Int, admin: Boolean) {
-        val company = loadCompany(companyId)
-            ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
-        val worker = loadWorker(workerId)
-            ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
+        loadCompany(companyId) ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
+        loadWorker(workerId) ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
 
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
@@ -493,8 +478,13 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
             arrayOf(workerEmail)
         )
         if (!result.moveToFirst())
+        {
+            result.close()
             return null
+        }
+
         val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
+        result.close()
         return loadWorker(workerId)
     }
 
@@ -556,26 +546,24 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
 
         if (!result.moveToNext()) {
             result.close()
-            return false;
+            return false
         }
 
         //check old PW
         val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
-        if (BCrypt.checkpw(oldPassword, passwordHash)) {
-            val newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-            val values = ContentValues().apply {
-                put(Worker.COL_PASSWORD, newPasswordHash)
-            }
-            val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
-                    "${Worker.COL_ID} = ?",
-                    arrayOf(workerId.toString()))
-            result.close()
-            return modRows == 1
-        }
-        else
-        {
+        if (!BCrypt.checkpw(oldPassword, passwordHash)) {
             return false
         }
+
+        val newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        val values = ContentValues().apply {
+            put(Worker.COL_PASSWORD, newPasswordHash)
+        }
+        val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
+                "${Worker.COL_ID} = ?",
+                arrayOf(workerId.toString()))
+        result.close()
+        return modRows == 1
     }
 
     fun deleteTracking(trackingId: Int): Int
@@ -615,8 +603,13 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
             arrayOf(mac, workerId.toString())
         )
         if (!result.moveToFirst())
+        {
+            result.close()
             return null
+        }
+
         val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+        result.close()
         return WorkerBluetoothDevice(mac, name, workerId)
     }
 
@@ -632,6 +625,8 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
             val device = WorkerBluetoothDevice(mac, name, workerId)
             list.add(device)
         }
+
+        result.close()
         return list.toTypedArray()
     }
 
@@ -663,6 +658,8 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
 
             list.add(worker)
         }
+
+        result.close()
         return list.toTypedArray()
     }
 

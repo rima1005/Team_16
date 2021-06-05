@@ -164,7 +164,6 @@ class CreateCompanyTests : TestFramework() {
     fun invalidInputDataTooLong() {
         openFragment()
 
-        // TODO: add as variable to Validator?
         val characterLimit = 255
         val characterLimitPostalCode = 10
 

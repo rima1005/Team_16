@@ -18,15 +18,15 @@ import java.time.LocalDateTime
 class DbHelperTests : TestFramework() {
 
 
-    val COMPANY_DUMMY_NAME = "company 1"
-    val WORKER_DUMMY_FIRST_NAME = "Max"
-    val WORKER_DUMMY_LAST_NAME = "Mustermann"
-    val DUMMY_EMAIL = "test1.test@test.at"
-    val DUMMY_PASSWORD = "securePassword"
+    private val COMPANY_DUMMY_NAME = "company 1"
+    private val WORKER_DUMMY_FIRST_NAME = "Max"
+    private val WORKER_DUMMY_LAST_NAME = "Mustermann"
+    private val DUMMY_EMAIL = "test1.test@test.at"
+    private val DUMMY_PASSWORD = "securePassword"
 
-    val DUMMY_MAC = "FF:FF:FF:FF:FF:FF"
-    val DUMMY_BLUETOOTH_DEVICE_NAME = "Test device"
-    val DUMMY_WORKER_ID = -1
+    private val DUMMY_MAC = "FF:FF:FF:FF:FF:FF"
+    private val DUMMY_BLUETOOTH_DEVICE_NAME = "Test device"
+    private val DUMMY_WORKER_ID = -1
 
     private fun insertDummyCompany(): Long {
         val values = ContentValues().apply {
@@ -117,7 +117,7 @@ class DbHelperTests : TestFramework() {
 
     @Test
     fun testCompanyModel() {
-        val dummyAddressId = 69;
+        val dummyAddressId = 69
         val id = dbHelper.saveCompany(COMPANY_DUMMY_NAME, dummyAddressId)
         val company = dbHelper.loadCompany(id)
         assert(company != null)
