@@ -11,6 +11,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking
 import team16.easytracker.utils.Validator
@@ -168,8 +170,13 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
             )
 
             Log.i("Tracking edited", "The tracking has been edited with tracking ID " + trackingId)
-            showSuccessDialog()
-            backToTrackings()
+            Snackbar.make(view!!, R.string.tracking_been_edited, BaseTransientBottomBar.LENGTH_LONG).show()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .remove(this)
+                .commit()
+            requireActivity().supportFragmentManager.popBackStackImmediate()
+            //showSuccessDialog()
+            //backToTrackings()
         }
     }
 
@@ -190,7 +197,6 @@ class EditTrackingFragment : Fragment(R.layout.fragment_edit_tracking) {
         val trackings = TrackingsFragment()
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.flFragment, trackings, "EdiTrackingsFragment")
-            .addToBackStack(null)
             .commit()
     }
 

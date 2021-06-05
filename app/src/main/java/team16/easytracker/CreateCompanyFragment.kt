@@ -7,6 +7,8 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.time.LocalDateTime
@@ -113,12 +115,13 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         navigationView.menu.findItem(R.id.itemAddEmployee).isVisible = true
         navigationView.menu.findItem(R.id.itemOverview).isVisible = true
         navigationView.menu.findItem(R.id.itemCreateCompany).isVisible = false
-        navigationView.menu.findItem(R.id.itemOverview).isChecked = true
+        navigationView.menu.findItem(R.id.itemDashboard).isChecked = true
         // update worker because he now has a company and is admin
         MyApplication.loggedInWorker = DbHelper.getInstance().loadWorker(worker.getId())
 
+        Snackbar.make(view!!, "Company created successfully", BaseTransientBottomBar.LENGTH_LONG).show()
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.flFragment, CompanyFragment())
+        transaction.replace(R.id.flFragment, DashboardFragment())
         transaction.disallowAddToBackStack()
         transaction.commit()
     }
