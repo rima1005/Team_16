@@ -1,9 +1,6 @@
 package team16.easytracker
 
 import android.app.AlertDialog
-import android.app.Dialog
-import android.app.Fragment.instantiate
-import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -12,26 +9,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
-import team16.easytracker.database.Contracts
 import team16.easytracker.database.DbHelper
-import team16.easytracker.utils.Validator
 import team16.easytracker.model.Address
 import team16.easytracker.model.Worker
+import team16.easytracker.utils.Validator
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ProfileFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
     // TODO: Rename and change types of parameters
     lateinit var etTitleSetting : EditText
@@ -100,14 +85,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         currentWorker = helper.loadWorker(workerId)!!
         val address : Address = helper.loadAddress(currentWorker.addressId)!!
 
-        etTitleSetting.text = Editable.Factory.getInstance().newEditable(currentWorker?.title)
-        etFirstNameSetting.text = Editable.Factory.getInstance().newEditable(currentWorker?.firstName)
-        etLastNameSetting.text = Editable.Factory.getInstance().newEditable(currentWorker?.lastName)
-        //etPhonePrefixSetting.text = Editable.Factory.getInstance().newEditable(currentWorker?.phoneNumber?.substring(0, 1))
-        etPhoneNumberSetting.text = Editable.Factory.getInstance().newEditable(currentWorker?.phoneNumber)//?.substring(2))
-        etPostCodeSetting.text = Editable.Factory.getInstance().newEditable(address?.zipCode)
-        etCitySetting.text = Editable.Factory.getInstance().newEditable(address?.city)
-        etStreetSetting.text = Editable.Factory.getInstance().newEditable(address?.street)
+        etTitleSetting.text = Editable.Factory.getInstance().newEditable(currentWorker.title)
+        etFirstNameSetting.text = Editable.Factory.getInstance().newEditable(currentWorker.firstName)
+        etLastNameSetting.text = Editable.Factory.getInstance().newEditable(currentWorker.lastName)
+        //etPhonePrefixSetting.text = Editable.Factory.getInstance().newEditable(currentWorker.phoneNumber?.substring(0, 1))
+        etPhoneNumberSetting.text = Editable.Factory.getInstance().newEditable(currentWorker.phoneNumber)//?.substring(2))
+        etPostCodeSetting.text = Editable.Factory.getInstance().newEditable(address.zipCode)
+        etCitySetting.text = Editable.Factory.getInstance().newEditable(address.city)
+        etStreetSetting.text = Editable.Factory.getInstance().newEditable(address.street)
     }
 
     fun updateProfile() {
@@ -151,8 +136,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         builder.setCancelable(true)
 
         val promptView = layoutInflater.inflate(R.layout.dialog_change_password, null)
-        etOldPassword = promptView.findViewById<EditText>(R.id.etOldPassword)
-        etNewPassword = promptView.findViewById<EditText>(R.id.etNewPassword)
+        etOldPassword = promptView.findViewById(R.id.etOldPassword)
+        etNewPassword = promptView.findViewById(R.id.etNewPassword)
         tvErrorOldPassword = promptView.findViewById<EditText>(R.id.tvErrorOldPassword)
         builder.setView(promptView)
 

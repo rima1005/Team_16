@@ -1,5 +1,6 @@
 package team16.easytracker
 
+import android.bluetooth.BluetoothAdapter
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.matcher.BoundedMatcher
@@ -28,6 +29,8 @@ open class TestFramework {
     @Before
     open fun setup()
     {
+        MyApplication.discoveryCancelled = true
+        BluetoothAdapter.getDefaultAdapter().cancelDiscovery()
         dbHelper.onOpen(dbHelper.writableDatabase)
         dbHelper.onCreate(dbHelper.writableDatabase)
     }
@@ -48,7 +51,7 @@ open class TestFramework {
                                createdAt: LocalDateTime = LocalDateTime.now().withNano(0),
                                addressId: Int = 1) : Worker
     {
-        var workerId = dbHelper.saveWorker(firstName, lastName, dateOfBirth, title, email, password, phoneNumber, createdAt, addressId)
+        val workerId = dbHelper.saveWorker(firstName, lastName, dateOfBirth, title, email, password, phoneNumber, createdAt, addressId)
         dummyWorker = dbHelper.loadWorker(workerId)!!
         return dummyWorker
     }
@@ -62,7 +65,7 @@ open class TestFramework {
                                                createdAt: LocalDateTime = LocalDateTime.now().withNano(0),
                                                addressId: Int = 1) : Worker
     {
-        var workerId = dbHelper.saveWorker(firstName, lastName, dateOfBirth, title, email, password, phoneNumber, createdAt, addressId)
+        val workerId = dbHelper.saveWorker(firstName, lastName, dateOfBirth, title, email, password, phoneNumber, createdAt, addressId)
         dummyWorker = dbHelper.loadWorker(workerId)!!
         return dummyWorker
     }
@@ -72,21 +75,21 @@ open class TestFramework {
     open fun insertDummyCompany(name: String = "DummyCompany", addressId: Int = 1) : Company
     {
         insertDummyAddress()
-        var companyId = dbHelper.saveCompany(name, dummyAddress.getId())
+        val companyId = dbHelper.saveCompany(name, dummyAddress.getId())
         dummyCompany = dbHelper.loadCompany(companyId)!!
         return dummyCompany
     }
 
     open fun insertDummyAddress(street : String = "DummyStreet 1", zipCode: String = "8010", city: String = "Graz") : Address
     {
-        var addressId = dbHelper.saveAddress(street, zipCode, city)
+        val addressId = dbHelper.saveAddress(street, zipCode, city)
         dummyAddress = dbHelper.loadAddress(addressId)!!
         return dummyAddress
     }
 
     open fun setupLoggedInWorker() : Worker
     {
-        var address = insertDummyAddress()
+        val address = insertDummyAddress()
         dbHelper.saveWorker("LoggedInFirstName", "LoggedInLastName", LocalDate.now(), "DummyTitle", "loggedIn@email.com", "12345678", "43660551122", LocalDateTime.now().withNano(0), address.getId())
         dbHelper.loginWorker("loggedIn@email.com", "12345678")
         loggedInWorker = MyApplication.loggedInWorker!!

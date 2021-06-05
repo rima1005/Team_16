@@ -10,7 +10,4 @@ object CSVConverter {
         }
     }
 
-    inline fun <reified T> deserialize(csv: String, converter: (String) -> T): Array<Array<T>> {
-        return arrayOf(arrayOf(converter(""))) // TODO: implementation
-    }
 }

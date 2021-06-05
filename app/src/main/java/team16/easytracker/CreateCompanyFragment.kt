@@ -103,7 +103,6 @@ class CreateCompanyFragment : Fragment(R.layout.fragment_create_company) {
         if (errorOccured)
             return
         createCompanyBtn.visibility = View.INVISIBLE
-        // TODO: check for duplicate addresses?
         val worker = MyApplication.loggedInWorker!!
         val addressId = DbHelper.getInstance().saveAddress(street, zipCode, city)
         val companyId = DbHelper.getInstance().saveCompany(companyName, addressId)

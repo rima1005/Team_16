@@ -13,12 +13,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.collection.IsMapContaining.hasEntry
-import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,24 +28,25 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class AddBluetoothDeviceTests : TestFramework() {
 
-    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-    lateinit var writableDb: SQLiteDatabase
-    lateinit var readable: SQLiteDatabase
+    private lateinit var writableDb: SQLiteDatabase
+    private lateinit var readable: SQLiteDatabase
 
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
+    @get:Rule
+    val coarseLocationPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+    @get:Rule
+    val fineLocationPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+    @get:Rule
+    val bluetoothPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.BLUETOOTH)
+    @get:Rule
+    val bluetoothAdminPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.BLUETOOTH_ADMIN)
 
     @Before
     fun init() {
         writableDb = dbHelper.writableDatabase
         readable = dbHelper.readableDatabase
-        //writableDb.beginTransaction()
 
-    }
-
-    @After
-    fun tearDown() {
-        //writableDb.endTransaction()
     }
 
     fun getCurrentActivity(): Activity {
@@ -58,7 +60,6 @@ class AddBluetoothDeviceTests : TestFramework() {
     }
 
     fun openFragment(enableBluetooth: Boolean = true) {
-        // TODO check permissons
         if (enableBluetooth) {
             val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
             bluetoothAdapter.enable()
@@ -77,12 +78,7 @@ class AddBluetoothDeviceTests : TestFramework() {
         }
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.flFragment, BluetoothFragment())
-
-
-        //transaction.add(R.id.flFragment, ProfileFragment())
         transaction.addToBackStack("Profile Fragment")
-
-        //transaction.disallowAddToBackStack()
         transaction.commit()
     }
 
@@ -134,6 +130,7 @@ class AddBluetoothDeviceTests : TestFramework() {
                 .check(doesNotExist())
     }
 
+    @Ignore("Pairing is difficult to test")
     @Test
     fun testDiscoverBluetoothDevices() {
         val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -164,6 +161,7 @@ class AddBluetoothDeviceTests : TestFramework() {
         onView(withText(R.string.add_device))
                 .perform(click())
 
+        // TODO: pair with device
         Thread.sleep(500)
 
         val devices = dbHelper.loadBluetoothDevicesForWorker(MyApplication.loggedInWorker!!.getId())

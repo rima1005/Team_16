@@ -1,6 +1,5 @@
 package team16.easytracker
 
-import android.R
 import android.app.Activity
 import android.app.Application
 import android.bluetooth.BluetoothAdapter
@@ -46,7 +45,8 @@ class MyApplication : Application() {
                         }
                     }
 
-                    startContinuousDeviceDiscovery()
+                    if (!discoveryCancelled)
+                        startContinuousDeviceDiscovery()
                 }
                 field = value
             }
@@ -86,7 +86,7 @@ class MyApplication : Application() {
         fun initLanguageSpinner(spinner: Spinner, activity: Activity) {
             spinner.adapter = MapSpinnerAdapter(
                 activity.applicationContext,
-                R.layout.simple_spinner_dropdown_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 languageList.toMutableMap()
             )
 
@@ -150,7 +150,7 @@ class MyApplication : Application() {
                                 val workerDevices = dbHelper.loadBluetoothDevicesForWorker(loggedInWorker!!.getId())
                                 val macs = workerDevices.map { it.mac }
                                 if (macs.contains(device.address)) {
-                                    startTracking("Bluetooth " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE), "Automatic tracking via bluetooth", device.address);
+                                    startTracking("Bluetooth " + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE), "Automatic tracking via bluetooth", device.address)
                                 }
                             }
                         }
