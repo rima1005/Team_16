@@ -12,19 +12,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnCreateTracking"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
-            android:background="#168AAD"
+            android:text="@string/tracking"
+            android:layout_margin="10dp"
             android:fontFamily="sans-serif-light"
-            android:text="@string/create_tracking"
-            android:textColor="#FFFFFF"
-            app:backgroundTint="#168AAD" />
+            android:gravity="center"
+            android:textColor="#000"
+            android:textSize="30sp"/>
 
         <ListView
             android:id="@+id/lvTrackings"
