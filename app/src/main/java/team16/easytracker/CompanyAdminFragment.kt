@@ -6,8 +6,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
@@ -16,7 +18,6 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
 
 
     lateinit var tvErrorEmail: TextView
-    lateinit var tvErrorAddWorker: TextView
     lateinit var tvErrorPosition: TextView
 
     lateinit var etPosition: EditText
@@ -33,7 +34,6 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         tvErrorEmail = view.findViewById(R.id.tvErrorEmail)
         etPosition = view.findViewById(R.id.etCompanyPosition)
         tvErrorPosition = view.findViewById(R.id.tvErrorCompanyPosition)
-        tvErrorAddWorker = view.findViewById(R.id.tvErrorAddWorker)
         swAdmin = view.findViewById(R.id.swAdmin)
         btnAddWorker = view.findViewById(R.id.btnAddWorker)
 
@@ -68,8 +68,7 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
 
         val worker = DbHelper.getInstance().loadWorker(workerEmail)
         if(worker == null){
-            tvErrorAddWorker.visibility = View.VISIBLE
-            tvErrorAddWorker.text = getString(R.string.error_adding_employee)
+            Snackbar.make(view!!,getString(R.string.error_adding_employee), Snackbar.LENGTH_SHORT).show()
             return
         }
 
@@ -81,23 +80,15 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
                 added = DbHelper.getInstance().addWorkerToCompany(worker.getId(), companyId, companyPosition)
             }
             catch(e: Exception){
-                tvErrorAddWorker.visibility = View.VISIBLE
-                tvErrorAddWorker.text = getString(R.string.error_adding_employee)
+                Snackbar.make(view!!,getString(R.string.error_adding_employee), Snackbar.LENGTH_SHORT).show()
             }
             finally {
                 if(added){
-                    tvErrorAddWorker.visibility = View.VISIBLE
-                    tvErrorAddWorker.setTextColor(Color.GREEN)
-                    tvErrorAddWorker.text = getString(R.string.success_adding_employee)
+                    Snackbar.make(view!!,getString(R.string.success_adding_employee), Snackbar.LENGTH_SHORT).show()
                 }
                 else{
-                    tvErrorAddWorker.visibility = View.VISIBLE
-                    tvErrorAddWorker.text = getString(R.string.error_adding_employee)
+                    Snackbar.make(view!!,getString(R.string.error_adding_employee), Snackbar.LENGTH_SHORT).show()
                 }
-            }
-
-            if (!added) {
-                Snackbar.make(view!!, "Failed to add worker! (already added?)", Snackbar.LENGTH_SHORT).show()
             }
         }
     }
@@ -107,8 +98,5 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         tvErrorEmail.visibility = View.GONE
         tvErrorPosition.text = ""
         tvErrorPosition.visibility = View.GONE
-        tvErrorAddWorker.text = ""
-        tvErrorAddWorker.visibility = View.GONE
-        tvErrorAddWorker.setTextColor(Color.RED)
     }
 }

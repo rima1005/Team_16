@@ -77,9 +77,6 @@ class CompanyAdminTests : TestFramework() {
     fun errorsHiddenOnStart() {
         openFragment()
         // Error textviews should not be visible before clicking registration button
-        onView(withId(R.id.tvErrorAddWorker))
-            .check(matches(not(isDisplayed())))
-
         onView(withId(R.id.tvErrorEmail))
             .check(matches(not(isDisplayed())))
 
@@ -123,8 +120,7 @@ class CompanyAdminTests : TestFramework() {
         onView(withId(R.id.btnAddWorker))
             .perform(click())
 
-        onView(withId(R.id.tvErrorAddWorker))
-            .check(matches(isDisplayed()))
+        onView(CoreMatchers.allOf(withId(com.google.android.material.R.id.snackbar_text)))
             .check(matches(withText(R.string.success_adding_employee)))
     }
 
@@ -141,8 +137,7 @@ class CompanyAdminTests : TestFramework() {
         onView(withId(R.id.btnAddWorker))
             .perform(click())
 
-        onView(withId(R.id.tvErrorAddWorker))
-            .check(matches(isDisplayed()))
+        onView(CoreMatchers.allOf(withId(com.google.android.material.R.id.snackbar_text)))
             .check(matches(withText(R.string.error_adding_employee)))
     }
 }

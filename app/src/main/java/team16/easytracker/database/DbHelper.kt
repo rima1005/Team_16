@@ -270,6 +270,41 @@ class DbHelper private constructor(context: Context, databaseName: String = DATA
         return trackings
     }
 
+    fun loadFinishedWorkerTrackings(workerId: Int): List<TrackingModel> {
+        val minLocalDate = LocalDateTime.MIN.withNano(0).toEpochSecond(ZoneOffset.UTC);
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ? AND ${Tracking.COL_END_TIME} > ?",
+            arrayOf(workerId.toString(), minLocalDate.toString())
+        )
+        var trackings: List<TrackingModel> = ArrayList()
+        if (result == null || !result.moveToFirst())
+            return trackings
+        do {
+            trackings = trackings.plus(TrackingModel(
+                result.getInt(result.getColumnIndex(Tracking.COL_ID)),
+                result.getString(result.getColumnIndex(Tracking.COL_NAME)),
+                result.getInt(result.getColumnIndex(Tracking.COL_WORKER_ID)),
+                LocalDateTime.ofEpochSecond(
+                    result.getLong(result.getColumnIndex(Tracking.COL_START_TIME)),
+                    0,
+                    ZoneOffset.UTC
+                ),
+                LocalDateTime.ofEpochSecond(
+                    result.getLong(result.getColumnIndex(Tracking.COL_END_TIME)),
+                    0,
+                    ZoneOffset.UTC
+                ),
+                result.getString(result.getColumnIndex(Tracking.COL_DESCRIPTION)),
+                result.getString(result.getColumnIndex(Tracking.COL_BLUETOOTH_DEVICE))
+            ))
+        } while (result.moveToNext())
+
+        result.close()
+        return trackings
+    }
+
+
+
     fun saveTracking(
         name: String,
         workerId: Int,
