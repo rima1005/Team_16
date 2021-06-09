@@ -570,4 +570,47 @@ class EditTrackingTests : TestFramework() {
         assert(updatedTracking.endTime == LocalDateTime.parse("$newEndDate $newEndTime", formatter))
         assert(updatedTracking.name == newName)
     }
+
+    @Test
+    fun endDateBeforeStartDate()
+    {
+        val currentActivity : HomeActivity = getCurrentActivity() as HomeActivity
+
+        trackingId = insertDummyTracking()
+        val bundle = Bundle()
+        bundle.putInt("id", trackingId)
+        val editTrackingFragment = EditTrackingFragment()
+        editTrackingFragment.arguments = bundle
+        currentActivity.supportFragmentManager.beginTransaction()
+            .replace(R.id.flFragment, editTrackingFragment, "EditTrackingFragment")
+            .addToBackStack(null)
+            .commit()
+
+        onView(withId(R.id.etTrackingStartDateEdit))
+            .perform(replaceText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingStartTimeEdit))
+            .perform(replaceText("10:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndDateEdit))
+            .perform(replaceText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTimeEdit))
+            .perform(replaceText("09:59"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingNameEdit))
+            .perform(replaceText("Some example tracking name"), closeSoftKeyboard())
+
+        onView(withId(R.id.btnEditTrackingBack))
+            .perform(scrollTo())
+
+        onView(withId(R.id.btnUpdateTracking))
+            .perform(click())
+
+        onView(allOf(withId(com.google.android.material.R.id.snackbar_text)))
+            .check(matches(withText(R.string.end_date_before_start_date)))
+        Thread.sleep(1000)
+
+
+    }
 }

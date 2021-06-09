@@ -12,6 +12,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
@@ -431,6 +432,36 @@ class CreateTrackingTests : TestFramework() {
 
         onView(withId(R.id.btnCreateTrackingSave))
             .perform(click())
+    }
+
+    @Test
+    fun endDateBeforeStartDate()
+    {
+        openFragment()
+
+        onView(withId(R.id.etTrackingStartDate))
+            .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingStartTime))
+            .perform(typeText("10:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndDate))
+            .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTime))
+            .perform(typeText("09:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingName))
+            .perform(typeText("Some example tracking"), closeSoftKeyboard())
+
+        onView(withId(R.id.btnCreateTrackingBack))
+            .perform(scrollTo())
+
+        onView(withId(R.id.btnCreateTrackingSave))
+            .perform(click())
+
+        onView(CoreMatchers.allOf(withId(com.google.android.material.R.id.snackbar_text)))
+            .check(matches(withText(R.string.end_date_before_start_date)))
     }
 
 }
