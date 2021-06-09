@@ -241,6 +241,9 @@ class ValidatorTest {
 
         // password is too long
         //assertEquals(false, Validator.validatePassword("invalid".repeat(100)))
+
+        // password confirmation does not match
+        assertEquals(resources.getString(R.string.pw_matching), Validator.validatePasswordEquality("12345678", "12345687", resources))
     }
 
     @Test

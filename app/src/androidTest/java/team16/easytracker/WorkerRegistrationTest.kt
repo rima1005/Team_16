@@ -63,10 +63,10 @@ class WorkerRegistrationTest : TestFramework() {
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorUsername))
+        onView(withId(R.id.tvErrorPassword))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorPassword))
+        onView(withId(R.id.tvErrorPasswordConfirmation))
                 .check(matches(not(isDisplayed())))
 
         // Click registration button
@@ -132,23 +132,23 @@ class WorkerRegistrationTest : TestFramework() {
                 .check(matches(isDisplayed()))
                 .check(matches(withText(R.string.city_required)))
 
-        onView(withId(R.id.etUsername))
+        onView(withId(R.id.etPassword))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(isDisplayed()))
                 .check(matches(withText(R.string.street_required)))
 
-        onView(withId(R.id.etPassword))
-                .perform(scrollTo())
-        onView(withId(R.id.tvErrorUsername))
-                .check(matches(isDisplayed()))
-                .check(matches(withText(R.string.username_required)))
-
-        onView(withId(R.id.btnRegistration))
+        onView(withId(R.id.etPasswordConfirmation))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
                 .check(matches(withText(R.string.pw_required)))
+
+        onView(withId(R.id.btnRegistration))
+                .perform(scrollTo())
+        onView(withId(R.id.tvErrorPasswordConfirmation))
+                .check(matches(not(isDisplayed())))
+                //.check(matches(withText(R.string.pw_required)))
 
         Thread.sleep(1000)
     }
@@ -381,8 +381,8 @@ class WorkerRegistrationTest : TestFramework() {
                 .check(matches(withText(R.string.email_valid_address)))
     }
 
-    
-    @Test
+    @Ignore
+    //@Test
     fun invalidRegister_dateOfBirthNotValid() {
 
         onView(withId(R.id.etPhonePrefix))
@@ -661,7 +661,7 @@ class WorkerRegistrationTest : TestFramework() {
     
     @Test
     fun invalidRegister_streetDoesNotContainNumber() {
-        onView(withId(R.id.etUsername))
+        onView(withId(R.id.etPassword))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(not(isDisplayed())))
@@ -693,15 +693,24 @@ class WorkerRegistrationTest : TestFramework() {
                 .perform(typeText("1234567"), closeSoftKeyboard())
                 .check(matches(withText("1234567")))
 
+        onView(withId(R.id.etPasswordConfirmation))
+                .perform(typeText("1234567"), closeSoftKeyboard())
+                .check(matches(withText("1234567")))
+
         // Click registration button
         onView(withId(R.id.btnRegistration))
                 .perform(scrollTo(), click())
 
-        onView(withId(R.id.btnRegistration))
+        onView(withId(R.id.etPasswordConfirmation))
                 .perform(scrollTo())
         onView(withId(R.id.tvErrorPassword))
                 .check(matches(isDisplayed()))
                 .check(matches(withText(R.string.pw_length)))
+
+        onView(withId(R.id.btnRegistration))
+                .perform(scrollTo())
+        onView(withId(R.id.tvErrorPasswordConfirmation))
+                .check(matches(not(isDisplayed())))
     }
 
     
@@ -741,10 +750,10 @@ class WorkerRegistrationTest : TestFramework() {
         onView(withId(R.id.tvErrorStreet))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorUsername))
+        onView(withId(R.id.tvErrorPassword))
                 .check(matches(not(isDisplayed())))
 
-        onView(withId(R.id.tvErrorPassword))
+        onView(withId(R.id.tvErrorPasswordConfirmation))
                 .check(matches(not(isDisplayed())))
 
         // Input valid data
@@ -769,9 +778,9 @@ class WorkerRegistrationTest : TestFramework() {
                 .perform(typeText("w.s@catrobat.com"), closeSoftKeyboard())
                 .check(matches(withText("w.s@catrobat.com")))
 
-        onView(withId(R.id.etDateOfBirth))
+        /*onView(withId(R.id.etDateOfBirth))
                 .perform(typeText("24.12.2000"), closeSoftKeyboard())
-                .check(matches(withText("24.12.2000")))
+                .check(matches(withText("24.12.2000")))*/
 
         onView(withId(R.id.etPhonePrefix))
                 .perform(typeText("43"), closeSoftKeyboard())
@@ -793,11 +802,11 @@ class WorkerRegistrationTest : TestFramework() {
                 .perform(typeText("Hauptplatz 1"), closeSoftKeyboard())
                 .check(matches(withText("Hauptplatz 1")))
 
-        onView(withId(R.id.etUsername))
-                .perform(typeText("cat_robat"), closeSoftKeyboard())
-                .check(matches(withText("cat_robat")))
-
         onView(withId(R.id.etPassword))
+                .perform(typeText("CaTrObAt"), closeSoftKeyboard())
+                .check(matches(withText("CaTrObAt")))
+
+        onView(withId(R.id.etPasswordConfirmation))
                 .perform(typeText("CaTrObAt"), closeSoftKeyboard())
                 .check(matches(withText("CaTrObAt")))
 
