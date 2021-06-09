@@ -158,7 +158,7 @@
     <string name="search_devices">Поисковые устройства</string>
     <string name="add_device">Добавить устройство</string>
     <string name="enter_device_name">Введите имя устройства</string>
-    <string name="employees">Employees:</string>
+    <string name="employees">Сотрудники:</string>
     <string name="export_timesheet">Экспорт расписания</string>
     <string name="error_export">Никаких треков на экспорт!</string>
     <string name="end_date_before_start_date">Начальное время наступает после конечного времени</string>
