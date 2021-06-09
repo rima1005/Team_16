@@ -34,7 +34,7 @@ class TrackingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        trackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+        trackings = DbHelper.getInstance().loadFinishedWorkerTrackings(MyApplication.loggedInWorker!!.getId())
 
         val listView : ListView = view.findViewById(R.id.lvTrackings)
         val adapter = context?.let { TrackingsAdapter(it, trackings.toMutableList(), activity!!) }

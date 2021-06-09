@@ -13,6 +13,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.text.SimpleDateFormat
@@ -156,6 +158,12 @@ class CreateTrackingFragment : Fragment() {
             val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
             val startDateTime: LocalDateTime = LocalDateTime.parse("$startDate $startTime", formatter)
             val endDateTime: LocalDateTime = LocalDateTime.parse("$endDate $endTime", formatter)
+
+            if(startDateTime > endDateTime)
+            {
+                Snackbar.make(view!!, R.string.end_date_before_start_date, BaseTransientBottomBar.LENGTH_SHORT).show()
+                return
+            }
 
             val workerId = MyApplication.loggedInWorker!!.getId() 
             val trackingId = DbHelper.getInstance().saveTracking(
