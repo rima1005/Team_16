@@ -45,6 +45,7 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 | EasyTracker-139 Delete Bluetooth Device                             | ✔️        |
 | EasyTracker-138 Edit Bluetooth Device                               | ✔️        |
 | EasyTracker-154 Refactoring + Cleanup                               | ✔️        |
+| EasyTracker-151 Back button bug                                     | ✔️        |
 | EasyTracker-136 Widget                                              |           |
 | EasyTracker-143 Export Worker Timesheets                            |           |
 
