@@ -1,19 +1,21 @@
 package team16.easytracker
 
-import android.app.Activity
-import android.app.Application
+import android.app.*
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Parcelable
 import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Spinner
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import team16.easytracker.adapters.MapSpinnerAdapter
 import team16.easytracker.database.DbHelper
 import team16.easytracker.model.Tracking
@@ -28,6 +30,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        createNotificationChannel()
     }
 
     companion object {
@@ -178,7 +181,27 @@ class MyApplication : Application() {
 
             Log.d("Tracking", "STARTED")
 
+            val intent = Intent(this.instance.applicationContext, HomeActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+
+            val pendingIntent : PendingIntent = PendingIntent.getActivity(this.instance.applicationContext, 0, intent, 0)
             currentTracking = DbHelper.getInstance().loadTracking(trackingID)
+
+            var builder = NotificationCompat.Builder(instance.applicationContext, CHANNEL_ID)
+                .setContentTitle("Ongoing Tracking")
+                .setContentText("A automatic tracking is currently recording, Disable Bluetooth to stop!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentIntent(pendingIntent)
+
+
+
+            with(NotificationManagerCompat.from(instance.applicationContext))
+            {
+                notify(1, builder.build())
+            }
 
             // TODO: notification?
         }
@@ -202,10 +225,28 @@ class MyApplication : Application() {
             Log.d("Tracking", "STOPPED")
             currentTracking = null
 
+            with(NotificationManagerCompat.from(instance.applicationContext))
+            {
+                cancel(1)
+            }
+
             // TODO: notification?
         }
+
+        public val CHANNEL_ID = UUID.randomUUID().toString()
+        private val CHANNEL_NAME = "EasyTracker"
+        private val CHANNEL_DESCRIPTION = "Informs about ongoing Trackings."
     }
 
 
 
+    private fun createNotificationChannel()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            val channel = NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply { description = CHANNEL_DESCRIPTION }
+            val notificationManager : NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 }
