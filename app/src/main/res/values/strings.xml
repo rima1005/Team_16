@@ -162,6 +162,8 @@
     <string name="employees">Employees:</string>
     <string name="export_timesheet">Export Timesheet</string>
     <string name="error_export">No trackings to export!</string>
-    <string name="end_date_before_start_date">\"The starting time is after the end time!\"</string>
+    <string name="end_date_before_start_date">The starting time is after the end time!</string>
+    <string name="password_confirmation">Password Confirmation</string>
+    <string name="pw_matching">The password confirmation does not match</string>
 
 </resources>
