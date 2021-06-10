@@ -50,4 +50,11 @@ object Contracts {
         const val COL_POSITION = "position"
         const val COL_ADMIN = "admin"
     }
+
+    object BluetoothDevice : BaseColumns {
+        const val TABLE_NAME = "bluetooth_devices"
+        const val COL_MAC = "mac"
+        const val COL_NAME = "name"
+        const val COL_WORKER_ID = "worker_id"
+    }
 }

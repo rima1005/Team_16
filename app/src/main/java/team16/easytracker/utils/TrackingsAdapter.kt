@@ -56,8 +56,8 @@ class TrackingsAdapter(private val context: Context, private val source: Mutable
 
         val btnDeleteTracking: Button? = convertView?.findViewById(R.id.btnDeleteTracking)
         btnDeleteTracking?.setOnClickListener {
-            var tracking = DbHelper.loadTracking(source[position].id)
-            var success = DbHelper.deleteTracking(source[position].id)
+            var tracking = DbHelper.getInstance().loadTracking(source[position].id)
+            var success = DbHelper.getInstance().deleteTracking(source[position].id)
             val successMessage: Snackbar
             if (success == 1) {
                 successMessage = Snackbar.make(convertView, R.string.success_delete_tracking, BaseTransientBottomBar.LENGTH_LONG)
@@ -66,8 +66,8 @@ class TrackingsAdapter(private val context: Context, private val source: Mutable
                 val onClickListener = object : View.OnClickListener {
                     override fun onClick(v: View?) {
                         if (tracking != null) {
-                            val trackingId = DbHelper.saveTracking(tracking!!.name, tracking!!.workerId, tracking!!.startTime, tracking!!.endTime, tracking!!.description, tracking!!.bluetoothDevice)
-                            tracking = DbHelper.loadTracking(trackingId)
+                            val trackingId = DbHelper.getInstance().saveTracking(tracking!!.name, tracking!!.workerId, tracking!!.startTime, tracking!!.endTime, tracking!!.description, tracking!!.bluetoothDevice)
+                            tracking = DbHelper.getInstance().loadTracking(trackingId)
                             source.add(tracking!!)
                             source.sortByDescending { it.startTime }
                             notifyDataSetChanged()

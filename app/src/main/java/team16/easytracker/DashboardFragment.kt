@@ -1,6 +1,11 @@
 package team16.easytracker
 
 import android.app.AlertDialog
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +13,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
@@ -48,13 +58,17 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         ) { dialog, which ->
             dialog.dismiss()
             val activeTrackingName = input.text.toString()
-            DbHelper.saveTracking(
+            val time = LocalDateTime.now()
+            DbHelper.getInstance().saveTracking(
                     activeTrackingName,
                     MyApplication.loggedInWorker!!.getId(),
-                    LocalDateTime.now(),
+                    time,
                     LocalDateTime.MIN,
                     "",
                     "")
+
+
+
             checkActiveTracking()
         }
         builder.setNegativeButton(
@@ -62,11 +76,22 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         ) { dialog, which -> dialog.cancel() }
 
         builder.show()
+
+
     }
 
-    private fun stopTracking() {
-        val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
-        val activeTracking = workerTrackings!!.elementAt(workerTrackings.size - 1)
+    public fun stopTracking() {
+        val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+
+        if (workerTrackings.isEmpty()) {
+            throw IllegalStateException("stopTracking() called with no existing Trackings!")
+        }
+
+        val activeTracking = workerTrackings.elementAt(workerTrackings.size - 1)
+
+        if (activeTracking.endTime != LocalDateTime.MIN) {
+            throw IllegalStateException("stopTracking() called with no ACTIVE Tracking!")
+        }
 
         if (activeTracking.endTime == LocalDateTime.MIN) {
             val builder = AlertDialog.Builder(activity)
@@ -74,8 +99,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             builder.setMessage(getString(R.string.do_you_really_want_to_stop_the_tracking_question))
             builder.setCancelable(true)
 
-            builder.setPositiveButton(android.R.string.ok) { dialog, which ->
-                DbHelper.updateTracking(
+            builder.setPositiveButton(android.R.string.ok) { _, _ ->
+                DbHelper.getInstance().updateTracking(
                         activeTracking.id,
                         activeTracking.name,
                         activeTracking.workerId,
@@ -88,22 +113,37 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
                 tvActiveTracking.visibility = View.GONE
                 tvLabelActiveTracking.visibility = View.GONE
                 btnStartTracking.visibility = View.VISIBLE
+
+                MyApplication.currentTracking = null
+
+
+                with(NotificationManagerCompat.from(MyApplication.instance.applicationContext))
+                {
+                    cancel(1)
+                }
             }
-            builder.setNegativeButton(android.R.string.cancel) { dialog, which ->
+            builder.setNegativeButton(android.R.string.cancel) { _, _ ->
                 // Don't stop the tracking by doing nothing here
             }
 
             builder.show()
+        } else {
+            Snackbar.make(view!!, "Tracking has already ended automatically", Snackbar.LENGTH_SHORT).show()
+            btnStopTracking.visibility = View.GONE
+            tvActiveTracking.visibility = View.GONE
+            tvLabelActiveTracking.visibility = View.GONE
+            btnStartTracking.visibility = View.VISIBLE
         }
     }
 
+    // TODO: call this periodically
     private fun checkActiveTracking() {
         if (MyApplication.loggedInWorker == null)
             return
 
-        val workerTrackings = DbHelper.loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
+        val workerTrackings = DbHelper.getInstance().loadWorkerTrackings(MyApplication.loggedInWorker!!.getId())
 
-        if (workerTrackings.isNullOrEmpty())
+        if (workerTrackings.isEmpty())
             return
 
         else if (workerTrackings.elementAt(workerTrackings.size - 1).endTime == LocalDateTime.MIN) {
@@ -112,6 +152,43 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             tvActiveTracking.visibility = View.VISIBLE
             tvLabelActiveTracking.visibility = View.VISIBLE
             tvActiveTracking.text = workerTrackings.elementAt(workerTrackings.size - 1).startTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))
+
+
+            var exists = false
+
+            val notificationManager : NotificationManager = MyApplication.instance.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notifications = notificationManager!!.activeNotifications
+            for (notification in notifications) {
+                if (notification.id == 1) {
+                    exists = true
+                }
+            }
+
+            if(exists)
+                return
+
+            val intent = Intent(context, HomeActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+
+            val pendingIntent : PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            var formatter = DateTimeFormatter.ofPattern("HH:mm");
+            var notificationBuilder = NotificationCompat.Builder(
+                MyApplication.instance.applicationContext,
+                MyApplication.CHANNEL_ID
+            )
+                .setContentTitle("Ongoing Tracking")
+                .setContentText("A tracking is currently recording since " + workerTrackings.elementAt(workerTrackings.size -1).startTime.format(formatter))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentIntent(pendingIntent)
+
+            with(NotificationManagerCompat.from(MyApplication.instance.applicationContext))
+            {
+                notify(1, notificationBuilder.build())
+            }
+
         }
     }
 }

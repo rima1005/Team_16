@@ -34,4 +34,20 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 | EasyTracker-130 Delete Trackings                                    | ✔️        |
 | EasyTracker-149 Use correct table columns in DbHelper               | ✔️        |
 | EasyTracker-146 Refactoring DB - Singleton & global worker variable | ✔️        |
-
+| EasyTracker-132 Drawer                                              | ✔️        |
+| EasyTracker-149 Use Date Picker in Registration Form                | ✔️        |
+| EasyTracker-135 Add Bluetooth Device                                | ✔️        |
+| EasyTracker-134 Profile Screen                                      | ✔️        |
+| EasyTracker-137 Bluetooth Screen                                    | ✔️        |
+| EasyTracker-142 Company Overview                                    | ✔️        |
+| EasyTracker-140 Export Timesheet                                    | ✔️        |
+| EasyTracker-141 Automatic Tracking                                  | ✔️        |
+| EasyTracker-139 Delete Bluetooth Device                             | ✔️        |
+| EasyTracker-138 Edit Bluetooth Device                               | ✔️        |
+| EasyTracker-154 Refactoring + Cleanup                               | ✔️        |
+| EasyTracker-151 Back button bug                                     | ✔️        |
+| EasyTracker-136 Widget                                              | ✔️        |
+| EasyTracker-143 Export Worker Timesheets                            |           |
+| EasyTracker-153 Update Register Form                                | ✔️        |
+| EasyTracker-155 Layout fixes                                        | ✔️        |
+| EasyTracker-150 Validation in forms                                 | ✔️        |

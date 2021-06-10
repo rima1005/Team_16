@@ -10,8 +10,6 @@ import java.time.format.DateTimeParseException
 
 class Validator {
 
-    //TODO: Export error stings to strings.xml
-
     companion object {
         var numberRegex = Regex(".*\\d.*")
         var digitRegex = Regex("[0-9]+")
@@ -162,7 +160,6 @@ class Validator {
             if (username.isEmpty()) {
                 return resources.getString(R.string.username_required)
             }
-            // TODO: check if username is unique
 
             return ""
         }
@@ -172,6 +169,14 @@ class Validator {
                 return resources.getString(R.string.pw_required)
             } else if (password.length < 8) {
                 return resources.getString(R.string.pw_length)
+            }
+
+            return ""
+        }
+
+        fun validatePasswordEquality(password: String, passwordConfirmation: String, resources: Resources): String {
+            if (!password.equals(passwordConfirmation)) {
+                return resources.getString(R.string.pw_matching)
             }
 
             return ""

@@ -126,21 +126,6 @@
             android:layout_marginBottom="10dp"
             android:text="@string/add_as_administrator" />
 
-        <TextView
-            android:id="@+id/tvErrorAddWorker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="1"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#ff0000"
-            android:visibility="gone" />
-
         <Button
             android:id="@+id/btnAddWorker"
             android:layout_width="match_parent"

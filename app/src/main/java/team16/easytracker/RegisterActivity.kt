@@ -2,15 +2,18 @@ package team16.easytracker
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.thesimplycoder.simpledatepicker.DatePickerHelper
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -24,8 +27,8 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var etPostCode : EditText
     lateinit var etCity : EditText
     lateinit var etStreet : EditText
-    lateinit var etUsername : EditText
     lateinit var etPassword : EditText
+    lateinit var etPasswordConfirmation : EditText
 
     lateinit var tvErrorGender : TextView
     lateinit var tvErrorTitle : TextView
@@ -38,13 +41,22 @@ class RegisterActivity : AppCompatActivity() {
     lateinit var tvErrorPostCode : TextView
     lateinit var tvErrorCity : TextView
     lateinit var tvErrorStreet : TextView
-    lateinit var tvErrorUsername : TextView
     lateinit var tvErrorPassword : TextView
+    lateinit var tvErrorPasswordConfirmation : TextView
 
     lateinit var spGender : Spinner
 
+    lateinit var btnShowHidePassword : Button
+    lateinit var btnShowHidePasswordConfirmation : Button
+
     lateinit var btnRegistration : Button
+    lateinit var btnDateOfBirth : Button
     lateinit var tvGoToLogin : TextView
+
+    lateinit var datePicker : DatePickerHelper
+
+    private var passwordVisible = false
+    private var passwordConfirmationVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,8 +73,8 @@ class RegisterActivity : AppCompatActivity() {
         etPostCode = findViewById(R.id.etPostCode)
         etCity = findViewById(R.id.etCity)
         etStreet = findViewById(R.id.etStreet)
-        etUsername = findViewById(R.id.etUsername)
         etPassword = findViewById(R.id.etPassword)
+        etPasswordConfirmation = findViewById(R.id.etPasswordConfirmation)
         spGender = findViewById(R.id.spGender)
 
         tvErrorGender = findViewById(R.id.tvErrorGender)
@@ -76,23 +88,77 @@ class RegisterActivity : AppCompatActivity() {
         tvErrorPostCode = findViewById(R.id.tvErrorPostCode)
         tvErrorCity = findViewById(R.id.tvErrorCity)
         tvErrorStreet = findViewById(R.id.tvErrorStreet)
-        tvErrorUsername = findViewById(R.id.tvErrorUsername)
         tvErrorPassword = findViewById(R.id.tvErrorPassword)
+        tvErrorPasswordConfirmation = findViewById(R.id.tvErrorPasswordConfirmation)
+
+        btnShowHidePassword = findViewById(R.id.btnShowHidePassword)
+        btnShowHidePasswordConfirmation = findViewById(R.id.btnShowHidePasswordConfirmation)
 
         btnRegistration = findViewById(R.id.btnRegistration)
+        btnDateOfBirth = findViewById(R.id.btnDateOfBirth)
         tvGoToLogin = findViewById(R.id.tvGoToLogin)
+
+        datePicker = DatePickerHelper(this, true)
 
         val genders = resources.getStringArray(R.array.genders)
         val adapter = ArrayAdapter(this,
                 android.R.layout.simple_spinner_dropdown_item, genders)
         spGender.adapter = adapter
 
+        btnShowHidePassword.setOnClickListener {
+            if (passwordVisible) {
+                etPassword.setTransformationMethod(PasswordTransformationMethod())
+                btnShowHidePassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_show_password, 0)
+                passwordVisible = false
+            }
+            else {
+                etPassword.setTransformationMethod(null)
+                btnShowHidePassword.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_hide_password, 0)
+                passwordVisible = true
+            }
+        }
+
+        btnShowHidePasswordConfirmation.setOnClickListener {
+            if (passwordConfirmationVisible) {
+                etPasswordConfirmation.setTransformationMethod(PasswordTransformationMethod())
+                btnShowHidePasswordConfirmation.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_show_password, 0)
+                passwordConfirmationVisible = false
+            }
+            else {
+                etPasswordConfirmation.setTransformationMethod(null)
+                btnShowHidePasswordConfirmation.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_hide_password, 0)
+                passwordConfirmationVisible = true
+            }
+        }
+
         btnRegistration.setOnClickListener { registerWorker() }
+
+        btnDateOfBirth.setOnClickListener { setDateOfBirth(etDateOfBirth) }
 
         tvGoToLogin.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    fun setDateOfBirth(dateofbirth: EditText) {
+        val cal = Calendar.getInstance()
+        val d = cal.get(Calendar.DAY_OF_MONTH)
+        val m = cal.get(Calendar.MONTH)
+        val y = cal.get(Calendar.YEAR)
+
+        datePicker.showDialog(d, m, y, object : DatePickerHelper.Callback {
+            override fun onDateSelected(dayofMonth: Int, month: Int, year: Int) {
+                val dayStr = if (dayofMonth < 10) "0${dayofMonth}" else "${dayofMonth}"
+                val mon = month + 1
+                val monthStr = if (mon < 10) "0${mon}" else "${mon}"
+                val finalDate = "${dayStr}.${monthStr}.${year}"
+                dateofbirth.setText(finalDate)
+            }
+        })
+
+        //TODO: set the et field to non editable, but make it editable for test again
+        //      so they won't fail
     }
 
     fun registerWorker() {
@@ -109,8 +175,8 @@ class RegisterActivity : AppCompatActivity() {
         val postCode = etPostCode.text.toString()
         val city = etCity.text.toString()
         val street = etStreet.text.toString()
-        val username = etUsername.text.toString()
         val password = etPassword.text.toString()
+        val passwordConfirmation = etPasswordConfirmation.text.toString()
 
         val validTitle = validateTitle(title)
         val validFirstName = validateFirstName(firstName)
@@ -122,12 +188,11 @@ class RegisterActivity : AppCompatActivity() {
         val validPostCode = validatePostCode(postCode)
         val validCity = validateCity(city)
         val validStreet = validateStreet(street)
-        val validUsername = validateUsername(username)
-        val validPassword = validatePassword(password)
+        val validPassword = validatePassword(password, passwordConfirmation)
 
         if (validTitle && validFirstName && validLastName && validEmail && validDateOfBirth &&
                 validPhonePrefix && validPhoneNumber && validPostCode && validCity &&
-                validStreet && validUsername && validPassword) {
+                validStreet && validPassword) {
 
             Log.i("Valid Worker", "The worker is valid: " +
                     "Gender: " + gender + ", " +
@@ -141,15 +206,14 @@ class RegisterActivity : AppCompatActivity() {
                     "Post Code: " + postCode + ", " +
                     "City: " + city + ", " +
                     "Street: " + street + ", " +
-                    "Username: " + username + ", " +
                     "Password: " + password
             )
 
 
-            val addressId = DbHelper.saveAddress(street, postCode, city)
+            val addressId = DbHelper.getInstance().saveAddress(street, postCode, city)
 
             // TODO: no check for error! workerId is -1 if email is duplicate
-            val workerId = DbHelper.saveWorker(
+            val workerId = DbHelper.getInstance().saveWorker(
                     firstName,
                     lastName,
                     LocalDate.parse(dateOfBirth, DateTimeFormatter.ofPattern("dd.MM.yyyy")),
@@ -158,7 +222,7 @@ class RegisterActivity : AppCompatActivity() {
                     password,
                     phonePrefix + phoneNumber,
                     LocalDateTime.now().withNano(0),
-                    1
+                    addressId
             )
 
             val intent = Intent(this, LoginActivity::class.java)
@@ -271,23 +335,28 @@ class RegisterActivity : AppCompatActivity() {
         return true
     }
 
-    fun validateUsername(username: String) : Boolean {
-        val errorUsername = Validator.validateUsername(username, resources)
-        if (errorUsername != "") {
-            tvErrorUsername.text = errorUsername
-            tvErrorUsername.visibility = View.VISIBLE
-            return false
-        }
-        return true
-    }
-
-    fun validatePassword(password: String) : Boolean {
+    fun validatePassword(password: String, passwordConfirmation: String) : Boolean {
         val errorPassword = Validator.validatePassword(password, resources)
         if (errorPassword != "") {
             tvErrorPassword.text = errorPassword
             tvErrorPassword.visibility = View.VISIBLE
             return false
         }
+
+        val errorPasswordConfirmation = Validator.validatePassword(passwordConfirmation, resources)
+        if (errorPasswordConfirmation != "") {
+            tvErrorPasswordConfirmation.text = errorPasswordConfirmation
+            tvErrorPasswordConfirmation.visibility = View.VISIBLE
+            return false
+        }
+
+        val errorPasswordEquality = Validator.validatePasswordEquality(password, passwordConfirmation, resources)
+        if (errorPasswordEquality != "") {
+            tvErrorPasswordConfirmation.text = errorPasswordEquality
+            tvErrorPasswordConfirmation.visibility = View.VISIBLE
+            return false
+        }
+
         return true
     }
 
@@ -325,11 +394,11 @@ class RegisterActivity : AppCompatActivity() {
         tvErrorStreet.text = ""
         tvErrorStreet.visibility = View.GONE
 
-        tvErrorUsername.text = ""
-        tvErrorUsername.visibility = View.GONE
-
         tvErrorPassword.text = ""
         tvErrorPassword.visibility = View.GONE
+
+        tvErrorPasswordConfirmation.text = ""
+        tvErrorPasswordConfirmation.visibility = View.GONE
 
     }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.core.view.setPadding
 
 
 /**
@@ -12,10 +13,10 @@ import android.widget.TextView
  */
 class MapSpinnerAdapter (
     context: Context, textViewResourceId: Int,
-    private val map: Map<String, String>
-) : ArrayAdapter<String>(context, textViewResourceId, map.values.toList()) {
+    private val map: MutableMap<String, String>
+) : ArrayAdapter<String>(context, textViewResourceId, map.values.toMutableList()) {
 
-    val keys: List<String> = map.keys.toList()
+    val keys: MutableList<String> = map.keys.toMutableList()
 
     override fun getCount(): Int {
         return map.keys.size
@@ -33,6 +34,7 @@ class MapSpinnerAdapter (
         super.getView(position, convertView, parent)
         val label = TextView(context)
         label.text = map[keys[position]]!!
+        label.setPadding(30)
         return label
     }
 
@@ -43,6 +45,26 @@ class MapSpinnerAdapter (
         super.getDropDownView(position, convertView, parent!!)
         val label = TextView(context)
         label.text = map[keys[position]]!!
+        label.setPadding(50)
         return label
+    }
+
+    fun add(key: String, value: String) {
+        if (map.containsKey(key)) {
+            throw IllegalArgumentException("Key '${key}' already exists!")
+        }
+        keys.add(key)
+        map[key] = value
+        super.add(value)
+    }
+
+    fun remove(key: String) {
+        keys.remove(key)
+        map.remove(key)
+        super.remove(key)
+    }
+
+    fun contains(key: String) : Boolean {
+        return map.contains(key)
     }
 }

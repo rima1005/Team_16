@@ -13,6 +13,8 @@ import team16.easytracker.database.Contracts.Address
 import team16.easytracker.database.Contracts.Worker
 import team16.easytracker.database.Contracts.CompanyWorker
 import team16.easytracker.database.Contracts.Tracking
+import team16.easytracker.database.Contracts.BluetoothDevice
+import team16.easytracker.model.WorkerBluetoothDevice
 
 import team16.easytracker.model.Address as AddressModel
 import team16.easytracker.model.Company as CompanyModel
@@ -20,11 +22,9 @@ import team16.easytracker.model.Tracking as TrackingModel
 import team16.easytracker.model.Worker as WorkerModel
 import java.io.*
 import java.time.*
-import java.time.format.DateTimeFormatter
 import kotlin.IllegalArgumentException
 
-/*
-    TODO: USAGE:
+/**
     In order to update the database schema increment DATABASE_VERSION by 1
     Create a .sql file in assets with naming oldversion-newversion.sql (e.g. 1-2.sql) which
     contains your SQL Statement.
@@ -45,7 +45,6 @@ private const val SQL_CREATE_ADDRESS =
             "${Address.COL_ZIP_CODE} VARCHAR(16)," +
             "${Address.COL_CITY} VARCHAR(64))"
 
-// TODO: pending flag until worker accepts?
 private const val SQL_CREATE_COMPANY_WORKER =
     "CREATE TABLE IF NOT EXISTS ${CompanyWorker.TABLE_NAME} (" +
             "${CompanyWorker.COL_COMPANY_ID} INTEGER," +
@@ -76,15 +75,50 @@ private const val SQL_CREATE_WORKERS =
             "${Worker.COL_CREATED_AT} LONG," +
             "${Worker.COL_ADDRESS_ID} INTEGER)"
 
+private const val SQL_CREATE_BLUETOOTH_DEVICES =
+    "CREATE TABLE IF NOT EXISTS ${BluetoothDevice.TABLE_NAME} (" +
+            "${BluetoothDevice.COL_MAC} VARCHAR(64)," +
+            "${BluetoothDevice.COL_NAME} VARCHAR(256)," +
+            "${BluetoothDevice.COL_WORKER_ID} INTEGER," +
+            "PRIMARY KEY(${BluetoothDevice.COL_MAC}, ${BluetoothDevice.COL_WORKER_ID}))"
+
 
 // If you change the database schema, you must increment the database version.
-private const val DATABASE_VERSION = 2
-private const val DATABASE_NAME = "EasyTracker.db"
+private const val DATABASE_VERSION = 3
+private const val DATABASE_NAME_PROD = "EasyTracker.db"
+private const val DATABASE_NAME_TEST = "EasyTrackerTest.db"
 
-object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, DATABASE_VERSION) {
+class DbHelper private constructor(context: Context, databaseName: String = DATABASE_NAME_PROD) : SQLiteOpenHelper(context, databaseName, null, DATABASE_VERSION) {
 
-    val ctx = MyApplication.instance;
-    val tag = DbHelper::class.java.name;
+    private val tag = DbHelper::class.java.name
+
+    companion object {
+        private var _instance: DbHelper? = null
+
+        fun getInstance(context: Context = MyApplication.instance): DbHelper
+        {
+            if (_instance == null)
+            {
+                if (context != MyApplication.instance)
+                    _instance = DbHelper(context, DATABASE_NAME_TEST)
+                else
+                    _instance = DbHelper(MyApplication.instance, DATABASE_NAME_PROD)
+            }
+            return _instance!!
+        }
+    }
+
+    fun clearDb(databaseName: String)
+    {
+        if(databaseName != DATABASE_NAME_TEST)
+            throw UnsupportedOperationException("You are about to delete a productive or non-existing Database! This should never happen!!!")
+        val dbFile = MyApplication.instance.applicationContext.getDatabasePath(databaseName)
+        val dbPath = dbFile.path
+        dbFile.delete()
+        File("${dbPath}-journal").delete()
+        File("${dbPath}-shm").delete()
+        File("${dbPath}-wal").delete()
+    }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(SQL_CREATE_COMPANY)
@@ -92,7 +126,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         db.execSQL(SQL_CREATE_COMPANY_WORKER)
         db.execSQL(SQL_CREATE_TRACKING)
         db.execSQL(SQL_CREATE_WORKERS)
-        //db.execSQL(SQL_CREATE_WORKERS)
+        db.execSQL(SQL_CREATE_BLUETOOTH_DEVICES)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -100,8 +134,8 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         try {
             for (i in oldVersion until newVersion) {
                 val fileName = "${i}-${i + 1}.sql"
-                val file = ctx.assets.open(fileName)
-                executeSQLFile(file)
+                val file = MyApplication.instance.applicationContext.assets.open(fileName)
+                executeSQLFile(file, db)
                 file.close()
             }
         } catch (e: IOException) {
@@ -116,14 +150,14 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     @Throws(SQLException::class)
-    fun executeSQLFile(inputStream: InputStream) {
+    fun executeSQLFile(inputStream: InputStream, db: SQLiteDatabase) {
         val reader = inputStream.bufferedReader()
         var line = reader.readLine()
         while (line != null) {
             if (!line.endsWith(";")) {
                 throw SQLException("Invalid .sql file!")
             }
-            writableDatabase.execSQL(line)
+            db.execSQL(line)
             line = reader.readLine()
         }
     }
@@ -138,7 +172,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         val street = result.getString(result.getColumnIndex(Address.COL_STREET))
         val zipCode = result.getString(result.getColumnIndex(Address.COL_ZIP_CODE))
         val city = result.getString(result.getColumnIndex(Address.COL_CITY))
-        result.close();
+        result.close()
         return AddressModel(id, street, zipCode, city)
     }
 
@@ -151,7 +185,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return writableDatabase.insert(Address.TABLE_NAME, null, values).toInt()
     }
 
-    fun loadCompany(id: Int): CompanyModel? {
+    fun loadCompany(id: Int, loadAddress: Boolean = false): CompanyModel? {
         val result = readableDatabase.rawQuery(
             "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_ID} = ?",
             arrayOf(id.toString())
@@ -161,11 +195,13 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
 
         val name = result.getString(result.getColumnIndex(Company.COL_NAME))
         val addressId = result.getInt(result.getColumnIndex(Company.COL_ADDRESS_ID))
-
-        // TODO: set address object of company
-
         result.close()
-        return CompanyModel(id, name, addressId)
+
+        val company = CompanyModel(id, name, addressId)
+        if (loadAddress) {
+            company.address = loadAddress(addressId)
+        }
+        return company
     }
 
     fun saveCompany(name: String, addressId: Int): Int {
@@ -202,12 +238,12 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return TrackingModel(id, name, workerId, startTime, endTime, description, bluetoothDevice)
     }
 
-    fun loadWorkerTrackings(workerId: Int): List<TrackingModel>? {
+    fun loadWorkerTrackings(workerId: Int): List<TrackingModel> {
         val result = readableDatabase.rawQuery(
                 "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ?",
                 arrayOf(workerId.toString())
         )
-        var trackings: List<TrackingModel> = ArrayList<TrackingModel>()
+        var trackings: List<TrackingModel> = ArrayList()
         if (result == null || !result.moveToFirst())
             return trackings
         do {
@@ -233,6 +269,41 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         result.close()
         return trackings
     }
+
+    fun loadFinishedWorkerTrackings(workerId: Int): List<TrackingModel> {
+        val minLocalDate = LocalDateTime.MIN.withNano(0).toEpochSecond(ZoneOffset.UTC);
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${Tracking.TABLE_NAME} WHERE ${Tracking.COL_WORKER_ID} = ? AND ${Tracking.COL_END_TIME} > ?",
+            arrayOf(workerId.toString(), minLocalDate.toString())
+        )
+        var trackings: List<TrackingModel> = ArrayList()
+        if (result == null || !result.moveToFirst())
+            return trackings
+        do {
+            trackings = trackings.plus(TrackingModel(
+                result.getInt(result.getColumnIndex(Tracking.COL_ID)),
+                result.getString(result.getColumnIndex(Tracking.COL_NAME)),
+                result.getInt(result.getColumnIndex(Tracking.COL_WORKER_ID)),
+                LocalDateTime.ofEpochSecond(
+                    result.getLong(result.getColumnIndex(Tracking.COL_START_TIME)),
+                    0,
+                    ZoneOffset.UTC
+                ),
+                LocalDateTime.ofEpochSecond(
+                    result.getLong(result.getColumnIndex(Tracking.COL_END_TIME)),
+                    0,
+                    ZoneOffset.UTC
+                ),
+                result.getString(result.getColumnIndex(Tracking.COL_DESCRIPTION)),
+                result.getString(result.getColumnIndex(Tracking.COL_BLUETOOTH_DEVICE))
+            ))
+        } while (result.moveToNext())
+
+        result.close()
+        return trackings
+    }
+
+
 
     fun saveTracking(
         name: String,
@@ -276,7 +347,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         var company: CompanyModel? = null
         var position: String? = null
         var admin = false
-        result.close();
+        result.close()
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ?",
             arrayOf(id.toString())
@@ -306,7 +377,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
             admin,
             position,
             company
-        );
+        )
     }
 
     fun saveWorker(
@@ -319,7 +390,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         createdAt: LocalDateTime,
         addressId: Int,
     ): Int {
-        val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt());
+        val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
         val values = ContentValues().apply {
             put(Worker.COL_FIRST_NAME, firstName)
             put(Worker.COL_LAST_NAME, lastName)
@@ -342,14 +413,14 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
 
         if (!result.moveToNext()) {
             result.close()
-            return null;
+            return null
         }
 
         val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
 
         if (!BCrypt.checkpw(password, passwordHash)) {
             result.close()
-            return null;
+            return null
         }
 
         val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
@@ -360,10 +431,8 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     fun addWorkerToCompany(workerId: Int, companyId: Int, position: String): Boolean {
-        val company = loadCompany(companyId)
-            ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
-        val worker = loadWorker(workerId)
-            ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
+        loadCompany(companyId) ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
+        loadWorker(workerId) ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
 
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
@@ -374,7 +443,7 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         resultCompanyWorker.close()
 
         if (alreadyExists)
-            return true // TODO: should this fail?
+            return true
 
         val values = ContentValues().apply {
             put(CompanyWorker.COL_WORKER_ID, workerId)
@@ -391,7 +460,6 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     fun companyExists(companyName: String): Boolean {
-        // TODO: case sensitive?
         val result = readableDatabase.rawQuery(
             "SELECT * FROM ${Company.TABLE_NAME} WHERE ${Company.COL_NAME} = ?",
             arrayOf(companyName)
@@ -402,10 +470,8 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
     }
 
     fun setCompanyAdmin(workerId: Int, companyId: Int, admin: Boolean) {
-        val company = loadCompany(companyId)
-            ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
-        val worker = loadWorker(workerId)
-            ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
+        loadCompany(companyId) ?: throw IllegalArgumentException("Company with id $companyId does not exist!")
+        loadWorker(workerId) ?: throw IllegalArgumentException("Worker with id $workerId does not exist!")
 
         val resultCompanyWorker = readableDatabase.rawQuery(
             "SELECT * FROM ${CompanyWorker.TABLE_NAME} WHERE ${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?",
@@ -447,13 +513,18 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
             arrayOf(workerEmail)
         )
         if (!result.moveToFirst())
+        {
+            result.close()
             return null
+        }
+
         val workerId = result.getInt(result.getColumnIndex(Worker.COL_ID))
+        result.close()
         return loadWorker(workerId)
     }
 
     fun updateTracking(
-        trackingId: Int?,
+        trackingId: Int,
         trackingName: String,
         workerId: Int,
         startDateTime: LocalDateTime,
@@ -474,9 +545,162 @@ object DbHelper : SQLiteOpenHelper(MyApplication.instance, DATABASE_NAME, null, 
         return
     }
 
+    fun updateWorker(
+            workerId: Int,
+            firstName: String,
+            lastName: String,
+            dateOfBirth: LocalDate,
+            title: String,
+            email: String,
+            phoneNumber: String,
+            createdAt: LocalDateTime,
+            addressId: Int,
+    ) : Boolean {
+        val values = ContentValues().apply {
+            put(Worker.COL_FIRST_NAME, firstName)
+            put(Worker.COL_LAST_NAME, lastName)
+            put(Worker.COL_DATE_OF_BIRTH, dateOfBirth.toEpochDay())
+            put(Worker.COL_TITLE, title)
+            put(Worker.COL_EMAIL, email)
+            put(Worker.COL_PHONE_NUMBER, phoneNumber)
+            put(Worker.COL_CREATED_AT, createdAt.toEpochSecond(ZoneOffset.UTC))
+            put(Worker.COL_ADDRESS_ID, addressId)
+        }
+        val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
+                "${Worker.COL_ID} = ?",
+                arrayOf(workerId.toString()))
+        return modRows == 1
+    }
+
+    fun updateWorkerPassword(workerId: Int, oldPassword: String, newPassword: String) : Boolean
+    {
+        val result = readableDatabase.rawQuery(
+                "SELECT ${Worker.COL_ID} , ${Worker.COL_PASSWORD} FROM ${Worker.TABLE_NAME} WHERE ${Worker.COL_ID} = ?",
+                arrayOf(workerId.toString())
+        )
+
+        if (!result.moveToNext()) {
+            result.close()
+            return false
+        }
+
+        //check old PW
+        val passwordHash = result.getString(result.getColumnIndex(Worker.COL_PASSWORD))
+        if (!BCrypt.checkpw(oldPassword, passwordHash)) {
+            return false
+        }
+
+        val newPasswordHash = BCrypt.hashpw(newPassword, BCrypt.gensalt())
+        val values = ContentValues().apply {
+            put(Worker.COL_PASSWORD, newPasswordHash)
+        }
+        val modRows = writableDatabase.update(Worker.TABLE_NAME, values,
+                "${Worker.COL_ID} = ?",
+                arrayOf(workerId.toString()))
+        result.close()
+        return modRows == 1
+    }
+
     fun deleteTracking(trackingId: Int): Int
     {
         return writableDatabase.delete(Tracking.TABLE_NAME, "${Tracking.COL_ID} = ?", arrayOf(trackingId.toString()))
+    }
 
+    fun deleteCompanyWorker(workerId: Int, companyId: Int): Int {
+        return writableDatabase.delete(CompanyWorker.TABLE_NAME, "${CompanyWorker.COL_WORKER_ID} = ? AND ${CompanyWorker.COL_COMPANY_ID} = ?", arrayOf(workerId.toString(), companyId.toString()))
+    }
+
+    fun saveBluetoothDevice(mac: String, name: String, workerId: Int): Boolean {
+        val values = ContentValues().apply {
+            put(BluetoothDevice.COL_MAC, mac)
+            put(BluetoothDevice.COL_NAME, name)
+            put(BluetoothDevice.COL_WORKER_ID, workerId)
+        }
+        val insertId = writableDatabase.insert(BluetoothDevice.TABLE_NAME, null, values).toInt()
+        return insertId != -1
+    }
+
+    fun updateBluetoothDevice(mac: String, name: String, workerId: Int) {
+        val values = ContentValues().apply {
+            put(BluetoothDevice.COL_MAC, mac)
+            put(BluetoothDevice.COL_NAME, name)
+            put(BluetoothDevice.COL_WORKER_ID, workerId)
+        }
+        writableDatabase.update(BluetoothDevice.TABLE_NAME, values,
+            "${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(mac, workerId.toString()))
+        return
+    }
+
+    fun loadBluetoothDevice(mac: String, workerId: Int) : WorkerBluetoothDevice? {
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(mac, workerId.toString())
+        )
+        if (!result.moveToFirst())
+        {
+            result.close()
+            return null
+        }
+
+        val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+        result.close()
+        return WorkerBluetoothDevice(mac, name, workerId)
+    }
+
+    fun loadBluetoothDevicesForWorker(workerId: Int) : Array<WorkerBluetoothDevice> {
+        val result = readableDatabase.rawQuery(
+            "SELECT * FROM ${BluetoothDevice.TABLE_NAME} WHERE ${BluetoothDevice.COL_WORKER_ID} = ?",
+            arrayOf(workerId.toString())
+        )
+        val list = mutableListOf<WorkerBluetoothDevice>()
+        while (result.moveToNext()) {
+            val mac = result.getString(result.getColumnIndex(BluetoothDevice.COL_MAC))
+            val name = result.getString(result.getColumnIndex(BluetoothDevice.COL_NAME))
+            val device = WorkerBluetoothDevice(mac, name, workerId)
+            list.add(device)
+        }
+
+        result.close()
+        return list.toTypedArray()
+    }
+
+    fun loadCompanyWorkers(company: CompanyModel): Array<WorkerModel> {
+        val result = readableDatabase.rawQuery(
+                "SELECT * FROM ${CompanyWorker.TABLE_NAME} cw " +
+                        "INNER JOIN ${Worker.TABLE_NAME} w " +
+                            "ON cw.${CompanyWorker.COL_WORKER_ID} = w.${Worker.COL_ID} " +
+                        "WHERE ${CompanyWorker.COL_COMPANY_ID} = ? " +
+                        "ORDER BY w.${Worker.COL_LAST_NAME} ASC",
+                arrayOf(company.getId().toString())
+        )
+        val list = mutableListOf<WorkerModel>()
+        while (result.moveToNext()) {
+            val id = result.getInt(result.getColumnIndex(Worker.COL_ID))
+            val title = result.getString(result.getColumnIndex(Worker.COL_TITLE))
+            val firstName = result.getString(result.getColumnIndex(Worker.COL_FIRST_NAME))
+            val lastName = result.getString(result.getColumnIndex(Worker.COL_LAST_NAME))
+            val dateOfBirth = LocalDate.ofEpochDay(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)))
+            val email = result.getString(result.getColumnIndex(Worker.COL_EMAIL))
+            val addressId = result.getInt(result.getColumnIndex(Worker.COL_ADDRESS_ID))
+            val phoneNumber = result.getString(result.getColumnIndex(Worker.COL_PHONE_NUMBER))
+            val createdAt = LocalDateTime.ofEpochSecond(result.getLong(result.getColumnIndex(Worker.COL_DATE_OF_BIRTH)), 0, ZoneOffset.UTC)
+            val admin = result.getInt(result.getColumnIndex(CompanyWorker.COL_ADMIN))
+            val position = result.getString(result.getColumnIndex(CompanyWorker.COL_POSITION))
+
+            val worker = WorkerModel(id, firstName, lastName, dateOfBirth, title, email, phoneNumber,
+                                     createdAt, addressId, admin == 1, position, company)
+
+            list.add(worker)
+        }
+
+        result.close()
+        return list.toTypedArray()
+    }
+
+    fun deleteBluetoothDeviceOfWorker(mac: String, workerId: Int) : Int {
+        return writableDatabase.delete(BluetoothDevice.TABLE_NAME,
+                          "${BluetoothDevice.COL_MAC} = ? AND ${BluetoothDevice.COL_WORKER_ID} = ?",
+                                       arrayOf(mac, workerId.toString()))
     }
 }

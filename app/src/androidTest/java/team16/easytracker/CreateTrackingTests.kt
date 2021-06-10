@@ -1,6 +1,8 @@
 package team16.easytracker
 
 import android.app.Activity
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -10,41 +12,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
 import androidx.test.runner.lifecycle.Stage
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import team16.easytracker.database.DbHelper
-import java.time.LocalDate
-import java.time.LocalDateTime
 
 
 @RunWith(AndroidJUnit4::class)
-class CreateTrackingTests {
+class CreateTrackingTests : TestFramework() {
     @get:Rule
     val activityRule = ActivityScenarioRule(HomeActivity::class.java)
-
-    private fun setupLoggedInWorker() {
-
-        val addressId = DbHelper.saveAddress("street", "1234", "city")
-
-        val email = "email@email.at";
-        val pw = "12345678"
-        val workerId = DbHelper.saveWorker(
-            "firstName",
-            "lastName",
-            LocalDate.now(),
-            "title",
-            email,
-            pw,
-            "12345678",
-            LocalDateTime.now().withNano(0),
-            addressId
-        )
-
-        DbHelper.loginWorker(email, pw)
-    }
 
     fun getCurrentActivity(): Activity? {
         var currentActivity: Activity? = null
@@ -57,22 +36,32 @@ class CreateTrackingTests {
     }
 
     @Before
-    fun init() {
+    override fun setup() {
+        super.setup()
         setupLoggedInWorker()
+    }
+
+    fun openFragment() {
+        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
+
+        val trackingsFragment = TrackingsFragment()
+        currentActivity.supportFragmentManager.beginTransaction()
+            .replace(R.id.flFragment, trackingsFragment, "CreateTrackingFragment")
+            .addToBackStack(null)
+            .commit()
+
+        currentActivity.currentFragment = trackingsFragment
+
+        Espresso.openActionBarOverflowOrOptionsMenu(ApplicationProvider.getApplicationContext())
+
+        onView(withText(R.string.create_tracking))
+            .perform(click())
     }
 
     @Test
     fun invalidStartDateCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.asd.2021"), closeSoftKeyboard())
@@ -105,16 +94,8 @@ class CreateTrackingTests {
 
     @Test
     fun emptyStartDateCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartTime))
             .perform(typeText("10:00"), closeSoftKeyboard())
@@ -144,16 +125,8 @@ class CreateTrackingTests {
 
     @Test
     fun invalidEndDateCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -186,16 +159,8 @@ class CreateTrackingTests {
 
     @Test
     fun emptyEndDateCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -225,16 +190,8 @@ class CreateTrackingTests {
 
     @Test
     fun invalidStartTimeCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -267,16 +224,8 @@ class CreateTrackingTests {
 
     @Test
     fun emptyStartTimeCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -307,16 +256,8 @@ class CreateTrackingTests {
 
     @Test
     fun invalidEndTimeCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -349,16 +290,8 @@ class CreateTrackingTests {
 
     @Test
     fun emptyEndTimeCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -388,16 +321,8 @@ class CreateTrackingTests {
 
     @Test
     fun emptyTrackingNameCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -427,16 +352,8 @@ class CreateTrackingTests {
 
     @Test
     fun emptyInputCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.tvErrorTrackingStartDate))
             .check(matches(not(isDisplayed())))
@@ -492,16 +409,8 @@ class CreateTrackingTests {
 
     @Test
     fun validCreateTracking() {
-        val currentActivity: HomeActivity = getCurrentActivity() as HomeActivity
 
-        val createTrackingFragment = Trackings()
-        currentActivity.supportFragmentManager.beginTransaction()
-            .replace(R.id.flFragment, createTrackingFragment, "CreateTrackingFragment")
-            .addToBackStack(null)
-            .commit()
-
-        onView(withId(R.id.btnCreateTracking))
-            .perform(click())
+        openFragment()
 
         onView(withId(R.id.etTrackingStartDate))
             .perform(typeText("28.04.2021"), closeSoftKeyboard())
@@ -523,6 +432,36 @@ class CreateTrackingTests {
 
         onView(withId(R.id.btnCreateTrackingSave))
             .perform(click())
+    }
+
+    @Test
+    fun endDateBeforeStartDate()
+    {
+        openFragment()
+
+        onView(withId(R.id.etTrackingStartDate))
+            .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingStartTime))
+            .perform(typeText("10:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndDate))
+            .perform(typeText("28.04.2021"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingEndTime))
+            .perform(typeText("09:00"), closeSoftKeyboard())
+
+        onView(withId(R.id.etTrackingName))
+            .perform(typeText("Some example tracking"), closeSoftKeyboard())
+
+        onView(withId(R.id.btnCreateTrackingBack))
+            .perform(scrollTo())
+
+        onView(withId(R.id.btnCreateTrackingSave))
+            .perform(click())
+
+        onView(CoreMatchers.allOf(withId(com.google.android.material.R.id.snackbar_text)))
+            .check(matches(withText(R.string.end_date_before_start_date)))
     }
 
 }

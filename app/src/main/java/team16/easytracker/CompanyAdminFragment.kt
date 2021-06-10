@@ -2,30 +2,22 @@ package team16.easytracker
 
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import team16.easytracker.database.DbHelper
 import team16.easytracker.utils.Validator
-import java.lang.Exception
-import java.time.LocalDateTime
 
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CompanyAdminFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
 
 
     lateinit var tvErrorEmail: TextView
-    lateinit var tvErrorAddWorker: TextView
     lateinit var tvErrorPosition: TextView
 
     lateinit var etPosition: EditText
@@ -42,7 +34,6 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         tvErrorEmail = view.findViewById(R.id.tvErrorEmail)
         etPosition = view.findViewById(R.id.etCompanyPosition)
         tvErrorPosition = view.findViewById(R.id.tvErrorCompanyPosition)
-        tvErrorAddWorker = view.findViewById(R.id.tvErrorAddWorker)
         swAdmin = view.findViewById(R.id.swAdmin)
         btnAddWorker = view.findViewById(R.id.btnAddWorker)
 
@@ -75,10 +66,9 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         if(errorOccured)
             return
 
-        val worker = DbHelper.loadWorker(workerEmail)
+        val worker = DbHelper.getInstance().loadWorker(workerEmail)
         if(worker == null){
-            tvErrorAddWorker.visibility = View.VISIBLE
-            tvErrorAddWorker.text = getString(R.string.error_adding_employee)
+            Snackbar.make(view!!,getString(R.string.error_adding_employee), Snackbar.LENGTH_SHORT).show()
             return
         }
 
@@ -87,25 +77,20 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         if(companyId != null) {
             var added = false
             try {
-                added = DbHelper.addWorkerToCompany(worker.getId(), companyId, companyPosition)
+                added = DbHelper.getInstance().addWorkerToCompany(worker.getId(), companyId, companyPosition)
             }
             catch(e: Exception){
-                tvErrorAddWorker.visibility = View.VISIBLE
-                tvErrorAddWorker.text = getString(R.string.error_adding_employee)
+                Snackbar.make(view!!,getString(R.string.error_adding_employee), Snackbar.LENGTH_SHORT).show()
             }
             finally {
                 if(added){
-                    tvErrorAddWorker.visibility = View.VISIBLE
-                    tvErrorAddWorker.setTextColor(Color.GREEN)
-                    tvErrorAddWorker.text = getString(R.string.success_adding_employee)
+                    Snackbar.make(view!!,getString(R.string.success_adding_employee), Snackbar.LENGTH_SHORT).show()
                 }
                 else{
-                    tvErrorAddWorker.visibility = View.VISIBLE
-                    tvErrorAddWorker.text = getString(R.string.error_adding_employee)
+                    Snackbar.make(view!!,getString(R.string.error_adding_employee), Snackbar.LENGTH_SHORT).show()
                 }
             }
         }
-        // TODO: maybe add an error message if the adding to company doesn't work
     }
 
     private fun resetErrors() {
@@ -113,8 +98,5 @@ class CompanyAdminFragment : Fragment(R.layout.fragment_company_admin) {
         tvErrorEmail.visibility = View.GONE
         tvErrorPosition.text = ""
         tvErrorPosition.visibility = View.GONE
-        tvErrorAddWorker.text = ""
-        tvErrorAddWorker.visibility = View.GONE
-        tvErrorAddWorker.setTextColor(Color.RED)
     }
 }

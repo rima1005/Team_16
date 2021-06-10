@@ -7,35 +7,49 @@
     tools:context=".CompanyFragment"
     android:id="@+id/flFragmentCompany">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="match_parent" >
 
-        <Button
-            android:id="@+id/btnAddWorker"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5pt"
-            android:background="#168AAD"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/add_worker"
-            android:textColor="#FFFFFF"
-            android:layout_weight="1"
-            app:backgroundTint="#168AAD" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnCreateCompanyFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5pt"
-            android:background="#168AAD"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/create_company"
-            android:textColor="#FFFFFF"
-            android:layout_weight="1"
-            app:backgroundTint="#168AAD" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tvCompanyName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5pt"
+                android:textSize="32dp"
+                android:fontFamily="sans-serif-light" />
+
+            <TextView
+                android:id="@+id/tvCompanyAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5pt"
+                android:textSize="24dp"
+                android:fontFamily="sans-serif-light" />
+
+            <TextView
+                android:id="@+id/tvEmployees"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5pt"
+                android:layout_marginRight="5pt"
+                android:layout_marginTop="5pt"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/employees" />
+
+            <ListView
+                android:id="@+id/lvCompanyWorkers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5pt" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
