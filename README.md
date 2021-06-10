@@ -51,5 +51,3 @@ You can add, edit and delete entries to build your timesheet, which can then be 
 | EasyTracker-153 Update Register Form                                | ✔️        |
 | EasyTracker-155 Layout fixes                                        | ✔️        |
 | EasyTracker-150 Validation in forms                                 | ✔️        |
-
-
